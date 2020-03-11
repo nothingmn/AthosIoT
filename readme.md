@@ -18,6 +18,7 @@ All master configuration will be represented within Node-Red UI.
 There will be no external dependancies, for example a database.
 
 There will be no provision to store historical data on either any slave nor master nodes.  If you want to keep the data, wire up Node-Red to persist the data some place.  The reason why we dont want to install a database on the master node is three fold:
+
 	1. Keep the end solution simple with low to no dependancies
 	2. SD Cards in our master node, a RPi will have a very short life.  We opt for a longer life span
 	3. Node-red allows you to offload your MQTT data to any sort of database on your network.
