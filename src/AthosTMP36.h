@@ -59,6 +59,10 @@ void sendTemperatureToMQTT(float value)
   serializeJson(doc, json);
   Serial.println(json);
   _tmp36_mqtt_client.publish(_tmp36_config.mqttSensorTopic.c_str(), json.c_str());
+
+  BlinkLed();
+
+
 }
 
 float last_recorded_temp = 0;

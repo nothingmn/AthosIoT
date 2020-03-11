@@ -1,25 +1,23 @@
+#define ATH_LED
 #define ATH_WIFIMANAGER
 #define ATH_NTP
-//#define ATH_TMP36
-#define ATH_DHT11
 #define ATH_UDP
 #define ATH_MQTT
+//#define ATH_TMP36
+//#define ATH_DHT11
+#define ATH_BMP280
 
 #include <ESP8266WiFi.h>
+#include "AthosLED.h"
 #include "AthosHelpers.h"
 #include "AthosEEPROM.h"
 #include "AthosWifiManager.h"
 #include "AthosNTP.h"
 #include "AthosUDP.h"
 #include "AthosMQTT.h"
-
-#ifdef ATH_TMP36
-  #include "AthosTMP36.h"
-#endif
-
-#ifdef ATH_DHT11
-  #include "AthosDHT11.h"
-#endif
+#include "AthosTMP36.h"
+#include "AthosDHT11.h"
+#include "AthosBMP280.h"
 
 String DeviceId = getDeviceId();
 //our main loop delay.
@@ -34,6 +32,13 @@ void setup()
   delay(100);
 
   rootConfig = EEPROM_setup();
+
+  #ifdef ATH_LED
+    Serial.println("LED Start");      
+    LED_Setup();
+    Serial.println("LED Done");
+  #endif
+  
 
   #ifdef ATH_WIFIMANAGER
     Serial.println("WifiManager Start");      
@@ -75,10 +80,24 @@ void setup()
     Serial.println("DHT11 Done");      
   #endif
 
+    
+  #ifdef ATH_BMP280
+    Serial.println("BMP280 Start");      
+    BMP280_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
+    Serial.println("BMP280 Done");      
+  #endif
+
 }
 
 void loop()
 {
+
+  
+  #ifdef ATH_LED
+    LED_Loop();
+  #endif
+  
+
 
   #ifdef ATH_WIFIMANAGER
     WifiManager_Loop();
@@ -104,6 +123,10 @@ void loop()
   #ifdef ATH_DHT11
     DHT11_Loop();
   #endif
+
+  #ifdef ATH_BMP280
+    BMP280_Loop();
+  #endif  
 
 
   delay(loop_delay);

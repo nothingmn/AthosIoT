@@ -26,3 +26,14 @@ String getDeviceId() {
   sAddress.remove(4,1);
   return sAddress;
 }
+
+void BlinkLed(int duration) {
+  #ifdef ATH_LED 
+    LED_Blink(duration);
+  #endif
+}
+void BlinkLed() {
+  #ifdef ATH_LED 
+    LED_Blink();
+  #endif
+}
