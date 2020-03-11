@@ -1,5 +1,9 @@
 #include <string>
 
+#ifndef ATH_HELPERS
+  #define ATH_HELPERS
+#endif
+
 struct storageValues {
   String ssid;
   String password;
