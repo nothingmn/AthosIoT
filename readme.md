@@ -23,6 +23,8 @@ There will be no provision to store historical data on either any slave nor mast
 2. SD Cards in our master node, a RPi will have a very short life.  We opt for a longer life span
 3. Node-red allows you to offload your MQTT data to any sort of database on your network.
 
+Allow for multiple types of sensors, from a basic TMP sensor to a more advanced BMP sensor.  
+
 
 Slave node sequencing
 --------------------
