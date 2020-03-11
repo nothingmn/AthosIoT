@@ -1,24 +1,21 @@
 #ifdef ATH_BMP280
-//https://learn.adafruit.com/adafruit-bme280-humidity-barometric-pressure-temperature-sensor-breakout?view=all
+//https://github.com/adafruit/Adafruit_BME280_Library/blob/master/examples/bme280test/bme280test.ino
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <Adafruit_BME280.h>
 
-// #define BME_SCK 13
-// #define BME_MISO 12
-// #define BME_MOSI 11 
-// #define BME_CS 10
- 
+#define SEALEVELPRESSURE_HPA (1013.25)
 
-//max variation in temperature before reporting
-float temp_max_variation = 1;
-//max time between mandatory reporting
-float max_time_between = 1000 * 10; //10 seconds
-
-int _BMP280_loop_delay = 1000;
 //Try to avoid having anything in global scope
 
+//max variation in temperature before reporting
+float _BMP280_temp_max_variation = 1;
+//max time between mandatory reporting
+float _BMP280_max_time_between = 1000 * 10; //10 seconds
+int _BMP280_loop_delay = 1000;
+
 Adafruit_BME280 bme; // I2C
+
 
 PubSubClient _BMP280_mqtt_client;
 String _BMP280_deviceId;
@@ -32,11 +29,16 @@ void BMP280_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootC
     _BMP280_loop_delay = loop_delay;
 
     if (!bme.begin()) {  
-      Serial.println("Could not find a valid BME280 sensor, check wiring!");
+        Serial.println("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
+        Serial.print("SensorID was: 0x"); Serial.println(bme.sensorID(),16);
+        Serial.print("        ID of 0xFF probably means a bad address, a BMP 180 or BMP 085\n");
+        Serial.print("   ID of 0x56-0x58 represents a BMP 280,\n");
+        Serial.print("        ID of 0x60 represents a BME 280.\n");
+        Serial.print("        ID of 0x61 represents a BME 680.\n");
     }
 }
 
-void sendReadingToMQTT(float temp, float humidity, float pressure) {
+void sendReadingToMQTT(float temp, float humidity, float pressure, float altitude) {
   
   long ts = NTP_getEpochTime();
 
@@ -45,6 +47,7 @@ void sendReadingToMQTT(float temp, float humidity, float pressure) {
   doc["temp"] = temp;
   doc["humidity"] = humidity;
   doc["pressure"] = pressure;
+  doc["altitude"] = altitude;
   doc["deviceid"] = _BMP280_deviceId;
   String json;
   serializeJson(doc, json);
@@ -64,17 +67,18 @@ void checkAndReportReadings()
   // Now we can publish stuff!
   float temperature = bme.readTemperature();
   float humidity = bme.readHumidity();
-  float pressure = bme.readHumidity();
+  float pressure = bme.readPressure();
+  float altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
 
   if (isnan(humidity) || isnan(temperature) || isnan(pressure)) {
     Serial.println(F("Failed to read from BMP sensor!"));
     return;
   }
 
-  float diff = temperature - last_recorded_temp;
-  if (abs(diff) > temp_max_variation || time_since_last > max_time_between)
+  float diff = abs(temperature - last_recorded_temp);
+  if (diff > _BMP280_temp_max_variation || time_since_last > _BMP280_max_time_between)
   {
-    sendReadingToMQTT(temperature, humidity, pressure);
+    sendReadingToMQTT(temperature, humidity, pressure, altitude);
     last_recorded_temp = temperature;
     time_since_last = 0;
   }
