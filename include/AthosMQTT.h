@@ -1,4 +1,5 @@
 #ifdef ATH_MQTT
+#include <PubSubClient.h>
 
 WiFiClient mqtt_wclient; //Declares a WifiClient Object using ESP8266WiFi
 PubSubClient mqtt_client(mqtt_wclient);
@@ -42,7 +43,7 @@ void ConnectToMqtt()
 }
 
 
-void MQTT_Setup(String deviceId, StorageValues rootConfig)
+PubSubClient MQTT_Setup(String deviceId, StorageValues rootConfig)
 {
   _mqtt_deviceId = deviceId;
   _mqtt_config = rootConfig;
@@ -53,6 +54,8 @@ void MQTT_Setup(String deviceId, StorageValues rootConfig)
   mqtt_client.setServer(_mqtt_config.mqttServer.c_str(), _mqtt_config.mqttPort.toInt());
   
   ConnectToMqtt();
+
+  return mqtt_client;
 }
 
 void MQTT_Loop()

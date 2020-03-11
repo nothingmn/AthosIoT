@@ -1,6 +1,7 @@
 #define ATH_WIFIMANAGER
 #define ATH_NTP
-#define ATH_TMP36
+//#define ATH_TMP36
+#define ATH_DHT11
 #define ATH_UDP
 #define ATH_MQTT
 
@@ -11,14 +12,21 @@
 #include "AthosNTP.h"
 #include "AthosUDP.h"
 #include "AthosMQTT.h"
-#include "AthosTMP36.h"
+
+#ifdef ATH_TMP36
+  #include "AthosTMP36.h"
+#endif
+
+#ifdef ATH_DHT11
+  #include "AthosDHT11.h"
+#endif
 
 String DeviceId = getDeviceId();
 //our main loop delay.
 int loop_delay = 1000;
 
 StorageValues rootConfig;
-
+PubSubClient root_mqtt_client;
 void setup()
 {
 
@@ -49,15 +57,22 @@ void setup()
 
   #ifdef ATH_MQTT
     Serial.println("MQTT Start");      
-    MQTT_Setup(DeviceId, rootConfig);
+    root_mqtt_client = MQTT_Setup(DeviceId, rootConfig);
     Serial.println("MQTT Done");
   #endif
 
   
   #ifdef ATH_TMP36
     Serial.println("TMP Start");      
-    TMP_Setup();
+    TMP_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
     Serial.println("TMP Done");      
+  #endif
+
+  
+  #ifdef ATH_DHT11
+    Serial.println("DHT11 Start");      
+    DHT11_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
+    Serial.println("DHT11 Done");      
   #endif
 
 }
@@ -86,6 +101,10 @@ void loop()
       TMP_Loop();
   #endif
 
+  #ifdef ATH_DHT11
+    DHT11_Loop();
+  #endif
 
-    delay(loop_delay);
+
+  delay(loop_delay);
 }

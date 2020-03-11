@@ -1,10 +1,13 @@
 #ifdef ATH_TMP36
+#include <PubSubClient.h>
 
 //Try to avoid having anything in global scope
 int TMP36_sensorPin = 0;
-    
-void TMP_Setup()
+PubSubClient _mqttClient;
+
+void TMP_Setup(PubSubClient mqttClient)
 {
+    _mqttClient = mqttClient;
 }
 
 float TMP36_readTemperature() {
@@ -20,8 +23,8 @@ float TMP36_readTemperature() {
 
 void TMP_Loop()
 {
-
-    Serial.print(TMP36_readTemperature());
+    float reading = TMP36_readTemperature();
+    Serial.print(reading);
     Serial.println(" degrees C");
 }
 

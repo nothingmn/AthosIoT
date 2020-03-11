@@ -1,9 +1,6 @@
 #ifdef ATH_NTP
 #include <NTPClient.h>
 #include <WiFiUdp.h>
-#include <ArduinoJson.h>
-#include <PubSubClient.h>
-#include <EEPROM.h>
 
 //f time offset for PST
 const long utcOffsetInSeconds = 0; //0 offset, lets keep it uTC for now
