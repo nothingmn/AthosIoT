@@ -12,6 +12,14 @@ void LED_Loop()
 {
 }
 
+void LED_ON() {
+    digitalWrite(ATHLED_PIN, LOW); //turn the led on
+}
+
+void LED_OFF() {
+    digitalWrite(ATHLED_PIN, HIGH); //turn the led on
+}
+
 void LED_Blink(int blinkCount, int blinkDelay) {
 
   for(int x=0;x<blinkCount;x++) {
@@ -30,6 +38,5 @@ void LED_Blink(int blinkCount) {
 void LED_Blink() {
   LED_Blink(ATHLED_DEFAULT_COUNT, ATHLED_DEFAULT_DELAY);
 }
-
 
 #endif

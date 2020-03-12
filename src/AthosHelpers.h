@@ -54,4 +54,15 @@ void WifiSetupCompleteLed() {
   #endif
 }
 
+void Relay_ON_Led() {
+  #ifdef ATH_LED 
+    LED_ON();
+  #endif
+}
+void Relay_OFF_Led() {
+  #ifdef ATH_LED 
+    LED_OFF();
+  #endif
+}
+
 

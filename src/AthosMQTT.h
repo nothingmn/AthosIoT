@@ -6,7 +6,7 @@ PubSubClient mqtt_client(mqtt_wclient);
 String _mqtt_deviceId;
 StorageValues _mqtt_config;
 
-void ConnectToMqtt()
+bool ConnectToMqtt()
 {
 
   if (!mqtt_client.connected())
@@ -28,7 +28,7 @@ void ConnectToMqtt()
       }
       if (result)
       {
-        Serial.println("connected");
+        Serial.println("MQTT Connected");
       }
       else
       {
@@ -39,9 +39,16 @@ void ConnectToMqtt()
         delay(5000);
       }
     }
+    return true;
   }
+  return false;
 }
 
+void callback(char* topic, byte* payload, unsigned int length) {
+  #ifdef ATH_RELAY
+    Relay_MQTT_Received(topic, payload, length);
+  #endif
+}
 
 PubSubClient MQTT_Setup(String deviceId, StorageValues rootConfig)
 {
@@ -52,16 +59,25 @@ PubSubClient MQTT_Setup(String deviceId, StorageValues rootConfig)
   Serial.print("Connecting to MQTT server PORT: ");
   Serial.print(_mqtt_config.mqttPort);
   mqtt_client.setServer(_mqtt_config.mqttServer.c_str(), _mqtt_config.mqttPort.toInt());
-  
-  ConnectToMqtt();
+
+  #ifdef ATH_RELAY
+    mqtt_client.setCallback(callback);
+  #endif
+
 
   return mqtt_client;
 }
 
 void MQTT_Loop()
 {
-  //always ensure we are connected
-  ConnectToMqtt();
+  if(ConnectToMqtt()) {
+    #ifdef ATH_RELAY
+      Serial.println("Setting up MQTT subscriber");
+      mqtt_client.subscribe("iot/relay/+");
+      Serial.println("Setup MQTT Subscriber");
+    #endif
+  }
+  mqtt_client.loop();
 }
 
 

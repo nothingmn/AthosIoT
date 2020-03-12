@@ -4,6 +4,7 @@
 #define ATH_UDP
 #define ATH_MQTT
 #define ATH_TMP36
+#define ATH_RELAY
 //#define ATH_DHT11
 //#define ATH_BMP280
 
@@ -14,6 +15,7 @@
 #include "AthosWifiManager.h"
 #include "AthosNTP.h"
 #include "AthosUDP.h"
+#include "AthosRelay.h"
 #include "AthosMQTT.h"
 #include "AthosTMP36.h"
 #include "AthosDHT11.h"
@@ -87,6 +89,12 @@ void setup()
     BMP280_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
     Serial.println("BMP280 Done");      
   #endif
+      
+  #ifdef ATH_RELAY
+    Serial.println("RELAY Start");      
+    Relay_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
+    Serial.println("RELAY Done");      
+  #endif
 
   Serial.println("~~~~~~~~~~SETUP COMPLETED~~~~~~~~~~");  
 
@@ -130,6 +138,11 @@ void loop()
   #ifdef ATH_BMP280
     BMP280_Loop();
   #endif  
+
+  #ifdef ATH_RELAY
+    Relay_Loop();
+  #endif
+
 
 
   delay(loop_delay);

@@ -7,9 +7,9 @@ float temp_max_variation = 1;
 //max time between mandatory reporting
 float max_time_between = 1000 * 10; //10 seconds
 
-int _tmp36_loop_delay = 1000;
-//Try to avoid having anything in global scope
 int TMP36_sensorPin = 0;
+
+int _tmp36_loop_delay = 1000;
 PubSubClient _tmp36_mqtt_client;
 String _tmp36_deviceId;
 StorageValues _tmp36_config;
