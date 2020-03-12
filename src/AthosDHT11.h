@@ -47,7 +47,7 @@ void sendReadingToMQTT(float temp, float humidity, float heatIndex) {
   if (! _DHT11_mqtt_client.publish(_DHT11_config.mqttSensorTopic.c_str(), json.c_str())) {
       Serial.println(F("Failed"));
   }
-  BlinkLed();
+  MQTTTransmitLed();
 }
 
 

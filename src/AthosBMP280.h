@@ -55,7 +55,7 @@ void sendReadingToMQTT(float temp, float humidity, float pressure, float altitud
   if (! _BMP280_mqtt_client.publish(_BMP280_config.mqttSensorTopic.c_str(), json.c_str())) {
       Serial.println(F("Failed"));
   }
-  BlinkLed();
+  MQTTTransmitLed();
 }
 
 

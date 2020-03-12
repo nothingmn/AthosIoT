@@ -27,9 +27,9 @@ String getDeviceId() {
   return sAddress;
 }
 
-void BlinkLed(int duration) {
+void BlinkLed(int blinkCount, int blinkDelay) {
   #ifdef ATH_LED 
-    LED_Blink(duration);
+    LED_Blink(blinkCount, blinkDelay);
   #endif
 }
 void BlinkLed() {
@@ -37,3 +37,21 @@ void BlinkLed() {
     LED_Blink();
   #endif
 }
+
+void MQTTTransmitLed() {
+  #ifdef ATH_LED 
+    LED_Blink(5);
+  #endif
+}
+void WifiSetupStartLed() {
+  #ifdef ATH_LED 
+    LED_Blink(2);
+  #endif
+}
+void WifiSetupCompleteLed() {
+  #ifdef ATH_LED 
+    LED_Blink(3);
+  #endif
+}
+
+

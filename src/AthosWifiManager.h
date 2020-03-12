@@ -156,6 +156,7 @@ void setupAP(void)
 
 StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
 {
+  WifiSetupStartLed();
   _deviceId = deviceId;
   _wifi_config = rootConfig;
   _wifiAPName = "ESP_" + _deviceId;
@@ -183,6 +184,7 @@ StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
     delay(100);
     WIFI_server.handleClient();
   }
+  WifiSetupCompleteLed();
   return _wifi_config;
 }
 
