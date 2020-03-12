@@ -77,7 +77,7 @@
         "id": "23b0e70c.b3c09",
         "type": "function",
         "z": "a382654b.5f9ce8",
-        "name": "",
+        "name": "Form response packet",
         "func": "\ndevices = flow.get(\"iot-devices\");\n\n\nmsg.payload.mqtt = {\n    server : \"\",\n    port : \"1883\",\n    username : \"\",\n    password : \"\",\n    topic : \"raw/unknown\"\n}\n\nif(devices && msg.payload.deviceid) {\n   for(var d in devices) {\n       var device = devices[d];\n       if(device.deviceid === msg.payload.deviceid) {\n           msg.payload.device = device;\n           msg.payload.mqtt.topic = device.topic;\n       }\n   }\n}\n\nmsg.port = 3001;\nmsg.payload = JSON.stringify(msg.payload);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
