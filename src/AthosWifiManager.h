@@ -65,6 +65,7 @@ void createWebServer()
     });
 
     WIFI_server.on("/setting", []() {
+      bool reboot = false;
       String qsid = WIFI_server.arg("ssid");
       String qpass = WIFI_server.arg("pass");
       if (qsid.length() > 0 && qpass.length() > 0) {
@@ -73,7 +74,7 @@ void createWebServer()
         writeEEPROMData(_wifi_config);
         WIFI_content = "{\"Success\":\"saved to eeprom... reset to boot into new wifi\"}";
         WIFI_statusCode = 200;
-        ESP.restart();
+        reboot = true;
       } else {
         WIFI_content = "{\"Error\":\"404 not found\"}";
         WIFI_statusCode = 404;
@@ -81,6 +82,11 @@ void createWebServer()
       }
       WIFI_server.sendHeader("Access-Control-Allow-Origin", "*");
       WIFI_server.send(WIFI_statusCode, "application/json", WIFI_content);
+      if(reboot) {
+        Serial.println("Restarting device so the new settings can take place");
+        delay(1000);
+        ESP.restart();
+      }
 
     });
  }

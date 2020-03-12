@@ -18,6 +18,7 @@ NTPClient timeClient(ntpUDP, ntp_server, utcOffsetInSeconds);
 void NTP_Setup()
 {
   timeClient.begin();
+  timeClient.update(); 
 }
 long NTP_getEpochTime() {
   return timeClient.getEpochTime();

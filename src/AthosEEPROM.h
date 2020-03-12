@@ -5,52 +5,64 @@
   #include "AthosHelpers.h"
 #endif
 
-#define EEPROM_SIZE 4096
-#define EEPROM_TERMINATER '~'
+#define EEPROM_SIZE 2048
+#define EEPROM_TERMINATER 0
 
 void wipeEEPROM()
 {
-   for (int i = 0 ; i < EEPROM_SIZE ; i++) {
-    EEPROM.write(i, 0);
+  Serial.println("Wiping EEPROM");
+  EEPROM.begin(EEPROM_SIZE);
+  for (int i = 0 ; i < EEPROM_SIZE ; i++) {
+    EEPROM.put(i, 0);
   }
+  EEPROM.commit();
+  delay(1000);
+  Serial.println("Wiped EEPROM");
 }
 
 
 StorageValues readEEPROMData() {
 
-
   StorageValues values;
   
   String content;
+  Serial.println("READ eeprom characters:");
+  EEPROM.begin(EEPROM_SIZE);
   for (int i = 0; i < EEPROM_SIZE; ++i)
   {
     char value = char(EEPROM.read(i));
+    Serial.print(value);
     if(value != EEPROM_TERMINATER) {
       content += value;
     } else {
       break;
     }
   }
-
-  StaticJsonDocument<EEPROM_SIZE> readDoc;
-  deserializeJson(readDoc, content);
-
-  Serial.println("Read eeprom document:");
-  Serial.println(content);
+  Serial.println("DONE Reading eeprom characters:");
   
-  values.ssid =            readDoc["wifi"]["ssid"].as<String>();
-  values.password =        readDoc["wifi"]["password"].as<String>();
 
-  values.mqttServer =      readDoc["mqtt"]["server"].as<String>();
-  values.mqttUsername =    readDoc["mqtt"]["username"].as<String>();
-  values.mqttPassword =    readDoc["mqtt"]["password"].as<String>();
-  values.mqttPort =        readDoc["mqtt"]["port"].as<String>();
-  values.mqttSensorTopic = readDoc["mqtt"]["topic"].as<String>();
+  if(content[0] == '{') {
 
-  Serial.print("READEEPROM MQTT Payload:");
-  Serial.println(values.mqttServer);
-  Serial.println(values.mqttSensorTopic);
-  Serial.println(values.mqttPort);
+    StaticJsonDocument<EEPROM_SIZE> readDoc;
+    deserializeJson(readDoc, content);
+
+    Serial.println("Read eeprom document:");
+    Serial.println(content);
+    
+    values.ssid =            readDoc["wifi"]["ssid"].as<String>();
+    values.password =        readDoc["wifi"]["password"].as<String>();
+
+    values.mqttServer =      readDoc["mqtt"]["server"].as<String>();
+    values.mqttUsername =    readDoc["mqtt"]["username"].as<String>();
+    values.mqttPassword =    readDoc["mqtt"]["password"].as<String>();
+    values.mqttPort =        readDoc["mqtt"]["port"].as<String>();
+    values.mqttSensorTopic = readDoc["mqtt"]["topic"].as<String>();
+
+    Serial.print("READEEPROM MQTT Payload:");
+    Serial.println(values.mqttServer);
+    Serial.println(values.mqttSensorTopic);
+    Serial.println(values.mqttPort);
+  }
 
   return values;
 }
@@ -69,23 +81,30 @@ void writeEEPROMData(StorageValues config) {
   writeDoc["mqtt"]["port"] =      config.mqttPort;
   writeDoc["mqtt"]["topic"] =     config.mqttSensorTopic;
 
-  Serial.print("WRITEEEPROM MQTT Payload:");
+  Serial.println("----------WRITE EEPROM MQTT Payload----------");
+  Serial.print("SERVER:");
   Serial.println(config.mqttServer);
+  Serial.print("TOPIC:");
   Serial.println(config.mqttSensorTopic);
+  Serial.print("PORT:");
   Serial.println(config.mqttPort);
+  Serial.println("----------WRITE EEPROM MQTT Payload----------");
 
   String _json;
   serializeJson(writeDoc, _json);
 
-  Serial.println("writing eeprom document:");
+  Serial.println("WRITING eeprom document:");
   Serial.println(_json);
   _json += EEPROM_TERMINATER;
+
+  EEPROM.begin(EEPROM_SIZE);
   for (int i = 0; i < _json.length(); ++i)
   {
-    EEPROM.write(i, _json[i]);
+    EEPROM.put(i, _json[i]);
   }
   EEPROM.commit();
   delay(1000);
+  Serial.println("WROTE eeprom document:");
 }
 
 
@@ -93,8 +112,10 @@ void writeEEPROMData(StorageValues config) {
 StorageValues EEPROM_setup() {
 
   if(false) {
-    wipeEEPROM();    
+    wipeEEPROM();   
+    Serial.println("EEPROM KILLED!"); 
   }
+  
 
   return readEEPROMData();
 

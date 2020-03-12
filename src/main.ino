@@ -3,9 +3,9 @@
 #define ATH_NTP
 #define ATH_UDP
 #define ATH_MQTT
-//#define ATH_TMP36
+#define ATH_TMP36
 //#define ATH_DHT11
-#define ATH_BMP280
+//#define ATH_BMP280
 
 #include <ESP8266WiFi.h>
 #include "AthosLED.h"
@@ -29,7 +29,8 @@ void setup()
 {
 
   Serial.begin(115200);
-  delay(100);
+  delay(5000);
+  Serial.println("~~~~~~~~~~SETUP STARTING~~~~~~~~~~");  
 
   rootConfig = EEPROM_setup();
 
@@ -86,6 +87,8 @@ void setup()
     BMP280_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
     Serial.println("BMP280 Done");      
   #endif
+
+  Serial.println("~~~~~~~~~~SETUP COMPLETED~~~~~~~~~~");  
 
 }
 

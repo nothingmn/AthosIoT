@@ -87,7 +87,7 @@ StorageValues UDP_Setup(String DeviceId, StorageValues rootConfig)
   Serial.print("_udp_config.mqttSensorTopic:");
   Serial.println(_udp_config.mqttSensorTopic);
 
-  if(!_udp_config.mqttServer || !_udp_config.mqttSensorTopic || _udp_config.mqttServer == "null" || _udp_config.mqttSensorTopic == "null") {
+  if(!_udp_config.mqttServer || !_udp_config.mqttSensorTopic || _udp_config.mqttServer == "null" || _udp_config.mqttSensorTopic == "null" || _udp_config.mqttServer == "" || _udp_config.mqttSensorTopic == "") {
     Serial.println("No MQTT Data on file, UDP broadcast required");
 
     listenUDP.begin(udpListenPort);

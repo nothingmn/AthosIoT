@@ -1,0 +1,210 @@
+[
+    {
+        "id": "a382654b.5f9ce8",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "f5f65e68.cac2a8",
+        "type": "udp in",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "iface": "",
+        "port": "3000",
+        "ipv": "udp4",
+        "multicast": "true",
+        "group": "255.255.255.255",
+        "datatype": "utf8",
+        "x": 130,
+        "y": 60,
+        "wires": [
+            [
+                "6690511f.b23fc8"
+            ]
+        ]
+    },
+    {
+        "id": "d98cd3df.3ca52",
+        "type": "debug",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 570,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "64ea1918.5d7b4",
+        "type": "udp out",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "addr": "",
+        "iface": "",
+        "port": "",
+        "ipv": "udp4",
+        "outport": "",
+        "base64": false,
+        "multicast": "false",
+        "x": 750,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "6690511f.b23fc8",
+        "type": "function",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "func": "\nif(msg.payload && typeof msg.payload == \"string\") {\n    msg.payload = JSON.parse(msg.payload);\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 370,
+        "y": 60,
+        "wires": [
+            [
+                "d98cd3df.3ca52",
+                "23b0e70c.b3c09"
+            ]
+        ]
+    },
+    {
+        "id": "23b0e70c.b3c09",
+        "type": "function",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "func": "\ndevices = flow.get(\"iot-devices\");\n\n\nmsg.payload.mqtt = {\n    server : \"\",\n    port : \"1883\",\n    username : \"\",\n    password : \"\",\n    topic : \"raw/unknown\"\n}\n\nif(devices && msg.payload.deviceid) {\n   for(var d in devices) {\n       var device = devices[d];\n       if(device.deviceid === msg.payload.deviceid) {\n           msg.payload.device = device;\n           msg.payload.mqtt.topic = device.topic;\n       }\n   }\n}\n\nmsg.port = 3001;\nmsg.payload = JSON.stringify(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 570,
+        "y": 120,
+        "wires": [
+            [
+                "64ea1918.5d7b4",
+                "4ef686d6.0d8fd"
+            ]
+        ]
+    },
+    {
+        "id": "4ef686d6.0d8fd",
+        "type": "debug",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 750,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "8e606e42.bcdff8",
+        "type": "inject",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "x": 130,
+        "y": 200,
+        "wires": [
+            [
+                "c22eb1fb.b73c"
+            ]
+        ]
+    },
+    {
+        "id": "c22eb1fb.b73c",
+        "type": "function",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "func": "\nvar devices = [\n        {deviceid : \"34AD0C\", topic : \"raw/dev\"} \n    ];\n\nflow.set(\"iot-devices\", devices);\n\nmsg.payload = devices;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 290,
+        "y": 200,
+        "wires": [
+            [
+                "648f85a5.eb6684"
+            ]
+        ]
+    },
+    {
+        "id": "648f85a5.eb6684",
+        "type": "debug",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 430,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "3f21c536.2a982a",
+        "type": "inject",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "2",
+        "x": 130,
+        "y": 260,
+        "wires": [
+            [
+                "2b46a231.74277e"
+            ]
+        ]
+    },
+    {
+        "id": "2b46a231.74277e",
+        "type": "function",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "func": "\nmsg.payload = flow.get(\"iot-devices\");\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 290,
+        "y": 260,
+        "wires": [
+            [
+                "77d74cf0.2189f4"
+            ]
+        ]
+    },
+    {
+        "id": "77d74cf0.2189f4",
+        "type": "debug",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 430,
+        "y": 260,
+        "wires": []
+    }
+]
