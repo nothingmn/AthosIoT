@@ -50,7 +50,7 @@ Getting started
 4. Optionally setup credentials for your Mosquitto installation http://www.steves-internet-guide.com/mqtt-username-password-example/
 5. Install Node-Red   https://nodered.org/docs/getting-started/raspberrypi
 6. Optionally setup credentials for your Node-Red instance https://nodered.org/docs/user-guide/runtime/securing-node-red
-7. Launch your browser, and point your browser to  http://{raspberrypi}:1880, login in necessary
+7. Launch your browser, and point your browser to  http://{raspberrypi}:1880, where {raspberrypi} is either your DNS name or IP address of your new raspberrypi machine. Login in if necessary
 8. Fork this repository, and clone your fork to your development machine
 9. In the node-red folder, there is a flows.json file.  Upload that via the "Import from clipboard" functionality in Node-Red.  Typically this is in the top right menu.
 10. Update the configuration for the MQTT server, just under the hamburger menu on the top right, there is a down arrow, choose "Configuration Nodes" and on "On All Flows" section you should see a node for MQTT.  Change that to your local instance (its find to use localhost)
