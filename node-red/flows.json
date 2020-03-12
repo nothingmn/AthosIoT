@@ -155,56 +155,5 @@
         "x": 430,
         "y": 200,
         "wires": []
-    },
-    {
-        "id": "3f21c536.2a982a",
-        "type": "inject",
-        "z": "a382654b.5f9ce8",
-        "name": "",
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "onceDelay": "2",
-        "x": 130,
-        "y": 260,
-        "wires": [
-            [
-                "2b46a231.74277e"
-            ]
-        ]
-    },
-    {
-        "id": "2b46a231.74277e",
-        "type": "function",
-        "z": "a382654b.5f9ce8",
-        "name": "",
-        "func": "\nmsg.payload = flow.get(\"iot-devices\");\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 290,
-        "y": 260,
-        "wires": [
-            [
-                "77d74cf0.2189f4"
-            ]
-        ]
-    },
-    {
-        "id": "77d74cf0.2189f4",
-        "type": "debug",
-        "z": "a382654b.5f9ce8",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "x": 430,
-        "y": 260,
-        "wires": []
     }
 ]
