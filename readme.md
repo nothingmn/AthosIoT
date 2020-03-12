@@ -41,3 +41,27 @@ Slave node sequencing
 7. Setup the specific sensor devices and enable independant looping of of gathering of sensor data
 8. Setup subscriptions for relays for MQTT
 
+Getting started
+-----------------------
+*Install MQTT and Node-Red*
+1. Install Rasbian on a Raspberry Pi  https://www.raspberrypi.org/documentation/installation/installing-images/
+2. Once you have the OS installed, SSH into it
+3. Install our MQTT Server (Mosquitto)   sudo apt-get install mosquitto
+4. Optionally setup credentials for your Mosquitto installation http://www.steves-internet-guide.com/mqtt-username-password-example/
+5. Install Node-Red   https://nodered.org/docs/getting-started/raspberrypi
+6. Optionally setup credentials for your Node-Red instance https://nodered.org/docs/user-guide/runtime/securing-node-red
+7. Launch your browser, and point your browser to  http://{raspberrypi}:1880, login in necessary
+8. Fork this repository, and clone your fork to your development machine
+9. In the node-red folder, there is a flows.json file.  Upload that via the "Import from clipboard" functionality in Node-Red.  Typically this is in the top right menu.
+10. Update the configuration for the MQTT server, just under the hamburger menu on the top right, there is a down arrow, choose "Configuration Nodes" and on "On All Flows" section you should see a node for MQTT.  Change that to your local instance (its find to use localhost)
+11. Open the "Form reponse packet" node on the "Flow 1" Tab, and change the "server" variable to the IP address of your MQTT machine.  This CANNOT be localhost or 127.0.0.1.  Give it the IP address of your MQTT instance, or some other DNS name.  This is the value which the slave nodes will use to resolve the MQTT server.
+12. Assuming the flows were correctly imported, Deploy your node-red instance (top right "Deploy" button)
+
+*Install VSCode and PlatformIO*
+
+13. Install Visual Studio Code from here: https://code.visualstudio.com/Download
+14. Install PlatformIO from within Visual Studio Code, be patient, it takes a while https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide
+15. Open the file "Athos.code-workspace"
+16. Plug in your NodeMCU (ESP8266 device) into your machine
+17. You should be able to hit Control-Alt-B to build, Control-Alt-U to upload
+

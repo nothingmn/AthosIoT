@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"name": "AthosIoT",
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"random": "cpp",
+			"functional": "cpp"
+		}
+	}
+}
