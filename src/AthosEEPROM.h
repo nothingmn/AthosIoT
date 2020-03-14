@@ -38,6 +38,8 @@ StorageValues readEEPROMData() {
   }
 
   if(content[0] == '{') {
+    Serial.println("Read EEPROM");
+    Serial.println(content);
 
     StaticJsonDocument<EEPROM_SIZE> readDoc;
     deserializeJson(readDoc, content);
@@ -49,7 +51,10 @@ StorageValues readEEPROMData() {
     values.mqttUsername =    readDoc["mqtt"]["username"].as<String>();
     values.mqttPassword =    readDoc["mqtt"]["password"].as<String>();
     values.mqttPort =        readDoc["mqtt"]["port"].as<String>();
-    values.mqttSensorTopic = readDoc["mqtt"]["topic"].as<String>();
+    values.mqttSensorTopic = readDoc["mqtt"]["sensor"].as<String>();
+    values.mqttCapsTopic = readDoc["mqtt"]["caps"].as<String>();
+    values.mqttRelayTopic = readDoc["mqtt"]["relay"].as<String>();
+
 
   }
 
@@ -68,14 +73,19 @@ void writeEEPROMData(StorageValues config) {
   writeDoc["mqtt"]["username"] =  config.mqttUsername;
   writeDoc["mqtt"]["password"] =  config.mqttPassword;
   writeDoc["mqtt"]["port"] =      config.mqttPort;
-  writeDoc["mqtt"]["topic"] =     config.mqttSensorTopic;
+  writeDoc["mqtt"]["sensor"] =    config.mqttSensorTopic;
+  writeDoc["mqtt"]["caps"] =      config.mqttCapsTopic;
+  writeDoc["mqtt"]["relay"] =     config.mqttRelayTopic;
 
   String _json;
   serializeJson(writeDoc, _json);
+  Serial.println("Writing EEPROM");
+  Serial.println(_json);
+
   _json += EEPROM_TERMINATER;
 
   EEPROM.begin(EEPROM_SIZE);
-  for (int i = 0; i < _json.length(); ++i)
+  for (int i = 0; i < _json.length()-1; ++i)
   {
     EEPROM.put(i, _json[i]);
   }
@@ -91,8 +101,5 @@ StorageValues EEPROM_setup() {
     wipeEEPROM();   
     Serial.println("EEPROM KILLED!"); 
   }
-  
-
   return readEEPROMData();
-
 }

@@ -3,8 +3,8 @@
 #define ATH_NTP
 #define ATH_UDP
 #define ATH_MQTT
-//#define ATH_TMP36
 #define ATH_RELAY
+#define ATH_TMP36
 //#define ATH_DHT11
 //#define ATH_BMP280
 
@@ -18,8 +18,8 @@
 #include "AthosRelay.h"
 #include "AthosMQTT.h"
 #include "AthosTMP36.h"
-#include "AthosDHT11.h"
-#include "AthosBMP280.h"
+// #include "AthosDHT11.h"
+// #include "AthosBMP280.h"
 
 String DeviceId = getDeviceId();
 //our main loop delay.
@@ -63,33 +63,33 @@ void setup()
   #endif
 
 
+    Serial.println("AAA");
+
   #ifdef ATH_MQTT
-    Serial.println("MQTT Start");      
+    Serial.println("MQTT Start");
     root_mqtt_client = MQTT_Setup(DeviceId, rootConfig);
+    delay(1000);
     Serial.println("MQTT Done");
   #endif
 
-  
   #ifdef ATH_TMP36
     Serial.println("TMP Start");      
     TMP_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
     Serial.println("TMP Done");      
   #endif
 
-  
   #ifdef ATH_DHT11
     Serial.println("DHT11 Start");      
     DHT11_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
     Serial.println("DHT11 Done");      
   #endif
 
-    
   #ifdef ATH_BMP280
     Serial.println("BMP280 Start");      
     BMP280_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
     Serial.println("BMP280 Done");      
   #endif
-      
+
   #ifdef ATH_RELAY
     Serial.println("RELAY Start");      
     Relay_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
@@ -102,14 +102,11 @@ void setup()
 
 void loop()
 {
-
   
   #ifdef ATH_LED
     LED_Loop();
   #endif
   
-
-
   #ifdef ATH_WIFIMANAGER
     WifiManager_Loop();
   #endif
@@ -117,7 +114,6 @@ void loop()
   #ifdef ATH_NTP
     NTP_Loop();
   #endif
-
 
   #ifdef ATH_UDP
       UDP_Loop();
@@ -142,8 +138,6 @@ void loop()
   #ifdef ATH_RELAY
     Relay_Loop();
   #endif
-
-
 
   delay(loop_delay);
 }

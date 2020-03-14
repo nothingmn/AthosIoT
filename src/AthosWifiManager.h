@@ -162,7 +162,7 @@ StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
   _wifiAPName = "ESP_" + _deviceId;
   
   WiFi.disconnect();
-  
+
   WiFi.begin(_wifi_config.ssid.c_str(), _wifi_config.password.c_str());
   if (testWifi())
   {

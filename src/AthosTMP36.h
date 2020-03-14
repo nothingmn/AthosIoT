@@ -14,12 +14,33 @@ PubSubClient _tmp36_mqtt_client;
 String _tmp36_deviceId;
 StorageValues _tmp36_config;
 
+
+
+void TMP_sendCapsToMQTT()
+{
+  Serial.println("TMP_sendCapsToMQTT");
+  long ts = NTP_getEpochTime();
+  StaticJsonDocument<200> doc;
+  doc["caps"]["cap"] = "TMP36";
+  doc["caps"]["ts"] = ts;
+  doc["deviceid"] = _tmp36_deviceId;
+  String json;
+  serializeJson(doc, json);
+  Serial.println(json);
+  Serial.println(_tmp36_config.mqttCapsTopic.c_str());
+  _tmp36_mqtt_client.publish(_tmp36_config.mqttCapsTopic.c_str(), json.c_str());
+  MQTTTransmitLed();
+}
+
+
 void TMP_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
 {
     _tmp36_mqtt_client = mqtt_client;
     _tmp36_deviceId = deviceId;
     _tmp36_config = rootConfig;
     _tmp36_loop_delay = loop_delay;
+
+    TMP_sendCapsToMQTT();
 }
 
 float TMP36_readTemperature() {
@@ -61,8 +82,6 @@ void sendTemperatureToMQTT(float value)
   _tmp36_mqtt_client.publish(_tmp36_config.mqttSensorTopic.c_str(), json.c_str());
 
   MQTTTransmitLed();
-
-
 }
 
 float last_recorded_temp = 0;

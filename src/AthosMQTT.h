@@ -50,6 +50,15 @@ void callback(char* topic, byte* payload, unsigned int length) {
   #endif
 }
 
+void ConnectAndSubscribe() {
+  if(ConnectToMqtt()) {
+    #ifdef ATH_RELAY
+      Serial.println("Setting up MQTT subscriber");
+      mqtt_client.subscribe("iot/relay/+");
+      Serial.println("Setup MQTT Subscriber");
+    #endif
+  }
+}
 PubSubClient MQTT_Setup(String deviceId, StorageValues rootConfig)
 {
   _mqtt_deviceId = deviceId;
@@ -64,19 +73,14 @@ PubSubClient MQTT_Setup(String deviceId, StorageValues rootConfig)
     mqtt_client.setCallback(callback);
   #endif
 
+  ConnectAndSubscribe();
 
   return mqtt_client;
 }
 
 void MQTT_Loop()
 {
-  if(ConnectToMqtt()) {
-    #ifdef ATH_RELAY
-      Serial.println("Setting up MQTT subscriber");
-      mqtt_client.subscribe("iot/relay/+");
-      Serial.println("Setup MQTT Subscriber");
-    #endif
-  }
+  ConnectAndSubscribe();
   mqtt_client.loop();
 }
 

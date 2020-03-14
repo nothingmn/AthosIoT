@@ -4,11 +4,14 @@
 
 
 // Relay pin is controlled with D8. The active wire is connected to Normally Closed and common
-#define RELAY_PIN_D0  D0
-#define RELAY_PIN_D1  D1
-#define RELAY_PIN_D2  D2
-#define RELAY_PIN_D3  D4
-#define RELAY_PIN_D4  D5
+// which pins that are actually in use
+//{"command":"on","pin":0}
+// "pin" in that JSON document will match the index of the RELAY_PINS array
+//add or remove items from the array to control the pins as you like.
+//uint RELAY_PINS[] {};
+uint RELAY_PINS[] {D0};
+//uint RELAY_PINS[6] {D0, D1, D2, D3, D4, D5};
+
 #define turn_On 1
 #define turn_Off 0
 
@@ -16,6 +19,24 @@ PubSubClient _Relay_mqtt_client;
 String _Relay_deviceId;
 StorageValues _Relay_config;
 int _Relay_loop_delay;
+
+void RELAY_sendCapsToMQTT()
+{
+  Serial.println("RELAY_sendCapsToMQTT");
+  long ts = NTP_getEpochTime();
+  StaticJsonDocument<200> doc;
+  doc["caps"]["cap"] = "RELAY";
+  doc["caps"]["channels"] = "[\"D0\"]";
+  doc["caps"]["ts"] = ts;
+  doc["deviceid"] = _Relay_deviceId;
+  String json;
+  serializeJson(doc, json);
+  Serial.println(json);
+  Serial.println(_Relay_config.mqttCapsTopic.c_str());
+  _Relay_mqtt_client.publish(_Relay_config.mqttCapsTopic.c_str(), json.c_str());
+  MQTTTransmitLed();
+}
+
 
 
 void Relay_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
@@ -26,11 +47,28 @@ void Relay_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootCo
   _Relay_loop_delay = loop_delay;
 
    // Pin for relay module set as output
-  pinMode(RELAY_PIN_D0, OUTPUT);
-  digitalWrite(RELAY_PIN_D0, turn_Off);      
-  delay(500);
+  for(int x=0;x<sizeof(RELAY_PINS);x++) {
+    pinMode(RELAY_PINS[x], OUTPUT);
+    digitalWrite(RELAY_PINS[x], turn_Off);      
+  }
+  RELAY_sendCapsToMQTT();
 }
 
+
+void RunFun() {
+  for(int x=0;x<=5;x++) {
+    for(int y=0;y<sizeof(RELAY_PINS);x++) {
+      digitalWrite(RELAY_PINS[y], turn_Off);      
+    }
+    delay(100);
+    for(int z=0;z<sizeof(RELAY_PINS);z++){
+      digitalWrite(RELAY_PINS[z], turn_On);      
+      delay(100);
+      digitalWrite(RELAY_PINS[z], turn_Off);      
+      delay(100);
+    }
+  }
+}
 void Relay_MQTT_Received(char* topic, byte* payload, unsigned int length) {
   
   payload[length] = '\0';
@@ -46,10 +84,32 @@ void Relay_MQTT_Received(char* topic, byte* payload, unsigned int length) {
     StaticJsonDocument<255> readDoc;
     deserializeJson(readDoc, json);
     String command = readDoc["command"].as<String>();
-    if(command == "on") {
-        digitalWrite(RELAY_PIN_D0, turn_On);      
-    } else {
-        digitalWrite(RELAY_PIN_D0, turn_Off);      
+
+    if(command == "on" || command == "off") {
+      int vpin = readDoc["pin"].as<int>();
+      int pin = RELAY_PINS[0];
+      if(vpin <= sizeof(RELAY_PINS)) {
+        pin = RELAY_PINS[vpin];
+      }
+
+      if(command == "on") {
+          digitalWrite(pin, turn_On);      
+      } else {
+          digitalWrite(pin, turn_Off);      
+      }
+    }
+    if(command == "allon") {
+      for(int x=0;x<sizeof(RELAY_PINS);x++) {
+        digitalWrite(RELAY_PINS[x], turn_On);      
+      }
+    }
+    if(command == "alloff") {
+      for(int x=0;x<sizeof(RELAY_PINS);x++) {
+        digitalWrite(RELAY_PINS[x], turn_Off);      
+      }
+    }
+    if(command == "fun") {
+      RunFun();
     }
   }
 }

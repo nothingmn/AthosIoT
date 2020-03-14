@@ -12,6 +12,8 @@ struct storageValues {
   String mqttPassword;
   String mqttPort;
   String mqttSensorTopic;  
+  String mqttRelayTopic;  
+  String mqttCapsTopic;  
 };
 typedef struct storageValues StorageValues;
 
