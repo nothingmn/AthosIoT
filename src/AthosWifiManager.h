@@ -160,6 +160,8 @@ StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
   _deviceId = deviceId;
   _wifi_config = rootConfig;
   _wifiAPName = "ESP_" + _deviceId;
+  Serial.print("Device Identifier:");
+  Serial.println(_wifiAPName);
   
   WiFi.disconnect();
 

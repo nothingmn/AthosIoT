@@ -2,6 +2,8 @@
 //https://github.com/adafruit/Adafruit_BME280_Library/blob/master/examples/bme280test/bme280test.ino
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 
 #define SEALEVELPRESSURE_HPA (1013.25)
@@ -28,7 +30,7 @@ void BMP280_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootC
     _BMP280_config = rootConfig;
     _BMP280_loop_delay = loop_delay;
 
-    if (!bme.begin()) {  
+    if (!bme.begin(0x76)) {  
         Serial.println("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
         Serial.print("SensorID was: 0x"); Serial.println(bme.sensorID(),16);
         Serial.print("        ID of 0xFF probably means a bad address, a BMP 180 or BMP 085\n");
@@ -59,11 +61,37 @@ void sendReadingToMQTT(float temp, float humidity, float pressure, float altitud
 }
 
 
+void printValues() {
+  Serial.print("Temperature = ");
+  Serial.print(bme.readTemperature());
+  Serial.println(" *C");
+  
+  // Convert temperature to Fahrenheit
+  /*Serial.print("Temperature = ");
+  Serial.print(1.8 * bme.readTemperature() + 32);
+  Serial.println(" *F");*/
+  
+  Serial.print("Pressure = ");
+  Serial.print(bme.readPressure() / 100.0F);
+  Serial.println(" hPa");
+
+  Serial.print("Approx. Altitude = ");
+  Serial.print(bme.readAltitude(SEALEVELPRESSURE_HPA));
+  Serial.println(" m");
+
+  Serial.print("Humidity = ");
+  Serial.print(bme.readHumidity());
+  Serial.println(" %");
+
+  Serial.println();
+}
+
 float last_recorded_temp = 0;
 float time_since_last = 0;
 
 void checkAndReportReadings()
 {
+  printValues();
   // Now we can publish stuff!
   float temperature = bme.readTemperature();
   float humidity = bme.readHumidity();
@@ -87,7 +115,6 @@ void checkAndReportReadings()
     time_since_last += _BMP280_loop_delay;
   }
 }
-
 
 
 void BMP280_Loop()

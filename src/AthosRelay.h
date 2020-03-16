@@ -3,11 +3,9 @@
 #include <PubSubClient.h>
 
 
-// Relay pin is controlled with D8. The active wire is connected to Normally Closed and common
-// which pins that are actually in use
 //{"command":"on","pin":0}
 // "pin" in that JSON document will match the index of the RELAY_PINS array
-//add or remove items from the array to control the pins as you like.
+//add or remove and sort items from the array to control the pins as you like.
 //uint RELAY_PINS[] {};
 uint RELAY_PINS[] {D0};
 //uint RELAY_PINS[6] {D0, D1, D2, D3, D4, D5};
@@ -49,7 +47,7 @@ void Relay_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootCo
    // Pin for relay module set as output
   for(int x=0;x<sizeof(RELAY_PINS);x++) {
     pinMode(RELAY_PINS[x], OUTPUT);
-    digitalWrite(RELAY_PINS[x], turn_Off);      
+    digitalWrite(RELAY_PINS[x], turn_Off);
   }
   RELAY_sendCapsToMQTT();
 }
