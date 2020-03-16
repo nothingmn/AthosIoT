@@ -2,6 +2,14 @@
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 
+
+// Wiring:
+//TMP     -> NodeMCU
+//VC/1    -> 3V
+//VOUT/2  -> A0
+//GRND/3  -> G
+//http://www.esp8266learning.com/wemos-tmp36-example.php
+
 //max variation in temperature before reporting
 float temp_max_variation = 1;
 //max time between mandatory reporting

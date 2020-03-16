@@ -1,10 +1,17 @@
 #ifdef ATH_DHT11
 
+// Wiring:
+//BMP     -> NodeMCU
+//VCC     -> 3V
+//GRND    -> G
+//SIGNAL  -> D2
+//https://www.instructables.com/id/Interface-DHT11-Humidity-Sensor-Using-NodeMCU/
+
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include "Wire.h"
 #include "DHT.h"
-#define DHTPIN 2
+#define DHTPIN D2
 #define DHTTYPE DHT11
 
 //max variation in temperature before reporting
