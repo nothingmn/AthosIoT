@@ -15,6 +15,7 @@ struct storageValues {
   String mqttRelayTopic;  
   String mqttCapsTopic;  
 };
+
 typedef struct storageValues StorageValues;
 
 

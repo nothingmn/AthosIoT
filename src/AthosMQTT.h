@@ -54,7 +54,7 @@ void ConnectAndSubscribe() {
   if(ConnectToMqtt()) {
     #ifdef ATH_RELAY
       Serial.println("Setting up MQTT subscriber");
-      mqtt_client.subscribe("iot/relay/+");
+      mqtt_client.subscribe(_mqtt_config.mqttRelayTopic);
       Serial.println("Setup MQTT Subscriber");
     #endif
   }

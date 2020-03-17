@@ -103,7 +103,8 @@ StorageValues UDP_Setup(String DeviceId, StorageValues rootConfig)
 
 void UDP_Loop()
 {
-
+    //will need to check back with the server via UDP for any changes in config
+    //once every minute
 }
 
 #endif

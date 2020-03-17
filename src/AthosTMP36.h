@@ -87,7 +87,11 @@ void sendTemperatureToMQTT(float value)
   String json;
   serializeJson(doc, json);
   Serial.println(json);
-  _tmp36_mqtt_client.publish(_tmp36_config.mqttSensorTopic.c_str(), json.c_str());
+  ;
+
+  if (_tmp36_mqtt_client.publish(_tmp36_config.mqttSensorTopic.c_str(), json.c_str() false)) {
+      Serial.println(F("Failed"));
+  }
 
   MQTTTransmitLed();
 }
