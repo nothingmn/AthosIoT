@@ -67,16 +67,8 @@ void RunFun() {
     }
   }
 }
-void Relay_MQTT_Received(char* topic, byte* payload, unsigned int length) {
+bool Relay_MQTT_Received(string topic, string json) {
   
-  payload[length] = '\0';
-  String json = String((char*)payload);  
-  String strTopic = String(topic);
-
-    Serial.println("mqtt payload received");
-    Serial.println(json);
-    Serial.println(strTopic);
-
   if(strTopic.endsWith("/" + _Relay_deviceId)) {
     //matched to the current device.  now do something with the JSON payload;
     StaticJsonDocument<255> readDoc;
@@ -92,24 +84,30 @@ void Relay_MQTT_Received(char* topic, byte* payload, unsigned int length) {
 
       if(command == "on") {
           digitalWrite(pin, turn_On);      
+          return true;
       } else {
           digitalWrite(pin, turn_Off);      
+          return true;
       }
     }
     if(command == "allon") {
       for(int x=0;x<sizeof(RELAY_PINS);x++) {
         digitalWrite(RELAY_PINS[x], turn_On);      
       }
+      return true;
     }
     if(command == "alloff") {
       for(int x=0;x<sizeof(RELAY_PINS);x++) {
         digitalWrite(RELAY_PINS[x], turn_Off);      
       }
+      return true;
     }
     if(command == "fun") {
       RunFun();
+      return true;
     }
   }
+  return false;
 }
 
 
