@@ -1,3 +1,11 @@
+//
+//
+//Step 1, Update the @#define and #includes below for the types of sensors or the Relay features
+//Step 2, deploy to your NodeMCU device
+//
+//
+
+
 #define ATH_LED
 #define ATH_WIFIMANAGER
 #define ATH_NTP
