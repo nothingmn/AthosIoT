@@ -95,11 +95,9 @@ void sendReadingToMQTT(float temp, float humidity, float pressure, float altitud
     Serial.println(F("BMP20 Data to MQTT Failed"));
     //_BMP280_mqtt_client.disconnect();
   } else {
-    Serial.println("BMP20 Data sent successfully");
     MQTTTransmitLed();
   }
   doc.clear();
-
 }
 
 float last_recorded_temp = 0;

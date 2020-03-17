@@ -77,6 +77,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   {
     Serial.println("mqtt payload not handled by the Relay node, inspecting for system commands");
     StaticJsonDocument<256> readDoc;
+
     deserializeJson(readDoc, json);
     String command = readDoc["command"].as<String>();
     if (command == "reset")
@@ -111,6 +112,7 @@ void callback(char *topic, byte *payload, unsigned int length)
       writeEEPROMData(_mqtt_config);
       ESP.restart();
     }
+    readDoc.clear();
   }
 }
 
