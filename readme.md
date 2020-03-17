@@ -53,7 +53,25 @@ Possible Major Features
 3. Remote configuration of sensor tolerances and minimum reporting timing
 4. GPS Support
 5. Partially connected scenarios
-
+6. PH Sensor
+7. Water (level) Sensor
+8. Volumentric water content sensor
+9. EC sensor
+10. Soil water potential sensor
+11. Light levels (Lux) sensor
+12. CO2 sensor
+13. Shade control
+14. Dosing / Irrigation control
+15. Lighting systems
+16. Passive / Active cooling
+17. Heating
+18. Harvesting equipment
+19. Spraying equipment
+20. Door locks
+21. Foggers / Humidifiers
+22. Smart Phone App
+23. Better web API and portal
+24. Alerting (SMS, Telegram, PushBullet)
 
 Slave node sequencing
 --------------------
