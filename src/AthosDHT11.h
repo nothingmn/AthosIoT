@@ -36,6 +36,15 @@ void DHT11_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootCo
     _DHT11_loop_delay = loop_delay;
 
     dht.begin();
+
+    Serial.println("Waiting for the DHT11 sensor to come online");
+    bool ready = false;
+    while(!ready){
+      float temperature = dht.readTemperature();
+      ready = !isnan(temperature);
+      delay(100);
+    }
+    Serial.println("DHT11 sensor is online, proceeding.");
 }
 
 void sendReadingToMQTT(float temp, float humidity, float heatIndex) {
