@@ -41,6 +41,7 @@ void listenForUDPMessages()
 
       _udp_config.mqttRelayTopic = doc["mqtt"]["relay"].as<String>();
       _udp_config.mqttCapsTopic = doc["mqtt"]["caps"].as<String>();
+      _udp_config.mqttPingTopic = doc["mqtt"]["ping"].as<String>();
       _udp_config.mqttSensorTopic = doc["mqtt"]["sensor"].as<String>();
       _udp_config.mqttServer = doc["mqtt"]["server"].as<String>();
       _udp_config.mqttUsername = doc["mqtt"]["username"].as<String>();

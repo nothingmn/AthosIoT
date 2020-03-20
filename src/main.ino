@@ -13,7 +13,7 @@
 #define ATH_MQTT
 //#define ATH_RELAY
 //#define ATH_TMP36
-#define ATH_DHT11
+//#define ATH_DHT11
 //#define ATH_BMP280
 
 #include <ESP8266WiFi.h>
@@ -23,11 +23,11 @@
 #include "AthosWifiManager.h"
 #include "AthosNTP.h"
 #include "AthosUDP.h"
-//#include "AthosRelay.h"
+#include "AthosRelay.h"
 #include "AthosMQTT.h"
-//#include "AthosTMP36.h"
+#include "AthosTMP36.h"
 #include "AthosDHT11.h"
-//#include "AthosBMP280.h"
+#include "AthosBMP280.h"
 
 String DeviceId = getDeviceId();
 //our main loop delay.

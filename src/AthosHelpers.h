@@ -1,4 +1,5 @@
 #include <string>
+#include <ESP8266WiFi.h>
 
 #ifndef ATH_HELPERS
   #define ATH_HELPERS
@@ -14,6 +15,7 @@ struct storageValues {
   String mqttSensorTopic;  
   String mqttRelayTopic;  
   String mqttCapsTopic;  
+  String mqttPingTopic;  
 };
 
 typedef struct storageValues StorageValues;

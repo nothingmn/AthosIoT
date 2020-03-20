@@ -56,6 +56,26 @@ String GetValueOrDefault(StaticJsonDocument<256> doc, String group, String name,
   return v;
 }
 
+
+void MQTT_PongResponse(int senderTS)
+{
+  Serial.println("MQTT_PongResponse");
+  int ts = NTP_getEpochTime();
+  int diff = ts - senderTS;
+  StaticJsonDocument<200> doc;
+  doc["command"] = "pong";
+  doc["senderTS"] = senderTS;
+  doc["ts"] = ts;
+  doc["diff"] = diff;
+  doc["deviceid"] = _mqtt_deviceId;
+  String json;
+  serializeJson(doc, json);
+  Serial.println(json);
+  Serial.println(_mqtt_config.mqttPingTopic.c_str());
+  mqtt_client.publish(_mqtt_config.mqttPingTopic.c_str(), json.c_str());
+  MQTTTransmitLed();
+}
+
 void callback(char *topic, byte *payload, unsigned int length)
 {
 
@@ -94,6 +114,10 @@ void callback(char *topic, byte *payload, unsigned int length)
       ESP.reset();
       Serial.println("EEPROM KILLED!");
     }
+    else if(command == "ping") {
+      String _ts = readDoc["ts"].as<String>();
+      MQTT_PongResponse(atoi(_ts.c_str()));
+    }
     else if (command == "reconfigure")
     {
       StorageValues config = readEEPROMData();
@@ -103,6 +127,8 @@ void callback(char *topic, byte *payload, unsigned int length)
 
       _mqtt_config.mqttRelayTopic = GetValueOrDefault(readDoc, "mqtt", "relay", config.mqttRelayTopic);
       _mqtt_config.mqttCapsTopic = GetValueOrDefault(readDoc, "mqtt", "caps", config.mqttCapsTopic);
+      _mqtt_config.mqttPingTopic = GetValueOrDefault(readDoc, "mqtt", "ping", config.mqttPingTopic);
+      
       _mqtt_config.mqttSensorTopic = GetValueOrDefault(readDoc, "mqtt", "sensor", config.mqttSensorTopic);
       _mqtt_config.mqttServer = GetValueOrDefault(readDoc, "mqtt", "server", config.mqttServer);
       _mqtt_config.mqttUsername = GetValueOrDefault(readDoc, "mqtt", "username", config.mqttUsername);
