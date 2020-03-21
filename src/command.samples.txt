@@ -1,8 +1,0 @@
-topic:
-    iot/relays/{deviceid}
-{"command" : "restart"}
-{"command" : "reset"}
-{"command" : "wipe"}
-{"command" : "reconfigure", "wifi" : {"ssid" : "IoT", "password" : "XXXXXXXX"}}
-{"command" : "reconfigure", "mqtt" : {"sensor" : "iot/raw/sensors/B1C535", "relay" : "iot/relays/B1C535", "caps" : "iot/caps/B1C535"}}
-{"command" : "reconfigure", "wifi" : {"ssid" : "IoT", "password" : "XXXXXXXXX"}, "mqtt" : {"sensor" : "iot/raw/sensors/D65D09", "relay" : "iot/relays/D65D09", "caps" : "iot/caps/D65D09"}}

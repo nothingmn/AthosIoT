@@ -2,9 +2,67 @@
     {
         "id": "a382654b.5f9ce8",
         "type": "tab",
-        "label": "Flow 1",
+        "label": "System",
         "disabled": false,
         "info": ""
+    },
+    {
+        "id": "d5b35fd8.e354b",
+        "type": "tab",
+        "label": "Relay Node",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "1aa068dd.618597",
+        "type": "tab",
+        "label": "Node Commands",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "cf8ec69b.06f468",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "localhost",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "20e28edf.311c92",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "my.mqtt.server.com",
+        "broker": "my.mqtt.server.com",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
     },
     {
         "id": "f5f65e68.cac2a8",
@@ -78,7 +136,7 @@
         "type": "function",
         "z": "a382654b.5f9ce8",
         "name": "Form response packet",
-        "func": "\n\nmsg.payload.mqtt = {\n    server : \"\",\n    port : \"1883\",\n    username : \"\",\n    password : \"\",\n    sensor : \"raw/unknown\"\n}\n\ndevices = flow.get(\"iot-devices\");\n\nif(devices && msg.payload.deviceid) {\n   for(var d in devices) {\n       var device = devices[d];\n       if(device.deviceid === msg.payload.deviceid) {\n           msg.payload.device = device;\n           if(device.sensor) msg.payload.mqtt.sensor = device.sensor;\n           if(device.relay) msg.payload.mqtt.relay = device.relay;\n           if(device.caps) {\n               msg.payload.mqtt.caps = device.caps;\n           } else {\n               msg.payload.mqtt.caps = \"iot/caps/\" + device.deviceid;\n           }\n       }\n   }\n}\n\nmsg.port = 3001;\nmsg.payload = JSON.stringify(msg.payload);\nreturn msg;",
+        "func": "\n\nmsg.payload.mqtt = {\n    server : \"my.mqtt.server.com\",\n    port : \"1883\",\n    username : \"\",\n    password : \"\",\n    sensor : \"iot/raw/sensors/\" + msg.payload.deviceid,\n    relay : \"iot/relays/\" + msg.payload.deviceid,\n    caps : \"iot/caps/\" + msg.payload.deviceid,\n    ping : \"iot/ping/\" + msg.payload.deviceid\n}\n\ndevices = flow.get(\"iot-devices\");\n\nif(devices && msg.payload.deviceid) {\n   for(var d in devices) {\n       var device = devices[d];\n       if(device.deviceid === msg.payload.deviceid) {\n            msg.payload.device = device;\n        }\n   }\n}\n\nmsg.port = 3001;\nmsg.payload = JSON.stringify(msg.payload);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 610,
@@ -130,7 +188,7 @@
         "type": "function",
         "z": "a382654b.5f9ce8",
         "name": "",
-        "func": "\nvar devices = [\n        {\n            deviceid : \"34AD0C\", \n            sensor : \"raw/dev/34AD0C\",  \n            relay : \"iot/relay/34AD0C\",  \n            caps : \"iot/caps/34AD0C\",\n            capabilities : []\n        } \n    ];\n\nflow.set(\"iot-devices\", devices);\n\nmsg.payload = devices;\n\nreturn msg;",
+        "func": "\nvar devices = [\n        {\n            deviceid : \"B1C69A\", \n            name : \"SunRoom\",\n            capabilities : []\n        },\n        {\n            deviceid : \"B1C535\", \n            name : \"Deck\",\n            capabilities : []\n        },\n         {\n            deviceid : \"D65D09\", \n            name : \"LivingRoom\",\n            capabilities : []\n        },\n         {\n            deviceid : \"3B1650\", \n            name : \"ServerCabinet\",\n            capabilities : []\n        },\n         {\n            deviceid : \"828732\", \n            name : \"Lab\",\n            capabilities : []\n        },\n         {\n            deviceid : \"34AD0C\", \n            name : \"Truck\",\n            capabilities : []\n        }\n    ];\n    \n\nflow.set(\"iot-devices\", devices);\n\nmsg.payload = devices;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 330,
@@ -146,7 +204,7 @@
         "type": "debug",
         "z": "a382654b.5f9ce8",
         "name": "",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -170,23 +228,6 @@
         "wires": []
     },
     {
-        "id": "d866458c.c4ff08",
-        "type": "mqtt in",
-        "z": "a382654b.5f9ce8",
-        "name": "",
-        "topic": "raw/+",
-        "qos": "2",
-        "datatype": "json",
-        "broker": "20e28edf.311c92",
-        "x": 110,
-        "y": 320,
-        "wires": [
-            [
-                "4c6580f9.85d21"
-            ]
-        ]
-    },
-    {
         "id": "a9e2576f.8b98c8",
         "type": "debug",
         "z": "a382654b.5f9ce8",
@@ -197,7 +238,7 @@
         "tostatus": false,
         "complete": "true",
         "targetType": "full",
-        "x": 430,
+        "x": 490,
         "y": 400,
         "wires": []
     },
@@ -206,328 +247,15 @@
         "type": "function",
         "z": "a382654b.5f9ce8",
         "name": "",
-        "func": "\nmsg.topic = \"iot/\" + msg.topic.split(\"/\")[1];\n\ndevices = flow.get(\"iot-devices\");\n\nif(devices && msg.payload.deviceid) {\n   for(var d in devices) {\n       var device = devices[d];\n       if(device.deviceid === msg.payload.deviceid) {\n           msg.payload.device = device;\n       }\n   }\n}\nif(msg.payload.ts) {\n    msg.payload.timeStamp = new Date(0);\n    msg.payload.timeStamp.setUTCSeconds(msg.payload.ts);\n}\n\n\nreturn msg;",
+        "func": "var deviceid = msg.topic.split(\"/\")[3];\n\nmsg.topic = \"iot/sensors/\" + deviceid;\n\ndevices = flow.get(\"iot-devices\");\n\nif(devices && msg.payload.deviceid) {\n   for(var d in devices) {\n       var device = devices[d];\n       if(device.deviceid === msg.payload.deviceid) {\n           msg.payload.name = device.name;\n       }\n   }\n}\n\nif(msg && msg.payload) {\n    if(msg.payload.temp) {\n        msg.payload.humidity = msg.payload.hum;\n        delete msg.payload.hum;\n        msg.payload.pressure = msg.payload.press;\n        delete msg.payload.press;\n        msg.payload.altitude = msg.payload.alt;\n        delete msg.payload.alt;\n    }\n}\n\nif(msg.payload.ts) {\n    msg.payload.timeStamp = new Date(0);\n    msg.payload.timeStamp.setUTCSeconds(msg.payload.ts);\n}\n\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 290,
+        "x": 330,
         "y": 320,
         "wires": [
             [
                 "a9e2576f.8b98c8",
                 "a5b7a58.a311a58"
-            ]
-        ]
-    },
-    {
-        "id": "1a9f2d43.053be3",
-        "type": "inject",
-        "z": "a382654b.5f9ce8",
-        "name": "0 - On",
-        "topic": "",
-        "payload": "{\"command\":\"on\",\"pin\":0}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 150,
-        "y": 500,
-        "wires": [
-            [
-                "d5a4ba2d.9d4498"
-            ]
-        ]
-    },
-    {
-        "id": "d5a4ba2d.9d4498",
-        "type": "mqtt out",
-        "z": "a382654b.5f9ce8",
-        "name": "",
-        "topic": "iot/relay/34AD0C",
-        "qos": "2",
-        "retain": "false",
-        "broker": "20e28edf.311c92",
-        "x": 570,
-        "y": 800,
-        "wires": []
-    },
-    {
-        "id": "ec720589.49e8f8",
-        "type": "inject",
-        "z": "a382654b.5f9ce8",
-        "name": "0 - Off",
-        "topic": "",
-        "payload": "{\"command\":\"off\",\"pin\":0}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 150,
-        "y": 540,
-        "wires": [
-            [
-                "d5a4ba2d.9d4498"
-            ]
-        ]
-    },
-    {
-        "id": "1408a0b4.d066df",
-        "type": "inject",
-        "z": "a382654b.5f9ce8",
-        "name": "1 - On",
-        "topic": "",
-        "payload": "{\"command\":\"on\",\"pin\":1}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 150,
-        "y": 600,
-        "wires": [
-            [
-                "d5a4ba2d.9d4498"
-            ]
-        ]
-    },
-    {
-        "id": "d93ac529.4dbd78",
-        "type": "inject",
-        "z": "a382654b.5f9ce8",
-        "name": "1 - Off",
-        "topic": "",
-        "payload": "{\"command\":\"off\",\"pin\":1}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 150,
-        "y": 640,
-        "wires": [
-            [
-                "d5a4ba2d.9d4498"
-            ]
-        ]
-    },
-    {
-        "id": "ac3c556b.d8fbe8",
-        "type": "inject",
-        "z": "a382654b.5f9ce8",
-        "name": "2 - On",
-        "topic": "",
-        "payload": "{\"command\":\"on\",\"pin\":2}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 150,
-        "y": 700,
-        "wires": [
-            [
-                "d5a4ba2d.9d4498"
-            ]
-        ]
-    },
-    {
-        "id": "1005f189.a5fdf6",
-        "type": "inject",
-        "z": "a382654b.5f9ce8",
-        "name": "2 - Off",
-        "topic": "",
-        "payload": "{\"command\":\"off\",\"pin\":2}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 150,
-        "y": 740,
-        "wires": [
-            [
-                "d5a4ba2d.9d4498"
-            ]
-        ]
-    },
-    {
-        "id": "8f504da6.7f4fa8",
-        "type": "inject",
-        "z": "a382654b.5f9ce8",
-        "name": "3 - On",
-        "topic": "",
-        "payload": "{\"command\":\"on\",\"pin\":3}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 150,
-        "y": 800,
-        "wires": [
-            [
-                "d5a4ba2d.9d4498"
-            ]
-        ]
-    },
-    {
-        "id": "c2887c8d.72b55",
-        "type": "inject",
-        "z": "a382654b.5f9ce8",
-        "name": "3 - Off",
-        "topic": "",
-        "payload": "{\"command\":\"off\",\"pin\":3}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 150,
-        "y": 840,
-        "wires": [
-            [
-                "d5a4ba2d.9d4498"
-            ]
-        ]
-    },
-    {
-        "id": "e258dce7.64c2a",
-        "type": "inject",
-        "z": "a382654b.5f9ce8",
-        "name": "4 - On",
-        "topic": "",
-        "payload": "{\"command\":\"on\",\"pin\":4}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 150,
-        "y": 900,
-        "wires": [
-            [
-                "d5a4ba2d.9d4498"
-            ]
-        ]
-    },
-    {
-        "id": "d88fc371.74a73",
-        "type": "inject",
-        "z": "a382654b.5f9ce8",
-        "name": "4 - Off",
-        "topic": "",
-        "payload": "{\"command\":\"off\",\"pin\":4}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 150,
-        "y": 940,
-        "wires": [
-            [
-                "d5a4ba2d.9d4498"
-            ]
-        ]
-    },
-    {
-        "id": "e47bc999.a272c",
-        "type": "inject",
-        "z": "a382654b.5f9ce8",
-        "name": "5 - On",
-        "topic": "",
-        "payload": "{\"command\":\"on\",\"pin\":5}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 150,
-        "y": 1000,
-        "wires": [
-            [
-                "d5a4ba2d.9d4498"
-            ]
-        ]
-    },
-    {
-        "id": "1be540a5.b4c6cf",
-        "type": "inject",
-        "z": "a382654b.5f9ce8",
-        "name": "5 - Off",
-        "topic": "",
-        "payload": "{\"command\":\"off\",\"pin\":5}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 150,
-        "y": 1040,
-        "wires": [
-            [
-                "d5a4ba2d.9d4498"
-            ]
-        ]
-    },
-    {
-        "id": "7fd47219.bfd28c",
-        "type": "inject",
-        "z": "a382654b.5f9ce8",
-        "name": "All On",
-        "topic": "",
-        "payload": "{\"command\":\"allon\"}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 530,
-        "y": 640,
-        "wires": [
-            [
-                "d5a4ba2d.9d4498"
-            ]
-        ]
-    },
-    {
-        "id": "9174d158.a33768",
-        "type": "inject",
-        "z": "a382654b.5f9ce8",
-        "name": "All Off",
-        "topic": "",
-        "payload": "{\"command\":\"alloff\"}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 530,
-        "y": 680,
-        "wires": [
-            [
-                "d5a4ba2d.9d4498"
-            ]
-        ]
-    },
-    {
-        "id": "199b6aaa.c239a5",
-        "type": "inject",
-        "z": "a382654b.5f9ce8",
-        "name": "Fun",
-        "topic": "",
-        "payload": "{\"command\":\"fun\"}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "x": 530,
-        "y": 580,
-        "wires": [
-            [
-                "d5a4ba2d.9d4498"
             ]
         ]
     },
@@ -553,7 +281,7 @@
         "type": "debug",
         "z": "a382654b.5f9ce8",
         "name": "",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -620,7 +348,7 @@
         "type": "debug",
         "z": "a382654b.5f9ce8",
         "name": "",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -631,25 +359,557 @@
         "wires": []
     },
     {
-        "id": "20e28edf.311c92",
-        "type": "mqtt-broker",
-        "z": "",
-        "name": "localhost",
-        "broker": "localhost",
-        "port": "1883",
-        "clientid": "",
-        "usetls": false,
-        "compatmode": true,
-        "keepalive": "60",
-        "cleansession": true,
-        "birthTopic": "",
-        "birthQos": "0",
-        "birthPayload": "",
-        "closeTopic": "",
-        "closeQos": "0",
-        "closePayload": "",
-        "willTopic": "",
-        "willQos": "0",
-        "willPayload": ""
+        "id": "d866458c.c4ff08",
+        "type": "mqtt in",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "topic": "iot/raw/sensors/+",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "20e28edf.311c92",
+        "x": 140,
+        "y": 320,
+        "wires": [
+            [
+                "4c6580f9.85d21"
+            ]
+        ]
+    },
+    {
+        "id": "2ccbbcfa.9ad894",
+        "type": "catch",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 740,
+        "y": 460,
+        "wires": [
+            [
+                "d33e45c4.6f594"
+            ]
+        ]
+    },
+    {
+        "id": "d33e45c4.6f594",
+        "type": "debug",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 910,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "29344a46.096eae",
+        "type": "mqtt out",
+        "z": "d5b35fd8.e354b",
+        "name": "",
+        "topic": "iot/relay/34AD0C",
+        "qos": "2",
+        "retain": "false",
+        "broker": "20e28edf.311c92",
+        "x": 510,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "b992247b.14fc78",
+        "type": "inject",
+        "z": "d5b35fd8.e354b",
+        "name": "0 - On",
+        "topic": "",
+        "payload": "{\"command\":\"on\",\"pin\":0}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 90,
+        "y": 60,
+        "wires": [
+            [
+                "29344a46.096eae"
+            ]
+        ]
+    },
+    {
+        "id": "e4b5a687.8b1408",
+        "type": "inject",
+        "z": "d5b35fd8.e354b",
+        "name": "0 - Off",
+        "topic": "",
+        "payload": "{\"command\":\"off\",\"pin\":0}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 90,
+        "y": 100,
+        "wires": [
+            [
+                "29344a46.096eae"
+            ]
+        ]
+    },
+    {
+        "id": "6a9233ca.d47754",
+        "type": "inject",
+        "z": "d5b35fd8.e354b",
+        "name": "1 - On",
+        "topic": "",
+        "payload": "{\"command\":\"on\",\"pin\":1}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 90,
+        "y": 160,
+        "wires": [
+            [
+                "29344a46.096eae"
+            ]
+        ]
+    },
+    {
+        "id": "c0fb4e26.f4c16",
+        "type": "inject",
+        "z": "d5b35fd8.e354b",
+        "name": "1 - Off",
+        "topic": "",
+        "payload": "{\"command\":\"off\",\"pin\":1}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 90,
+        "y": 200,
+        "wires": [
+            [
+                "29344a46.096eae"
+            ]
+        ]
+    },
+    {
+        "id": "744a3deb.7a9f14",
+        "type": "inject",
+        "z": "d5b35fd8.e354b",
+        "name": "2 - On",
+        "topic": "",
+        "payload": "{\"command\":\"on\",\"pin\":2}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 90,
+        "y": 260,
+        "wires": [
+            [
+                "29344a46.096eae"
+            ]
+        ]
+    },
+    {
+        "id": "c77c24ce.3e051",
+        "type": "inject",
+        "z": "d5b35fd8.e354b",
+        "name": "2 - Off",
+        "topic": "",
+        "payload": "{\"command\":\"off\",\"pin\":2}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 90,
+        "y": 300,
+        "wires": [
+            [
+                "29344a46.096eae"
+            ]
+        ]
+    },
+    {
+        "id": "ecab749b.ce85e8",
+        "type": "inject",
+        "z": "d5b35fd8.e354b",
+        "name": "3 - On",
+        "topic": "",
+        "payload": "{\"command\":\"on\",\"pin\":3}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 90,
+        "y": 360,
+        "wires": [
+            [
+                "29344a46.096eae"
+            ]
+        ]
+    },
+    {
+        "id": "f67ab53.e0065c8",
+        "type": "inject",
+        "z": "d5b35fd8.e354b",
+        "name": "3 - Off",
+        "topic": "",
+        "payload": "{\"command\":\"off\",\"pin\":3}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 90,
+        "y": 400,
+        "wires": [
+            [
+                "29344a46.096eae"
+            ]
+        ]
+    },
+    {
+        "id": "ec537ba3.bd16d",
+        "type": "inject",
+        "z": "d5b35fd8.e354b",
+        "name": "4 - On",
+        "topic": "",
+        "payload": "{\"command\":\"on\",\"pin\":4}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 90,
+        "y": 460,
+        "wires": [
+            [
+                "29344a46.096eae"
+            ]
+        ]
+    },
+    {
+        "id": "8504d0bd.9177d",
+        "type": "inject",
+        "z": "d5b35fd8.e354b",
+        "name": "4 - Off",
+        "topic": "",
+        "payload": "{\"command\":\"off\",\"pin\":4}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 90,
+        "y": 500,
+        "wires": [
+            [
+                "29344a46.096eae"
+            ]
+        ]
+    },
+    {
+        "id": "ca1ec986.fff4d",
+        "type": "inject",
+        "z": "d5b35fd8.e354b",
+        "name": "5 - On",
+        "topic": "",
+        "payload": "{\"command\":\"on\",\"pin\":5}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 90,
+        "y": 560,
+        "wires": [
+            [
+                "29344a46.096eae"
+            ]
+        ]
+    },
+    {
+        "id": "eee9a7e6.452778",
+        "type": "inject",
+        "z": "d5b35fd8.e354b",
+        "name": "5 - Off",
+        "topic": "",
+        "payload": "{\"command\":\"off\",\"pin\":5}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 90,
+        "y": 600,
+        "wires": [
+            [
+                "29344a46.096eae"
+            ]
+        ]
+    },
+    {
+        "id": "dfdab651.d76a2",
+        "type": "inject",
+        "z": "d5b35fd8.e354b",
+        "name": "All On",
+        "topic": "",
+        "payload": "{\"command\":\"allon\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 470,
+        "y": 200,
+        "wires": [
+            [
+                "29344a46.096eae"
+            ]
+        ]
+    },
+    {
+        "id": "fa78ca97.8e09f8",
+        "type": "inject",
+        "z": "d5b35fd8.e354b",
+        "name": "All Off",
+        "topic": "",
+        "payload": "{\"command\":\"alloff\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 470,
+        "y": 240,
+        "wires": [
+            [
+                "29344a46.096eae"
+            ]
+        ]
+    },
+    {
+        "id": "f3610e8e.a7987",
+        "type": "inject",
+        "z": "d5b35fd8.e354b",
+        "name": "Fun",
+        "topic": "",
+        "payload": "{\"command\":\"fun\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 470,
+        "y": 140,
+        "wires": [
+            [
+                "29344a46.096eae"
+            ]
+        ]
+    },
+    {
+        "id": "c2c5602d.84042",
+        "type": "mqtt out",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "iot/relays/82855C",
+        "qos": "2",
+        "retain": "false",
+        "broker": "20e28edf.311c92",
+        "x": 590,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "6170cd0a.8e672c",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"reset\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 100,
+        "wires": [
+            [
+                "c2c5602d.84042"
+            ]
+        ]
+    },
+    {
+        "id": "932e69a3.489db8",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"restart\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 140,
+        "wires": [
+            [
+                "c2c5602d.84042"
+            ]
+        ]
+    },
+    {
+        "id": "bb36cb70.2271b8",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"wipe\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 180,
+        "wires": [
+            [
+                "c2c5602d.84042"
+            ]
+        ]
+    },
+    {
+        "id": "782b06f6.f1dec",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "Update Wifi Config",
+        "topic": "",
+        "payload": "{\"command\" : \"reconfigure\", \"wifi\" : {\"ssid\" : \"IoT\", \"password\" : \"XXXXXXXX\"}}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 170,
+        "y": 260,
+        "wires": [
+            [
+                "c2c5602d.84042"
+            ]
+        ]
+    },
+    {
+        "id": "d231fca0.25c428",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"ping\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 170,
+        "y": 220,
+        "wires": [
+            [
+                "c2c5602d.84042",
+                "feb2c83b.2800e8"
+            ]
+        ]
+    },
+    {
+        "id": "75b04c23.aa749c",
+        "type": "mqtt in",
+        "z": "1aa068dd.618597",
+        "name": "Ping response",
+        "topic": "iot/ping/82855C",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "20e28edf.311c92",
+        "x": 150,
+        "y": 360,
+        "wires": [
+            [
+                "6d37d609.ba2b18"
+            ]
+        ]
+    },
+    {
+        "id": "d4f8fb57.f65d38",
+        "type": "debug",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 490,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "feb2c83b.2800e8",
+        "type": "function",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "func": "\nmsg.payload.ts =  ((new Date()).getTime() / 1000) + \"\";\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 430,
+        "y": 220,
+        "wires": [
+            [
+                "c2c5602d.84042",
+                "567f13d6.f71fe4"
+            ]
+        ]
+    },
+    {
+        "id": "567f13d6.f71fe4",
+        "type": "debug",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 610,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "6d37d609.ba2b18",
+        "type": "function",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "func": "\nif(msg.payload.senderTS === 0) return;\n\nmsg.payload.pongTS =  (new Date().getTime()) / 1000;\nmsg.payload.pongDiff = msg.payload.pongTS - msg.payload.ts;\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 330,
+        "y": 360,
+        "wires": [
+            [
+                "d4f8fb57.f65d38"
+            ]
+        ]
     }
 ]
