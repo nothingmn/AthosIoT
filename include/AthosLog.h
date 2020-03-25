@@ -1,15 +1,11 @@
+#define ATH_LOG
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
 
 //*************LOGGING***********//
-
-#define ATH_LOG_VERBOSE
-#define ATH_LOG_DEBUG
-#define ATH_LOG_INFO
-#define ATH_LOG_ERROR
-
 void log_format(const char *tag, const char *message, va_list args)
 {
   time_t now;
@@ -23,7 +19,7 @@ void log_format(const char *tag, const char *message, va_list args)
 
 void log_error(const char *message, ...)
 {
-#ifdef ATH_LOG_INFO
+#if defined(ATH_LOG_VERBOSE) || defined(ATH_LOG_ERROR)
   va_list args;
   va_start(args, message);
   log_format("error", message, args);
@@ -33,7 +29,7 @@ void log_error(const char *message, ...)
 
 void log_info(const char *message, ...)
 {
-#ifdef ATH_LOG_INFO
+#if defined(ATH_LOG_VERBOSE) || defined(ATH_LOG_INFO)
   va_list args;
   va_start(args, message);
   log_format("info", message, args);
@@ -43,7 +39,7 @@ void log_info(const char *message, ...)
 
 void log_debug(const char *message, ...)
 {
-#ifdef ATH_LOG_DEBUG
+#if defined(ATH_LOG_VERBOSE) || defined(ATH_LOG_DEBUG)
   va_list args;
   va_start(args, message);
   log_format("debug", message, args);

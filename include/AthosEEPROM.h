@@ -1,6 +1,9 @@
 #include <EEPROM.h>
 #include <ArduinoJson.h>
 
+#ifndef ATH_LOG
+  #include "AthosLog.h"
+#endif
 #ifndef ATH_HELPERS
   #include "AthosHelpers.h"
 #endif
@@ -86,7 +89,7 @@ void writeEEPROMData(StorageValues config) {
   _json += EEPROM_TERMINATER;
 
   EEPROM.begin(EEPROM_SIZE);
-  for (int i = 0; i < _json.length()-1; ++i)
+  for (long i = 0; i < _json.length()-1; ++i)
   {
     EEPROM.put(i, _json[i]);
   }

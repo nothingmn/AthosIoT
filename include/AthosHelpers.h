@@ -1,9 +1,7 @@
 #include <string>
 #include <ESP8266WiFi.h>
 
-#ifndef ATH_HELPERS
 #define ATH_HELPERS
-#endif
 
 struct storageValues
 {

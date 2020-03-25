@@ -1,10 +1,9 @@
 //
 //
-//Step 1, Update the @#define and #includes below for the types of sensors or the Relay features
+//Step 1, Update the #define and #includes below for the types of sensors or the Relay features
 //Step 2, deploy to your NodeMCU device
 //
 //
-
 #define ATH_LED
 #define ATH_WIFIMANAGER
 #define ATH_NTP
@@ -15,6 +14,14 @@
 //#define ATH_DHT11
 //#define ATH_BMP280
 
+//Configure your logging level.  If you define VERBOSE, it will enable all levels
+//otherwise just enable DEBUG/INFO/ERROR as you see fit.
+#define ATH_LOG_VERBOSE
+//#define ATH_LOG_DEBUG
+//#define ATH_LOG_INFO
+//#define ATH_LOG_ERROR
+
+//setup which sensors, etc you want included.
 #include <ESP8266WiFi.h>
 #include "AthosLog.h"
 #include "AthosLED.h"
