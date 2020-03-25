@@ -19,13 +19,8 @@ void listenForUDPMessages()
     int packetSize = listenUDP.parsePacket();
     if (packetSize)
     {
-      Serial.print("Received packet of size ");
-      Serial.println(packetSize);
-      Serial.print("From ");
       IPAddress remoteIp = listenUDP.remoteIP();
-      Serial.print(remoteIp);
-      Serial.print(", port ");
-      Serial.println(listenUDP.remotePort());
+      log_info("Received UDP packet of size %d, from:%s", packetSize, remoteIp.toString().c_str());
 
       // read the packet into packetBufffer
       int len = listenUDP.read(packetBuffer, 255);
@@ -33,20 +28,23 @@ void listenForUDPMessages()
       {
         packetBuffer[len] = 0;
       }
-      Serial.println("Contents:");
-      Serial.println(packetBuffer);
+      log_info("Contents:");
+      log_info(packetBuffer);
 
-      StaticJsonDocument<200> doc;
+      StaticJsonDocument<1024> doc;
       deserializeJson(doc, packetBuffer);
 
-      _udp_config.mqttSensorTopic = doc["mqtt"]["topic"].as<String>();
+      _udp_config.mqttRelayTopic = doc["mqtt"]["relay"].as<String>();
+      _udp_config.mqttCapsTopic = doc["mqtt"]["caps"].as<String>();
+      _udp_config.mqttPingTopic = doc["mqtt"]["ping"].as<String>();
+      _udp_config.mqttSensorTopic = doc["mqtt"]["sensor"].as<String>();
       _udp_config.mqttServer = doc["mqtt"]["server"].as<String>();
       _udp_config.mqttUsername = doc["mqtt"]["username"].as<String>();
       _udp_config.mqttPassword = doc["mqtt"]["password"].as<String>();
       _udp_config.mqttPort = doc["mqtt"]["port"].as<String>();
-      Serial.print("Received MQTT Payload:");
-      Serial.println(_udp_config.mqttServer);
-      Serial.println(_udp_config.mqttSensorTopic);
+      log_info("Received MQTT Payload:");
+      log_info(_udp_config.mqttServer.c_str());
+      log_info(_udp_config.mqttSensorTopic.c_str());
       writeEEPROMData(_udp_config);
       UDP_configComplete = true;
       ESP.restart();
@@ -62,7 +60,7 @@ void publishUDP()
   
   if (diff > 10)
   {
-    Serial.println("Broadcasting myself...");
+    log_info("Broadcasting myself...");
     broadcastUDP.beginPacket(broadcastIp, broadcastPort);
 
     StaticJsonDocument<200> doc;
@@ -79,15 +77,9 @@ StorageValues UDP_Setup(String DeviceId, StorageValues rootConfig)
 {
   udp_deviceId = DeviceId;
   _udp_config = rootConfig;
-  
 
-  Serial.print("_udp_config.mqttServer:");
-  Serial.println(_udp_config.mqttServer);
-  Serial.print("_udp_config.mqttSensorTopic:");
-  Serial.println(_udp_config.mqttSensorTopic);
-
-  if(!_udp_config.mqttServer || !_udp_config.mqttSensorTopic || _udp_config.mqttServer == "null" || _udp_config.mqttSensorTopic == "null") {
-    Serial.println("No MQTT Data on file, UDP broadcast required");
+  if(!_udp_config.mqttServer || !_udp_config.mqttSensorTopic || _udp_config.mqttServer == "null" || _udp_config.mqttServer == "") {
+    log_info("No MQTT Data on file, UDP broadcast required");
 
     listenUDP.begin(udpListenPort);
     broadcastUDP.begin(broadcastPort);
@@ -99,7 +91,7 @@ StorageValues UDP_Setup(String DeviceId, StorageValues rootConfig)
     }
 
   } else {
-    Serial.println("MQTT Data on file, NO UDP broadcast required");
+    log_info("MQTT Data on file, NO UDP broadcast required");
   }
 
   return _udp_config;
@@ -107,7 +99,8 @@ StorageValues UDP_Setup(String DeviceId, StorageValues rootConfig)
 
 void UDP_Loop()
 {
-
+    //will need to check back with the server via UDP for any changes in config
+    //once every minute
 }
 
 #endif

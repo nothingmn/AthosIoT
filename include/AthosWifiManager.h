@@ -18,20 +18,18 @@ int WIFI_statusCode;
 bool testWifi(void)
 {
   int c = 0;
-  Serial.println("Waiting for Wifi to connect");
+  log_info("Waiting for Wifi to connect");
   while ( c < 20 ) {
     if (WiFi.status() == WL_CONNECTED)
     {
-      Serial.print("Local IP: ");
-      Serial.println(WiFi.localIP());      
+      log_info("Local IP: %s", (WiFi.localIP()).toString().c_str());
       return true;
     }
     delay(500);
-    Serial.print("*");
+    log_info("*");
     c++;
   }
-  Serial.println("");
-  Serial.println("Connect timed out, opening AP");
+  log_info("Connect timed out, opening AP");
   return false;
 }
 
@@ -41,7 +39,7 @@ void createWebServer()
 {
     // Start the server
     WIFI_server.begin();
-    Serial.println("Server started");
+    log_info("Server started");
 
     WIFI_server.on("/", []() {
       IPAddress ip = WiFi.softAPIP();
@@ -65,6 +63,7 @@ void createWebServer()
     });
 
     WIFI_server.on("/setting", []() {
+      bool reboot = false;
       String qsid = WIFI_server.arg("ssid");
       String qpass = WIFI_server.arg("pass");
       if (qsid.length() > 0 && qpass.length() > 0) {
@@ -73,14 +72,19 @@ void createWebServer()
         writeEEPROMData(_wifi_config);
         WIFI_content = "{\"Success\":\"saved to eeprom... reset to boot into new wifi\"}";
         WIFI_statusCode = 200;
-        ESP.restart();
+        reboot = true;
       } else {
         WIFI_content = "{\"Error\":\"404 not found\"}";
         WIFI_statusCode = 404;
-        Serial.println("Sending 404");
+        log_info("Sending 404");
       }
       WIFI_server.sendHeader("Access-Control-Allow-Origin", "*");
       WIFI_server.send(WIFI_statusCode, "application/json", WIFI_content);
+      if(reboot) {
+        log_info("Restarting device so the new settings can take place");
+        delay(1000);
+        ESP.restart();
+      }
 
     });
  }
@@ -88,14 +92,11 @@ void createWebServer()
 
 void launchWeb()
 {
-    Serial.println("");
+    log_info("");
     if (WiFi.status() == WL_CONNECTED) {
-      Serial.println("WiFi connected");
+      log_info("WiFi connected");
     }
-    Serial.print("Local IP: ");
-    Serial.println(WiFi.localIP());
-    Serial.print("SoftAP IP: ");
-    Serial.println(WiFi.softAPIP());
+    log_info("LocalIP:%s, SoftAP IP:%s", WiFi.localIP().toString().c_str(), WiFi.softAPIP().toString().c_str());
     createWebServer();
 }
 
@@ -105,27 +106,20 @@ void setupAP(void)
   WiFi.disconnect();
   delay(100);
   int n = WiFi.scanNetworks();
-  Serial.println("scan done");
+  log_info("scan done");
   if (n == 0)
-    Serial.println("no networks found");
+    log_info("no networks found");
   else
   {
-    Serial.print(n);
-    Serial.println(" networks found");
+    log_info("%d networks found", n);
     for (int i = 0; i < n; ++i)
     {
       // Print SSID and RSSI for each network found
-      Serial.print(i + 1);
-      Serial.print(": ");
-      Serial.print(WiFi.SSID(i));
-      Serial.print(" (");
-      Serial.print(WiFi.RSSI(i));
-      Serial.print(")");
-      Serial.println((WiFi.encryptionType(i) == ENC_TYPE_NONE) ? " " : "*");
+      log_info("%d: , SSID:%s, RSSI:%s, Encryption:%s", i + 1, WiFi.SSID(i).c_str(), WiFi.RSSI(i), (WiFi.encryptionType(i) == ENC_TYPE_NONE) ? " " : "*");
       delay(10);
     }
   }
-  Serial.println("");
+  log_info("");
   WIFI_st = "<ol>";
   for (int i = 0; i < n; ++i)
   {
@@ -142,47 +136,63 @@ void setupAP(void)
   WIFI_st += "</ol>";
   delay(100);
   WiFi.softAP(_wifiAPName, "");
-  Serial.println("softap");
   launchWeb();
-  Serial.println("over");
 }
 
 
 StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
 {
+  WifiSetupStartLed();
   _deviceId = deviceId;
   _wifi_config = rootConfig;
-  _wifiAPName = "ESP_" + _deviceId;
+  _wifiAPName = "ATH_" + _deviceId;
   
   WiFi.disconnect();
-  
+
+  WiFi.mode(WIFI_STA);
   WiFi.begin(_wifi_config.ssid.c_str(), _wifi_config.password.c_str());
+  WiFi.setAutoReconnect(true);
   if (testWifi())
   {
-    Serial.println("Succesfully Connected!!!");
+    log_info("Succesfully Connected to AP--> %s by device: %s\n",_wifi_config.ssid.c_str(),  _wifiAPName.c_str());
     return _wifi_config;
   }
   else
   {
-    Serial.println("Turning the HotSpot On");
+    log_info("Turning the HotSpot On");
     launchWeb();
     setupAP();// Setup HotSpot
   }
 
-  Serial.println();
-  Serial.println("Waiting.");
-  
+  log_info("Waiting for devices on AP--> %s", _wifiAPName.c_str());
+
   while ((WiFi.status() != WL_CONNECTED))
   {
     delay(100);
     WIFI_server.handleClient();
   }
+  WifiSetupCompleteLed();
   return _wifi_config;
 }
 
+void EnsureWifiConnected() {
+  if (WiFi.status() == WL_CONNECTED) {
+    log_info("EnsureWifiConnected");
+    WiFi.setAutoReconnect(true);
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(_wifi_config.ssid.c_str(), _wifi_config.password.c_str());
+    while (WiFi.status() != WL_CONNECTED) {
+      log_info("Connecting to WiFi..");
+      delay(500);
+      log_info(".");
+    }
+    log_info("Connected to the WiFi network");
+  }
+}
 void WifiManager_Loop()
 {
-
+  //we should have never gotten past setup so we assume Wifi is already configured and ready
+  //EnsureWifiConnected();
 }
 
 

@@ -1,6 +1,8 @@
+
 #ifdef ATH_NTP
 #include <NTPClient.h>
 #include <WiFiUdp.h>
+#include <time.h>
 
 //f time offset for PST
 const long utcOffsetInSeconds = 0; //0 offset, lets keep it uTC for now
@@ -15,25 +17,42 @@ const int NTP_max_diff = 1 * 60 * 60;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, ntp_server, utcOffsetInSeconds);
 
-void NTP_Setup()
-{
-  timeClient.begin();
-}
 long NTP_getEpochTime() {
   return timeClient.getEpochTime();
 }
 void NTP_updateTime() {
-  timeClient.update(); 
+  while(!timeClient.update()) {
+    log_info("Failed to get an updated ntp time, will try again");
+    delay(100);
+  }
+}
+void setTime(long secondsSinceEpoc) {
+    time_t t = secondsSinceEpoc;
+    //struct tm tm = *localtime(&t);
+    log_info("Setting time: %i", secondsSinceEpoc);
+    struct timeval now = { .tv_sec = t };
+    settimeofday(&now, NULL);
+}
+void setTime() {
+    setTime(NTP_getEpochTime());    
 }
 
+void NTP_Setup()
+{
+  timeClient.begin();
+  NTP_updateTime();
+  setTime();
+}
 int NTP_last = 0;
 void NTP_Loop()
 {
   int current = NTP_getEpochTime();
   int diff = abs(current - NTP_last);
   if(diff > NTP_max_diff) {
-    Serial.println("updating NTP");
+    log_info("updating NTP");
     NTP_updateTime();
+    //reset our clock every iteration
+    setTime();
     NTP_last = current;
   }
 }

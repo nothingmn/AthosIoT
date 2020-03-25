@@ -5,7 +5,6 @@
 //
 //
 
-
 #define ATH_LED
 #define ATH_WIFIMANAGER
 #define ATH_NTP
@@ -17,6 +16,7 @@
 //#define ATH_BMP280
 
 #include <ESP8266WiFi.h>
+#include "AthosLog.h"
 #include "AthosLED.h"
 #include "AthosHelpers.h"
 #include "AthosEEPROM.h"
@@ -37,69 +37,69 @@ StorageValues rootConfig;
 PubSubClient root_mqtt_client;
 void setup()
 {
-
+  //while (!Serial);
   Serial.begin(115200);
-  delay(5000);
-  Serial.println("~~~~~~~~~~SETUP STARTING~~~~~~~~~~");
+
+  log_info("~~~~~~~~~~SETUP STARTING~~~~~~~~~~");
 
   rootConfig = EEPROM_setup();
 
 #ifdef ATH_LED
-  Serial.println("LED Start");
+  log_info("LED Start");
   LED_Setup();
-  Serial.println("LED Done");
+  log_info("LED Done");
 #endif
 
 #ifdef ATH_WIFIMANAGER
-  Serial.println("WifiManager Start");
+  log_info("WifiManager Start");
   rootConfig = WifiManager_Setup(DeviceId, rootConfig);
-  Serial.println("WifiManager Done");
+  log_info("WifiManager Done");
 #endif
 
 #ifdef ATH_NTP
-  Serial.println("NTP Start");
+  log_info("NTP Start");
   NTP_Setup();
-  Serial.println("NTP Done");
+  log_info("NTP Done");
 #endif
 
 #ifdef ATH_UDP
-  Serial.println("UDP Start");
+  log_info("UDP Start");
   rootConfig = UDP_Setup(DeviceId, rootConfig);
-  Serial.println("UDP Done");
+  log_info("UDP Done");
 #endif
 
 #ifdef ATH_MQTT
-  Serial.println("MQTT Start");
+  log_info("MQTT Start");
   root_mqtt_client = MQTT_Setup(DeviceId, rootConfig);
   delay(1000);
-  Serial.println("MQTT Done");
+  log_info("MQTT Done");
 #endif
 
 #ifdef ATH_TMP36
-  Serial.println("TMP Start");
+  log_info("TMP Start");
   TMP_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
-  Serial.println("TMP Done");
+  log_info("TMP Done");
 #endif
 
 #ifdef ATH_DHT11
-  Serial.println("DHT11 Start");
+  log_info("DHT11 Start");
   DHT11_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
-  Serial.println("DHT11 Done");
+  log_info("DHT11 Done");
 #endif
 
 #ifdef ATH_BMP280
-  Serial.println("BMP280 Start");
+  log_info("BMP280 Start");
   BMP280_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
-  Serial.println("BMP280 Done");
+  log_info("BMP280 Done");
 #endif
 
 #ifdef ATH_RELAY
-  Serial.println("RELAY Start");
+  log_info("RELAY Start");
   Relay_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
-  Serial.println("RELAY Done");
+  log_info("RELAY Done");
 #endif
 
-  Serial.println("~~~~~~~~~~SETUP COMPLETED~~~~~~~~~~");
+  log_info("~~~~~~~~~~SETUP COMPLETED~~~~~~~~~~");
 }
 
 void loop()

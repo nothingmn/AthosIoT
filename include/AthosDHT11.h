@@ -37,14 +37,14 @@ void DHT11_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootCo
 
     dht.begin();
 
-    Serial.println("Waiting for the DHT11 sensor to come online");
+    log_info("Waiting for the DHT11 sensor to come online");
     bool ready = false;
     while(!ready){
       float temperature = dht.readTemperature();
       ready = !isnan(temperature);
       delay(100);
     }
-    Serial.println("DHT11 sensor is online, proceeding.");
+    log_info("DHT11 sensor is online, proceeding.");
 }
 
 void sendReadingToMQTT(float temp, float humidity, float heatIndex) {
@@ -59,9 +59,9 @@ void sendReadingToMQTT(float temp, float humidity, float heatIndex) {
   doc["deviceid"] = _DHT11_deviceId;
   String json;
   serializeJson(doc, json);
-  Serial.println(json);
+  log_info(json);
   if (! _DHT11_mqtt_client.publish(_DHT11_config.mqttSensorTopic.c_str(), json.c_str()), false) {
-      Serial.println(F("Failed"));
+      log_info(F("Failed"));
   }
   MQTTTransmitLed();
 }
@@ -77,7 +77,7 @@ void checkAndReportReadings()
   float humidity = dht.readHumidity();
 
   if (isnan(humidity) || isnan(temperature)) {
-    Serial.println(F("Failed to read from DHT sensor!"));
+    log_info(F("Failed to read from DHT sensor!"));
     return;
   }
 
