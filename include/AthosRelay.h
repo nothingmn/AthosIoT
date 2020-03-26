@@ -20,7 +20,7 @@ int _Relay_loop_delay;
 
 void RELAY_sendCapsToMQTT()
 {
-  log_info("RELAY_sendCapsToMQTT");
+  Log.trace("RELAY_sendCapsToMQTT");
   long ts = NTP_getEpochTime();
   StaticJsonDocument<200> doc;
   doc["caps"]["cap"] = "RELAY";
@@ -29,8 +29,8 @@ void RELAY_sendCapsToMQTT()
   doc["deviceid"] = _Relay_deviceId;
   String json;
   serializeJson(doc, json);
-  log_info(json);
-  log_info(_Relay_config.mqttCapsTopic.c_str());
+  Log.trace(json);
+  Log.trace(_Relay_config.mqttCapsTopic.c_str());
   _Relay_mqtt_client.publish(_Relay_config.mqttCapsTopic.c_str(), json.c_str());
   MQTTTransmitLed();
 }

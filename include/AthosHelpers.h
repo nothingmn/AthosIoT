@@ -75,3 +75,16 @@ void Relay_OFF_Led()
   LED_OFF();
 #endif
 }
+
+
+
+
+void printTimestamp(Print* _logOutput) {
+  char c[12];
+  sprintf(c, "%10lu ", millis());
+  _logOutput->print(c);
+}
+
+void printNewline(Print* _logOutput) {
+  _logOutput->print('\n');
+}

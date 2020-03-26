@@ -20,21 +20,21 @@ bool ConnectToMqtt()
       int result = 0;
       if (_mqtt_config.mqttUsername != NULL && _mqtt_config.mqttPassword != NULL && _mqtt_config.mqttUsername != "" && _mqtt_config.mqttPassword != "")
       {
-        log_info("MQTT Using Password authentication");
+        Log.trace("MQTT Using Password authentication");
         result = mqtt_client.connect(clientId.c_str(), _mqtt_config.mqttUsername.c_str(), _mqtt_config.mqttPassword.c_str());
       }
       else
       {
-        log_info("MQTT NOT using authentication");
+        Log.trace("MQTT NOT using authentication");
         result = mqtt_client.connect(clientId.c_str());
       }
       if (result)
       {
-        log_info("MQTT Connected");
+        Log.trace("MQTT Connected");
       }
       else
       {
-        log_info("failed, mqtt state:\"%d\", try again in 5 seconds",mqtt_client.state());
+        Log.trace("failed, mqtt state:\"%d\", try again in 5 seconds",mqtt_client.state());
         // Wait 5 seconds before retrying
         delay(5000);
       }
@@ -56,7 +56,7 @@ String GetValueOrDefault(StaticJsonDocument<256> doc, String group, String name,
 
 void MQTT_PongResponse(int senderTS)
 {
-  log_info("MQTT_PongResponse");
+  Log.trace("MQTT_PongResponse");
   int ts = NTP_getEpochTime();
   int diff = ts - senderTS;
   StaticJsonDocument<200> doc;
@@ -67,8 +67,8 @@ void MQTT_PongResponse(int senderTS)
   doc["deviceid"] = _mqtt_deviceId;
   String json;
   serializeJson(doc, json);
-  log_info(json.c_str());
-  log_info(_mqtt_config.mqttPingTopic.c_str());
+  Log.trace(json.c_str());
+  Log.trace(_mqtt_config.mqttPingTopic.c_str());
   mqtt_client.publish(_mqtt_config.mqttPingTopic.c_str(), json.c_str());
   MQTTTransmitLed();
 }
@@ -80,9 +80,9 @@ void callback(char *topic, byte *payload, unsigned int length)
   String json = String((char *)payload);
   String strTopic = String(topic);
 
-  log_info("mqtt payload received");
-  log_info(json.c_str());
-  log_info(strTopic.c_str());
+  Log.trace("mqtt payload received");
+  Log.trace(json.c_str());
+  Log.trace(strTopic.c_str());
 
   bool handled = false;
 
@@ -92,7 +92,7 @@ void callback(char *topic, byte *payload, unsigned int length)
 
   if (!handled)
   {
-    log_info("mqtt payload not handled by the Relay node, inspecting for system commands");
+    Log.trace("mqtt payload not handled by the Relay node, inspecting for system commands");
     StaticJsonDocument<256> readDoc;
 
     deserializeJson(readDoc, json);
@@ -109,7 +109,7 @@ void callback(char *topic, byte *payload, unsigned int length)
     {
       wipeEEPROM();
       ESP.reset();
-      log_info("EEPROM KILLED!");
+      Log.trace("EEPROM KILLED!");
     }
     else if(command == "ping") {
       String _ts = readDoc["ts"].as<String>();
@@ -144,14 +144,14 @@ void ConnectAndSubscribe()
   if (ConnectToMqtt())
   {
     mqtt_client.subscribe(_mqtt_config.mqttRelayTopic.c_str());
-    log_info("Setup MQTT Subscriber complete:%s", _mqtt_config.mqttRelayTopic.c_str());
+    Log.trace("Setup MQTT Subscriber complete:%s", _mqtt_config.mqttRelayTopic.c_str());
   }
 }
 PubSubClient MQTT_Setup(String deviceId, StorageValues rootConfig)
 {
   _mqtt_deviceId = deviceId;
   _mqtt_config = rootConfig;
-  log_info("Connecting to MQTT server: %s %s", _mqtt_config.mqttServer.c_str(), _mqtt_config.mqttPort.c_str());
+  Log.trace("Connecting to MQTT server: %s %s", _mqtt_config.mqttServer.c_str(), _mqtt_config.mqttPort.c_str());
   mqtt_client.setServer(_mqtt_config.mqttServer.c_str(), _mqtt_config.mqttPort.toInt());
   mqtt_client.setCallback(callback);
 

@@ -36,7 +36,7 @@ StorageValues _BMP280_config;
 
 void BMP280_sendCapsToMQTT()
 {
-  log_info("BMP280_sendCapsToMQTT");
+  Log.trace("BMP280_sendCapsToMQTT");
   long ts = NTP_getEpochTime();
   StaticJsonDocument<200> doc;
   doc["caps"]["cap"] = "BMP280";
@@ -44,8 +44,8 @@ void BMP280_sendCapsToMQTT()
   doc["deviceid"] = _BMP280_deviceId;
   String json;
   serializeJson(doc, json);
-  log_info(json)
-  log_info(_BMP280_config.mqttCapsTopic.c_str())
+  Log.trace(json)
+  Log.trace(_BMP280_config.mqttCapsTopic.c_str())
   _BMP280_mqtt_client.publish(_BMP280_config.mqttCapsTopic.c_str(), json.c_str());
   MQTTTransmitLed();
 }
@@ -59,13 +59,13 @@ void BMP280_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootC
   _BMP280_loop_delay = loop_delay;
   if (!bme.begin(i2cAddress))
   {
-    log_info("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
-    log_info("SensorID was: 0x");
-    log_info(bme.sensorID(), 16);
-    log_info("        ID of 0xFF probably means a bad address, a BMP 180 or BMP 085");
-    log_info("   ID of 0x56-0x58 represents a BMP 280,");
-    log_info("        ID of 0x60 represents a BME 280.");
-    log_info("        ID of 0x61 represents a BME 680.");
+    Log.trace("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
+    Log.trace("SensorID was: 0x");
+    Log.trace(bme.sensorID(), 16);
+    Log.trace("        ID of 0xFF probably means a bad address, a BMP 180 or BMP 085");
+    Log.trace("   ID of 0x56-0x58 represents a BMP 280,");
+    Log.trace("        ID of 0x60 represents a BME 280.");
+    Log.trace("        ID of 0x61 represents a BME 680.");
   }
   BMP280_sendCapsToMQTT();
 }
@@ -86,13 +86,13 @@ void sendReadingToMQTT(float temp, float humidity, float pressure, float altitud
   
   String json;
   serializeJson(doc, json);
-  log_info(json);
-  log_info(json.length());
-  log_info(_BMP280_config.mqttSensorTopic);
+  Log.trace(json);
+  Log.trace(json.length());
+  Log.trace(_BMP280_config.mqttSensorTopic);
   
   if (!_BMP280_mqtt_client.publish(_BMP280_config.mqttSensorTopic.c_str(), json.c_str()))
   {
-    log_info(F("BMP20 Data to MQTT Failed"));
+    Log.trace(F("BMP20 Data to MQTT Failed"));
     //_BMP280_mqtt_client.disconnect();
   } else {
     MQTTTransmitLed();
@@ -113,7 +113,7 @@ void checkAndReportReadings()
 
   if (isnan(humidity) || isnan(temperature) || isnan(pressure))
   {
-    log_info(F("Failed to read from BMP sensor!"));
+    Log.trace(F("Failed to read from BMP sensor!"));
     return;
   }
 

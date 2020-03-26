@@ -14,16 +14,13 @@
 //#define ATH_DHT11
 //#define ATH_BMP280
 
-//Configure your logging level.  If you define VERBOSE, it will enable all levels
-//otherwise just enable DEBUG/INFO/ERROR as you see fit.
-#define ATH_LOG_VERBOSE
-//#define ATH_LOG_DEBUG
-//#define ATH_LOG_INFO
-//#define ATH_LOG_ERROR
+//disable logging
+//#define DISABLE_LOGGING 
+
 
 //setup which sensors, etc you want included.
+#include <ArduinoLog.h>
 #include <ESP8266WiFi.h>
-#include "AthosLog.h"
 #include "AthosLED.h"
 #include "AthosHelpers.h"
 #include "AthosEEPROM.h"
@@ -36,6 +33,7 @@
 #include "AthosDHT11.h"
 #include "AthosBMP280.h"
 
+
 String DeviceId = getDeviceId();
 //our main loop delay.
 int loop_delay = 1000;
@@ -46,67 +44,70 @@ void setup()
 {
   //while (!Serial);
   Serial.begin(115200);
+  Log.begin(LOG_LEVEL_VERBOSE, &Serial);
+  Log.setPrefix(printTimestamp); // Uncomment to get timestamps as prefix
+  Log.setSuffix(printNewline); // Uncomment to get newline as suffix
 
-  log_info("~~~~~~~~~~SETUP STARTING~~~~~~~~~~");
+  Log.trace("~~~~~~~~~~SETUP STARTING~~~~~~~~~~");
 
   rootConfig = EEPROM_setup();
 
 #ifdef ATH_LED
-  log_info("LED Start");
+  Log.trace("LED Start");
   LED_Setup();
-  log_info("LED Done");
+  Log.trace("LED Done");
 #endif
 
 #ifdef ATH_WIFIMANAGER
-  log_info("WifiManager Start");
+  Log.trace("WifiManager Start");
   rootConfig = WifiManager_Setup(DeviceId, rootConfig);
-  log_info("WifiManager Done");
+  Log.trace("WifiManager Done");
 #endif
 
 #ifdef ATH_NTP
-  log_info("NTP Start");
+  Log.trace("NTP Start");
   NTP_Setup();
-  log_info("NTP Done");
+  Log.trace("NTP Done");
 #endif
 
 #ifdef ATH_UDP
-  log_info("UDP Start");
+  Log.trace("UDP Start");
   rootConfig = UDP_Setup(DeviceId, rootConfig);
-  log_info("UDP Done");
+  Log.trace("UDP Done");
 #endif
 
 #ifdef ATH_MQTT
-  log_info("MQTT Start");
+  Log.trace("MQTT Start");
   root_mqtt_client = MQTT_Setup(DeviceId, rootConfig);
   delay(1000);
-  log_info("MQTT Done");
+  Log.trace("MQTT Done");
 #endif
 
 #ifdef ATH_TMP36
-  log_info("TMP Start");
+  Log.trace("TMP Start");
   TMP_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
-  log_info("TMP Done");
+  Log.trace("TMP Done");
 #endif
 
 #ifdef ATH_DHT11
-  log_info("DHT11 Start");
+  Log.trace("DHT11 Start");
   DHT11_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
-  log_info("DHT11 Done");
+  Log.trace("DHT11 Done");
 #endif
 
 #ifdef ATH_BMP280
-  log_info("BMP280 Start");
+  Log.trace("BMP280 Start");
   BMP280_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
-  log_info("BMP280 Done");
+  Log.trace("BMP280 Done");
 #endif
 
 #ifdef ATH_RELAY
-  log_info("RELAY Start");
+  Log.trace("RELAY Start");
   Relay_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
-  log_info("RELAY Done");
+  Log.trace("RELAY Done");
 #endif
 
-  log_info("~~~~~~~~~~SETUP COMPLETED~~~~~~~~~~");
+  Log.trace("~~~~~~~~~~SETUP COMPLETED~~~~~~~~~~");
 }
 
 void loop()
@@ -150,3 +151,4 @@ void loop()
 
   delay(loop_delay);
 }
+
