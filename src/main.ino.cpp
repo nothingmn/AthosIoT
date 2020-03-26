@@ -1,25 +1,18 @@
-//
-//
-//Step 1, Update the #define and #includes below for the types of sensors or the Relay features
-//Step 2, deploy to your NodeMCU device
-//
-//
-#define ATH_LED
-#define ATH_WIFIMANAGER
-#define ATH_NTP
-#define ATH_UDP
-#define ATH_MQTT
-
-//#define ATH_RELAY
-//#define ATH_TMP36
-//#define ATH_DHT11
-//#define ATH_BMP280
-
-//disable logging
-//#define DISABLE_LOGGING 
+# 1 "C:\\Users\\robch\\AppData\\Local\\Temp\\tmpf3xmyyj4"
+#include <Arduino.h>
+# 1 "C:/data/source/github/AthosIoT/src/main.ino"
 
 
-//setup which sensors, etc you want included.
+
+
+
+
+#define ATH_LED 
+#define ATH_WIFIMANAGER 
+#define ATH_NTP 
+#define ATH_UDP 
+#define ATH_MQTT 
+# 23 "C:/data/source/github/AthosIoT/src/main.ino"
 #include <ArduinoLog.h>
 #include <ESP8266WiFi.h>
 #include "AthosLED.h"
@@ -36,18 +29,21 @@
 
 
 String DeviceId = getDeviceId();
-//our main loop delay.
+
 int loop_delay = 1000;
 
 StorageValues rootConfig;
 PubSubClient root_mqtt_client;
+void setup();
+void loop();
+#line 44 "C:/data/source/github/AthosIoT/src/main.ino"
 void setup()
 {
-  //while (!Serial);
+
   Serial.begin(115200);
   Log.begin(LOG_LEVEL_VERBOSE, &Serial);
-  Log.setPrefix(printTimestamp); // Uncomment to get timestamps as prefix
-  Log.setSuffix(printNewline); // Uncomment to get newline as suffix
+  Log.setPrefix(printTimestamp);
+  Log.setSuffix(printNewline);
 
   Log.trace("~~~~~~~~~~SETUP STARTING~~~~~~~~~~");
 
@@ -152,4 +148,3 @@ void loop()
 
   delay(loop_delay);
 }
-

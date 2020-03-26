@@ -18,18 +18,18 @@ int WIFI_statusCode;
 bool testWifi(void)
 {
   int c = 0;
-  log_info("Waiting for Wifi to connect");
+  Log.trace("Waiting for Wifi to connect");
   while ( c < 20 ) {
     if (WiFi.status() == WL_CONNECTED)
     {
-      log_info("Local IP: %s", (WiFi.localIP()).toString().c_str());
+      Log.trace("Local IP: %x", WiFi.localIP().toString().c_str());
       return true;
     }
     delay(500);
-    log_info("*");
+    Log.trace("*");
     c++;
   }
-  log_info("Connect timed out, opening AP");
+  Log.trace("Connect timed out, opening AP");
   return false;
 }
 
@@ -39,7 +39,7 @@ void createWebServer()
 {
     // Start the server
     WIFI_server.begin();
-    log_info("Server started");
+    Log.trace("Server started");
 
     WIFI_server.on("/", []() {
       IPAddress ip = WiFi.softAPIP();
@@ -76,12 +76,12 @@ void createWebServer()
       } else {
         WIFI_content = "{\"Error\":\"404 not found\"}";
         WIFI_statusCode = 404;
-        log_info("Sending 404");
+        Log.trace("Sending 404");
       }
       WIFI_server.sendHeader("Access-Control-Allow-Origin", "*");
       WIFI_server.send(WIFI_statusCode, "application/json", WIFI_content);
       if(reboot) {
-        log_info("Restarting device so the new settings can take place");
+        Log.trace("Restarting device so the new settings can take place");
         delay(1000);
         ESP.restart();
       }
@@ -92,11 +92,11 @@ void createWebServer()
 
 void launchWeb()
 {
-    log_info("");
+    Log.trace("");
     if (WiFi.status() == WL_CONNECTED) {
-      log_info("WiFi connected");
+      Log.trace("WiFi connected");
     }
-    log_info("LocalIP:%s, SoftAP IP:%s", WiFi.localIP().toString().c_str(), WiFi.softAPIP().toString().c_str());
+    Log.trace("LocalIP:%s, SoftAP IP:%s", WiFi.localIP().toString().c_str(), WiFi.softAPIP().toString().c_str());
     createWebServer();
 }
 
@@ -106,20 +106,13 @@ void setupAP(void)
   WiFi.disconnect();
   delay(100);
   int n = WiFi.scanNetworks();
-  log_info("scan done");
+  Log.trace("scan done");
   if (n == 0)
-    log_info("no networks found");
+    Log.trace("no networks found");
   else
   {
-    log_info("%d networks found", n);
-    for (int i = 0; i < n; ++i)
-    {
-      // Print SSID and RSSI for each network found
-      log_info("%d: , SSID:%s, RSSI:%s, Encryption:%s", i + 1, WiFi.SSID(i).c_str(), WiFi.RSSI(i), (WiFi.encryptionType(i) == ENC_TYPE_NONE) ? " " : "*");
-      delay(10);
-    }
+    Log.trace("%i networks found", n);    
   }
-  log_info("");
   WIFI_st = "<ol>";
   for (int i = 0; i < n; ++i)
   {
@@ -128,7 +121,6 @@ void setupAP(void)
     WIFI_st += WiFi.SSID(i);
     WIFI_st += " (";
     WIFI_st += WiFi.RSSI(i);
-
     WIFI_st += ")";
     WIFI_st += (WiFi.encryptionType(i) == ENC_TYPE_NONE) ? " " : "*";
     WIFI_st += "</li>";
@@ -154,17 +146,17 @@ StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
   WiFi.setAutoReconnect(true);
   if (testWifi())
   {
-    log_info("Succesfully Connected to AP--> %s by device: %s\n",_wifi_config.ssid.c_str(),  _wifiAPName.c_str());
+    Log.trace("Succesfully Connected to AP--> %s by device: %s\n",_wifi_config.ssid.c_str(),  _wifiAPName.c_str());
     return _wifi_config;
   }
   else
   {
-    log_info("Turning the HotSpot On");
+    Log.trace("Turning the HotSpot On");
     launchWeb();
     setupAP();// Setup HotSpot
   }
 
-  log_info("Waiting for devices on AP--> %s", _wifiAPName.c_str());
+  Log.trace("Waiting for devices on AP--> %s", _wifiAPName.c_str());
 
   while ((WiFi.status() != WL_CONNECTED))
   {
@@ -177,16 +169,16 @@ StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
 
 void EnsureWifiConnected() {
   if (WiFi.status() == WL_CONNECTED) {
-    log_info("EnsureWifiConnected");
+    Log.trace("EnsureWifiConnected");
     WiFi.setAutoReconnect(true);
     WiFi.mode(WIFI_STA);
     WiFi.begin(_wifi_config.ssid.c_str(), _wifi_config.password.c_str());
     while (WiFi.status() != WL_CONNECTED) {
-      log_info("Connecting to WiFi..");
+      Log.trace("Connecting to WiFi..");
       delay(500);
-      log_info(".");
+      Log.trace(".");
     }
-    log_info("Connected to the WiFi network");
+    Log.trace("Connected to the WiFi network");
   }
 }
 void WifiManager_Loop()

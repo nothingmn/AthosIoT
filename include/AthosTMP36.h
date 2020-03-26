@@ -26,7 +26,7 @@ StorageValues _tmp36_config;
 
 void TMP_sendCapsToMQTT()
 {
-  log_info("TMP_sendCapsToMQTT");
+  Log.trace("TMP_sendCapsToMQTT");
   long ts = NTP_getEpochTime();
   StaticJsonDocument<200> doc;
   doc["caps"]["cap"] = "TMP36";
@@ -34,8 +34,8 @@ void TMP_sendCapsToMQTT()
   doc["deviceid"] = _tmp36_deviceId;
   String json;
   serializeJson(doc, json);
-  log_info(json);
-  log_info(_tmp36_config.mqttCapsTopic.c_str());
+  Log.trace(json);
+  Log.trace(_tmp36_config.mqttCapsTopic.c_str());
   _tmp36_mqtt_client.publish(_tmp36_config.mqttCapsTopic.c_str(), json.c_str());
   MQTTTransmitLed();
 }
@@ -86,11 +86,11 @@ void sendTemperatureToMQTT(float value)
   doc["deviceid"] = _tmp36_deviceId;
   String json;
   serializeJson(doc, json);
-  log_info(json);
+  Log.trace(json);
   ;
 
   if (_tmp36_mqtt_client.publish(_tmp36_config.mqttSensorTopic.c_str(), json.c_str() false)) {
-      log_info(F("Failed"));
+      Log.trace(F("Failed"));
   }
 
   MQTTTransmitLed();

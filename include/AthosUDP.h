@@ -20,7 +20,7 @@ void listenForUDPMessages()
     if (packetSize)
     {
       IPAddress remoteIp = listenUDP.remoteIP();
-      log_info("Received UDP packet of size %d, from:%s", packetSize, remoteIp.toString().c_str());
+      Log.trace("Received UDP packet of size %d, from:%s", packetSize, remoteIp.toString().c_str());
 
       // read the packet into packetBufffer
       int len = listenUDP.read(packetBuffer, 255);
@@ -28,8 +28,8 @@ void listenForUDPMessages()
       {
         packetBuffer[len] = 0;
       }
-      log_info("Contents:");
-      log_info(packetBuffer);
+      Log.trace("Contents:");
+      Log.trace(packetBuffer);
 
       StaticJsonDocument<1024> doc;
       deserializeJson(doc, packetBuffer);
@@ -42,9 +42,9 @@ void listenForUDPMessages()
       _udp_config.mqttUsername = doc["mqtt"]["username"].as<String>();
       _udp_config.mqttPassword = doc["mqtt"]["password"].as<String>();
       _udp_config.mqttPort = doc["mqtt"]["port"].as<String>();
-      log_info("Received MQTT Payload:");
-      log_info(_udp_config.mqttServer.c_str());
-      log_info(_udp_config.mqttSensorTopic.c_str());
+      Log.trace("Received MQTT Payload:");
+      Log.trace(_udp_config.mqttServer.c_str());
+      Log.trace(_udp_config.mqttSensorTopic.c_str());
       writeEEPROMData(_udp_config);
       UDP_configComplete = true;
       ESP.restart();
@@ -60,7 +60,7 @@ void publishUDP()
   
   if (diff > 10)
   {
-    log_info("Broadcasting myself...");
+    Log.trace("Broadcasting myself...");
     broadcastUDP.beginPacket(broadcastIp, broadcastPort);
 
     StaticJsonDocument<200> doc;
@@ -79,7 +79,7 @@ StorageValues UDP_Setup(String DeviceId, StorageValues rootConfig)
   _udp_config = rootConfig;
 
   if(!_udp_config.mqttServer || !_udp_config.mqttSensorTopic || _udp_config.mqttServer == "null" || _udp_config.mqttServer == "") {
-    log_info("No MQTT Data on file, UDP broadcast required");
+    Log.trace("No MQTT Data on file, UDP broadcast required");
 
     listenUDP.begin(udpListenPort);
     broadcastUDP.begin(broadcastPort);
@@ -91,7 +91,7 @@ StorageValues UDP_Setup(String DeviceId, StorageValues rootConfig)
     }
 
   } else {
-    log_info("MQTT Data on file, NO UDP broadcast required");
+    Log.trace("MQTT Data on file, NO UDP broadcast required");
   }
 
   return _udp_config;

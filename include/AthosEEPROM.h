@@ -2,7 +2,7 @@
 #include <ArduinoJson.h>
 
 #ifndef ATH_LOG
-  #include "AthosLog.h"
+  //#include "AthosLog.h"
 #endif
 #ifndef ATH_HELPERS
   #include "AthosHelpers.h"
@@ -13,14 +13,14 @@
 
 void wipeEEPROM()
 {
-  log_info("Wiping EEPROM");
+  Log.trace("Wiping EEPROM");
   EEPROM.begin(EEPROM_SIZE);
   for (int i = 0 ; i < EEPROM_SIZE ; i++) {
     EEPROM.put(i, 0);
   }
   EEPROM.commit();
   delay(1000);
-  log_info("Wiped EEPROM");
+  Log.trace("Wiped EEPROM");
 }
 
 
@@ -41,7 +41,7 @@ StorageValues readEEPROMData() {
   }
 
   if(content[0] == '{') {
-    log_info("Read EEPROM %s", content.c_str());
+    Log.trace("Read EEPROM %s", content.c_str());
 
     StaticJsonDocument<EEPROM_SIZE> readDoc;
     deserializeJson(readDoc, content);
@@ -84,7 +84,7 @@ void writeEEPROMData(StorageValues config) {
 
   String _json;
   serializeJson(writeDoc, _json);
-  log_info("Writing EEPROM: %s", _json.c_str());
+  Log.trace("Writing EEPROM: %s", _json.c_str());
 
   _json += EEPROM_TERMINATER;
 
@@ -103,7 +103,7 @@ StorageValues EEPROM_setup() {
 
   if(false) {
     wipeEEPROM();   
-    log_info("EEPROM KILLED!"); 
+    Log.trace("EEPROM KILLED!"); 
   }
   return readEEPROMData();
 }

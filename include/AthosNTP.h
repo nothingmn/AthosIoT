@@ -22,14 +22,14 @@ long NTP_getEpochTime() {
 }
 void NTP_updateTime() {
   while(!timeClient.update()) {
-    log_info("Failed to get an updated ntp time, will try again");
+    Log.trace("Failed to get an updated ntp time, will try again");
     delay(100);
   }
 }
 void setTime(long secondsSinceEpoc) {
     time_t t = secondsSinceEpoc;
     //struct tm tm = *localtime(&t);
-    log_info("Setting time: %i", secondsSinceEpoc);
+    Log.trace("Setting time: %i", secondsSinceEpoc);
     struct timeval now = { .tv_sec = t };
     settimeofday(&now, NULL);
 }
@@ -49,7 +49,7 @@ void NTP_Loop()
   int current = NTP_getEpochTime();
   int diff = abs(current - NTP_last);
   if(diff > NTP_max_diff) {
-    log_info("updating NTP");
+    Log.trace("updating NTP");
     NTP_updateTime();
     //reset our clock every iteration
     setTime();
