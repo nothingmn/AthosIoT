@@ -88,7 +88,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   bool handled = false;
 
 #ifdef ATH_RELAY
-  handled = Relay_MQTT_Received(topic, payload, length);
+  handled = Relay_MQTT_Received(strTopic, json);
 #endif
 
   if (!handled)

@@ -59,7 +59,7 @@ void sendReadingToMQTT(float temp, float humidity, float heatIndex) {
   doc["deviceid"] = _DHT11_deviceId;
   String json;
   serializeJson(doc, json);
-  Log.trace(json);
+  Log.trace(json.c_str());
   if (! _DHT11_mqtt_client.publish(_DHT11_config.mqttSensorTopic.c_str(), json.c_str()), false) {
       Log.trace(F("Failed"));
   }

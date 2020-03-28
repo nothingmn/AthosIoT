@@ -29,7 +29,7 @@ void RELAY_sendCapsToMQTT()
   doc["deviceid"] = _Relay_deviceId;
   String json;
   serializeJson(doc, json);
-  Log.trace(json);
+  Log.trace(json.c_str());
   Log.trace(_Relay_config.mqttCapsTopic.c_str());
   _Relay_mqtt_client.publish(_Relay_config.mqttCapsTopic.c_str(), json.c_str());
   MQTTTransmitLed();
@@ -67,9 +67,9 @@ void RunFun() {
     }
   }
 }
-bool Relay_MQTT_Received(string topic, string json) {
+bool Relay_MQTT_Received(String topic, String json) {
   
-  if(strTopic.endsWith("/" + _Relay_deviceId)) {
+  if(topic.endsWith("/" + _Relay_deviceId)) {
     //matched to the current device.  now do something with the JSON payload;
     StaticJsonDocument<255> readDoc;
     deserializeJson(readDoc, json);

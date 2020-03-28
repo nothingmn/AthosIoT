@@ -44,8 +44,8 @@ void BMP280_sendCapsToMQTT()
   doc["deviceid"] = _BMP280_deviceId;
   String json;
   serializeJson(doc, json);
-  Log.trace(json)
-  Log.trace(_BMP280_config.mqttCapsTopic.c_str())
+  Log.trace(json.c_str());
+  Log.trace(_BMP280_config.mqttCapsTopic.c_str());
   _BMP280_mqtt_client.publish(_BMP280_config.mqttCapsTopic.c_str(), json.c_str());
   MQTTTransmitLed();
 }
@@ -60,8 +60,7 @@ void BMP280_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootC
   if (!bme.begin(i2cAddress))
   {
     Log.trace("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
-    Log.trace("SensorID was: 0x");
-    Log.trace(bme.sensorID(), 16);
+    Log.trace("SensorID was: %i %i", bme.sensorID(), 16);
     Log.trace("        ID of 0xFF probably means a bad address, a BMP 180 or BMP 085");
     Log.trace("   ID of 0x56-0x58 represents a BMP 280,");
     Log.trace("        ID of 0x60 represents a BME 280.");
@@ -86,9 +85,8 @@ void sendReadingToMQTT(float temp, float humidity, float pressure, float altitud
   
   String json;
   serializeJson(doc, json);
-  Log.trace(json);
-  Log.trace(json.length());
-  Log.trace(_BMP280_config.mqttSensorTopic);
+  Log.trace(json.c_str());
+  Log.trace(_BMP280_config.mqttSensorTopic.c_str());
   
   if (!_BMP280_mqtt_client.publish(_BMP280_config.mqttSensorTopic.c_str(), json.c_str()))
   {
