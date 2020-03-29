@@ -168,7 +168,7 @@ StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
 }
 
 void EnsureWifiConnected() {
-  if (WiFi.status() == WL_CONNECTED) {
+  if (WiFi.status() != WL_CONNECTED) {
     Log.trace("EnsureWifiConnected");
     WiFi.setAutoReconnect(true);
     WiFi.mode(WIFI_STA);
@@ -184,7 +184,7 @@ void EnsureWifiConnected() {
 void WifiManager_Loop()
 {
   //we should have never gotten past setup so we assume Wifi is already configured and ready
-  //EnsureWifiConnected();
+  EnsureWifiConnected();
 }
 
 

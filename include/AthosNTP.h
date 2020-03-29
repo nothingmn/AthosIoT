@@ -32,6 +32,7 @@ void setTime(long secondsSinceEpoc) {
     Log.trace("Setting time: %i", secondsSinceEpoc);
     struct timeval now = { .tv_sec = t };
     settimeofday(&now, NULL);
+    Log.trace("time of day setup complete");
 }
 void setTime() {
     setTime(NTP_getEpochTime());    
@@ -42,6 +43,7 @@ void NTP_Setup()
   timeClient.begin();
   NTP_updateTime();
   setTime();
+
 }
 int NTP_last = 0;
 void NTP_Loop()

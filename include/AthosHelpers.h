@@ -15,6 +15,7 @@ struct storageValues
   String mqttRelayTopic;
   String mqttCapsTopic;
   String mqttPingTopic;
+  String mqttMotionTopic;
 };
 
 typedef struct storageValues StorageValues;
@@ -73,6 +74,20 @@ void Relay_OFF_Led()
 {
 #ifdef ATH_LED
   LED_OFF();
+#endif
+}
+
+void MotionDetected_LED()
+{
+#ifdef ATH_LED
+  LED_Blink(4);
+#endif
+}
+
+void NoMotionDetected_LED()
+{
+#ifdef ATH_LED
+  LED_Blink(3);
 #endif
 }
 

@@ -8,7 +8,7 @@
   #include "AthosHelpers.h"
 #endif
 
-#define EEPROM_SIZE 2048
+#define EEPROM_SIZE 1024
 #define EEPROM_TERMINATER 0
 
 void wipeEEPROM()
@@ -57,6 +57,7 @@ StorageValues readEEPROMData() {
     values.mqttCapsTopic = readDoc["mqtt"]["caps"].as<String>();
     values.mqttPingTopic = readDoc["mqtt"]["ping"].as<String>();
     values.mqttRelayTopic = readDoc["mqtt"]["relay"].as<String>();
+    values.mqttMotionTopic = readDoc["mqtt"]["motion"].as<String>();
 
 
   }
@@ -80,6 +81,7 @@ void writeEEPROMData(StorageValues config) {
   writeDoc["mqtt"]["ping"] =      config.mqttPingTopic;
   writeDoc["mqtt"]["caps"] =      config.mqttCapsTopic;
   writeDoc["mqtt"]["relay"] =     config.mqttRelayTopic;
+  writeDoc["mqtt"]["motion"] =     config.mqttMotionTopic;
 
 
   String _json;

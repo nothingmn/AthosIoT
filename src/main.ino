@@ -9,6 +9,7 @@
 #define ATH_NTP
 #define ATH_UDP
 #define ATH_MQTT
+#define ATH_PIR
 
 //#define ATH_RELAY
 //#define ATH_TMP36
@@ -33,11 +34,17 @@
 #include "AthosTMP36.h"
 #include "AthosDHT11.h"
 #include "AthosBMP280.h"
+#include "AthosPIR.h"
 
 
 String DeviceId = getDeviceId();
+
 //our main loop delay.
-int loop_delay = 1000;
+#ifdef ATH_PIR
+   int loop_delay = 10;
+#else
+   int loop_delay = 1000;
+#endif
 
 StorageValues rootConfig;
 PubSubClient root_mqtt_client;
@@ -108,6 +115,14 @@ void setup()
   Log.trace("RELAY Done");
 #endif
 
+
+#ifdef ATH_PIR
+  Log.trace("PIR Start");
+  PIR_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
+  Log.trace("PIR Done");
+#endif
+
+
   Log.trace("~~~~~~~~~~SETUP COMPLETED~~~~~~~~~~");
 }
 
@@ -148,6 +163,10 @@ void loop()
 
 #ifdef ATH_RELAY
   Relay_Loop();
+#endif
+
+#ifdef ATH_PIR
+  PIR_Loop();
 #endif
 
   delay(loop_delay);

@@ -15,7 +15,7 @@ bool UDP_configComplete = false;
 void listenForUDPMessages()
 {
     // if there's data available, read a packet
-    char packetBuffer[255]; //buffer to hold incoming packet
+    char packetBuffer[512]; //buffer to hold incoming packet
     int packetSize = listenUDP.parsePacket();
     if (packetSize)
     {
@@ -23,7 +23,7 @@ void listenForUDPMessages()
       Log.trace("Received UDP packet of size %d, from:%s", packetSize, remoteIp.toString().c_str());
 
       // read the packet into packetBufffer
-      int len = listenUDP.read(packetBuffer, 255);
+      int len = listenUDP.read(packetBuffer, packetSize);
       if (len > 0)
       {
         packetBuffer[len] = 0;
@@ -31,23 +31,27 @@ void listenForUDPMessages()
       Log.trace("Contents:");
       Log.trace(packetBuffer);
 
-      StaticJsonDocument<1024> doc;
+      StaticJsonDocument<512> doc;
       deserializeJson(doc, packetBuffer);
 
       _udp_config.mqttRelayTopic = doc["mqtt"]["relay"].as<String>();
       _udp_config.mqttCapsTopic = doc["mqtt"]["caps"].as<String>();
       _udp_config.mqttPingTopic = doc["mqtt"]["ping"].as<String>();
       _udp_config.mqttSensorTopic = doc["mqtt"]["sensor"].as<String>();
+      _udp_config.mqttMotionTopic = doc["mqtt"]["motion"].as<String>();
       _udp_config.mqttServer = doc["mqtt"]["server"].as<String>();
       _udp_config.mqttUsername = doc["mqtt"]["username"].as<String>();
       _udp_config.mqttPassword = doc["mqtt"]["password"].as<String>();
       _udp_config.mqttPort = doc["mqtt"]["port"].as<String>();
+      
       Log.trace("Received MQTT Payload:");
       Log.trace(_udp_config.mqttServer.c_str());
       Log.trace(_udp_config.mqttSensorTopic.c_str());
       writeEEPROMData(_udp_config);
+      delay(100);
       UDP_configComplete = true;
-      ESP.restart();
+      ESP.reset();
+      delay(100);
     } 
   }
 

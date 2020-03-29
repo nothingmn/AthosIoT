@@ -88,7 +88,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   bool handled = false;
 
 #ifdef ATH_RELAY
-  handled = Relay_MQTT_Received(topic, payload, length);
+  handled = Relay_MQTT_Received(strTopic, json);
 #endif
 
   if (!handled)
@@ -136,6 +136,7 @@ void callback(char *topic, byte *payload, unsigned int length)
       _mqtt_config.mqttRelayTopic = GetValueOrDefault(readDoc, "mqtt", "relay", config.mqttRelayTopic);
       _mqtt_config.mqttCapsTopic = GetValueOrDefault(readDoc, "mqtt", "caps", config.mqttCapsTopic);
       _mqtt_config.mqttPingTopic = GetValueOrDefault(readDoc, "mqtt", "ping", config.mqttPingTopic);
+      _mqtt_config.mqttMotionTopic = GetValueOrDefault(readDoc, "mqtt", "motion", config.mqttMotionTopic);
       
       _mqtt_config.mqttSensorTopic = GetValueOrDefault(readDoc, "mqtt", "sensor", config.mqttSensorTopic);
       _mqtt_config.mqttServer = GetValueOrDefault(readDoc, "mqtt", "server", config.mqttServer);

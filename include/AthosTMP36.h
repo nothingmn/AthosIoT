@@ -34,7 +34,7 @@ void TMP_sendCapsToMQTT()
   doc["deviceid"] = _tmp36_deviceId;
   String json;
   serializeJson(doc, json);
-  Log.trace(json);
+  Log.trace(json.c_str());
   Log.trace(_tmp36_config.mqttCapsTopic.c_str());
   _tmp36_mqtt_client.publish(_tmp36_config.mqttCapsTopic.c_str(), json.c_str());
   MQTTTransmitLed();
@@ -86,10 +86,10 @@ void sendTemperatureToMQTT(float value)
   doc["deviceid"] = _tmp36_deviceId;
   String json;
   serializeJson(doc, json);
-  Log.trace(json);
-  ;
+  Log.trace(json.c_str());
+  
 
-  if (_tmp36_mqtt_client.publish(_tmp36_config.mqttSensorTopic.c_str(), json.c_str() false)) {
+  if (!_tmp36_mqtt_client.publish(_tmp36_config.mqttSensorTopic.c_str(), json.c_str())) {
       Log.trace(F("Failed"));
   }
 
