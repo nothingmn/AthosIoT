@@ -1,5 +1,4 @@
 #!/bin/bash
-
 PLATFORMIOBIN=C:/Users/robch/.platformio/penv/Scripts/platformio.exe
 BUILDROOT=./.pio/build
 OUTROOT=./out/
@@ -10,6 +9,7 @@ if [ ! -d $OUTROOT ]; then
 else
     rm $OUTROOT/* -f
 fi
+
 BINFILE=firmware.bin
 RELAYSOURCE=$BUILDROOT/RELAY/$BINFILE
 TMP36SOURCE=$BUILDROOT/TMP36/$BINFILE
@@ -30,7 +30,6 @@ echo -e "-----------BUILDING-----------"
 $PLATFORMIOBIN run
 $PLATFORMIOBIN run
 echo -e "-----------DONE BUILDING-----------" 
-
 cp $RELAYSOURCE $RELAYDEST
 cp $TMP36SOURCE $TMP36DEST 
 cp $BMP280SOURCE $BMP280DEST
