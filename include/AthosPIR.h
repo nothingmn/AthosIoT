@@ -1,3 +1,6 @@
+///Make sure you have a 3V PIR Sensor
+///In this sketch, we are using a D0 for the data pin
+
 #ifdef ATH_PIR
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
