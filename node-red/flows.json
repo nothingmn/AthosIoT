@@ -21,6 +21,13 @@
         "info": ""
     },
     {
+        "id": "9ecd6665.a47c58",
+        "type": "tab",
+        "label": "Motion Sensing",
+        "disabled": false,
+        "info": ""
+    },
+    {
         "id": "cf8ec69b.06f468",
         "type": "mqtt-broker",
         "z": "",
@@ -46,8 +53,8 @@
         "id": "20e28edf.311c92",
         "type": "mqtt-broker",
         "z": "",
-        "name": "my.mqtt.server.com",
-        "broker": "my.mqtt.server.com",
+        "name": "MQTT Broker",
+        "broker": "YOUR MQTT HOST",
         "port": "1883",
         "clientid": "",
         "usetls": false,
@@ -136,7 +143,7 @@
         "type": "function",
         "z": "a382654b.5f9ce8",
         "name": "Form response packet",
-        "func": "\n\nmsg.payload.mqtt = {\n    server : \"my.mqtt.server.com\",\n    port : \"1883\",\n    username : \"\",\n    password : \"\",\n    sensor : \"iot/raw/sensors/\" + msg.payload.deviceid,\n    relay : \"iot/relays/\" + msg.payload.deviceid,\n    caps : \"iot/caps/\" + msg.payload.deviceid,\n    ping : \"iot/ping/\" + msg.payload.deviceid\n}\n\ndevices = flow.get(\"iot-devices\");\n\nif(devices && msg.payload.deviceid) {\n   for(var d in devices) {\n       var device = devices[d];\n       if(device.deviceid === msg.payload.deviceid) {\n            msg.payload.device = device;\n        }\n   }\n}\n\nmsg.port = 3001;\nmsg.payload = JSON.stringify(msg.payload);\nreturn msg;",
+        "func": "\n\nmsg.payload.mqtt = {\n    server : \"YOUR MQTT HOST\",\n    port : \"1883\",\n    username : \"\",\n    password : \"\",\n    sensor : \"iot/raw/sensors/\" + msg.payload.deviceid,\n    relay : \"iot/relays/\" + msg.payload.deviceid,\n    caps : \"iot/caps/\" + msg.payload.deviceid,\n    ping : \"iot/ping/\" + msg.payload.deviceid,\n    motion : \"iot/raw/motion/\" + msg.payload.deviceid\n}\n\ndevices = flow.get(\"iot-devices\");\n\nif(devices && msg.payload.deviceid) {\n   for(var d in devices) {\n       var device = devices[d];\n       if(device.deviceid === msg.payload.deviceid) {\n            msg.payload.device = device;\n        }\n   }\n}\n\nmsg.port = 3001;\nmsg.payload = JSON.stringify(msg.payload);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 610,
@@ -188,7 +195,7 @@
         "type": "function",
         "z": "a382654b.5f9ce8",
         "name": "",
-        "func": "\nvar devices = [\n        {\n            deviceid : \"B1C69A\", \n            name : \"SunRoom\",\n            capabilities : []\n        },\n        {\n            deviceid : \"B1C535\", \n            name : \"Deck\",\n            capabilities : []\n        },\n         {\n            deviceid : \"D65D09\", \n            name : \"LivingRoom\",\n            capabilities : []\n        },\n         {\n            deviceid : \"3B1650\", \n            name : \"ServerCabinet\",\n            capabilities : []\n        },\n         {\n            deviceid : \"828732\", \n            name : \"Lab\",\n            capabilities : []\n        },\n         {\n            deviceid : \"34AD0C\", \n            name : \"Truck\",\n            capabilities : []\n        }\n    ];\n    \n\nflow.set(\"iot-devices\", devices);\n\nmsg.payload = devices;\n\nreturn msg;",
+        "func": "\nvar devices = [\n        {\n            deviceid : \"B1C69A\", \n            name : \"SunRoom\",\n            capabilities : []\n        },\n        {\n            deviceid : \"B1C535\", \n            name : \"Deck\",\n            capabilities : []\n        },\n         {\n            deviceid : \"D65D09\", \n            name : \"LivingRoom\",\n            capabilities : []\n        },\n         {\n            deviceid : \"3B1650\", \n            name : \"ServerCabinet\",\n            capabilities : []\n        },\n         {\n            deviceid : \"828732\", \n            name : \"Lab\",\n            capabilities : []\n        },\n         {\n            deviceid : \"34AD0C\", \n            name : \"Truck\",\n            capabilities : []\n        },\n         {\n            deviceid : \"82855C\", \n            name : \"Dev\",\n            capabilities : []\n        },\n         {\n            deviceid : \"35CC58\", \n            name : \"MasterBedroom\",\n            capabilities : []\n        }\n        \n    ];\n    \n\nflow.set(\"iot-devices\", devices);\n\nmsg.payload = devices;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 330,
@@ -719,19 +726,6 @@
         ]
     },
     {
-        "id": "c2c5602d.84042",
-        "type": "mqtt out",
-        "z": "1aa068dd.618597",
-        "name": "",
-        "topic": "iot/relays/82855C",
-        "qos": "2",
-        "retain": "false",
-        "broker": "20e28edf.311c92",
-        "x": 590,
-        "y": 100,
-        "wires": []
-    },
-    {
         "id": "6170cd0a.8e672c",
         "type": "inject",
         "z": "1aa068dd.618597",
@@ -744,10 +738,15 @@
         "once": false,
         "onceDelay": 0.1,
         "x": 180,
-        "y": 100,
+        "y": 160,
         "wires": [
             [
-                "c2c5602d.84042"
+                "91cacc72.6eb918",
+                "1c5e14e7.af0943",
+                "7af6a54d.482ee4",
+                "9c091774.eb866",
+                "c02ba8e8.88f508",
+                "d4eac883.0e87b"
             ]
         ]
     },
@@ -764,10 +763,15 @@
         "once": false,
         "onceDelay": 0.1,
         "x": 180,
-        "y": 140,
+        "y": 200,
         "wires": [
             [
-                "c2c5602d.84042"
+                "9c091774.eb866",
+                "1c5e14e7.af0943",
+                "7af6a54d.482ee4",
+                "91cacc72.6eb918",
+                "c02ba8e8.88f508",
+                "d4eac883.0e87b"
             ]
         ]
     },
@@ -784,10 +788,15 @@
         "once": false,
         "onceDelay": 0.1,
         "x": 180,
-        "y": 180,
+        "y": 240,
         "wires": [
             [
-                "c2c5602d.84042"
+                "7af6a54d.482ee4",
+                "1c5e14e7.af0943",
+                "9c091774.eb866",
+                "91cacc72.6eb918",
+                "c02ba8e8.88f508",
+                "d4eac883.0e87b"
             ]
         ]
     },
@@ -804,10 +813,15 @@
         "once": false,
         "onceDelay": 0.1,
         "x": 170,
-        "y": 260,
+        "y": 280,
         "wires": [
             [
-                "c2c5602d.84042"
+                "1c5e14e7.af0943",
+                "7af6a54d.482ee4",
+                "9c091774.eb866",
+                "91cacc72.6eb918",
+                "c02ba8e8.88f508",
+                "d4eac883.0e87b"
             ]
         ]
     },
@@ -824,10 +838,9 @@
         "once": false,
         "onceDelay": 0.1,
         "x": 170,
-        "y": 220,
+        "y": 520,
         "wires": [
             [
-                "c2c5602d.84042",
                 "feb2c83b.2800e8"
             ]
         ]
@@ -842,7 +855,7 @@
         "datatype": "json",
         "broker": "20e28edf.311c92",
         "x": 150,
-        "y": 360,
+        "y": 560,
         "wires": [
             [
                 "6d37d609.ba2b18"
@@ -861,7 +874,7 @@
         "complete": "true",
         "targetType": "full",
         "x": 490,
-        "y": 360,
+        "y": 560,
         "wires": []
     },
     {
@@ -872,12 +885,17 @@
         "func": "\nmsg.payload.ts =  ((new Date()).getTime() / 1000) + \"\";\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 430,
-        "y": 220,
+        "x": 390,
+        "y": 500,
         "wires": [
             [
-                "c2c5602d.84042",
-                "567f13d6.f71fe4"
+                "567f13d6.f71fe4",
+                "1c5e14e7.af0943",
+                "7af6a54d.482ee4",
+                "9c091774.eb866",
+                "91cacc72.6eb918",
+                "c02ba8e8.88f508",
+                "d4eac883.0e87b"
             ]
         ]
     },
@@ -893,7 +911,7 @@
         "complete": "true",
         "targetType": "full",
         "x": 610,
-        "y": 220,
+        "y": 520,
         "wires": []
     },
     {
@@ -905,11 +923,1055 @@
         "outputs": 1,
         "noerr": 0,
         "x": 330,
-        "y": 360,
+        "y": 560,
         "wires": [
             [
                 "d4f8fb57.f65d38"
             ]
         ]
+    },
+    {
+        "id": "c02ba8e8.88f508",
+        "type": "mqtt out",
+        "z": "1aa068dd.618597",
+        "name": "Living Room",
+        "topic": "iot/relays/D65D09",
+        "qos": "2",
+        "retain": "false",
+        "broker": "20e28edf.311c92",
+        "x": 690,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "91cacc72.6eb918",
+        "type": "mqtt out",
+        "z": "1aa068dd.618597",
+        "name": "Lab",
+        "topic": "iot/relays/828732",
+        "qos": "2",
+        "retain": "false",
+        "broker": "20e28edf.311c92",
+        "x": 670,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "9c091774.eb866",
+        "type": "mqtt out",
+        "z": "1aa068dd.618597",
+        "name": "Sun Room",
+        "topic": "iot/relays/B1C69A",
+        "qos": "2",
+        "retain": "false",
+        "broker": "20e28edf.311c92",
+        "x": 690,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "7af6a54d.482ee4",
+        "type": "mqtt out",
+        "z": "1aa068dd.618597",
+        "name": "Deck",
+        "topic": "iot/relays/B1C535",
+        "qos": "2",
+        "retain": "false",
+        "broker": "20e28edf.311c92",
+        "x": 670,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "d4eac883.0e87b",
+        "type": "mqtt out",
+        "z": "1aa068dd.618597",
+        "name": "Dev Device (82855C)",
+        "topic": "iot/relays/82855C",
+        "qos": "2",
+        "retain": "false",
+        "broker": "20e28edf.311c92",
+        "x": 720,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "1c5e14e7.af0943",
+        "type": "mqtt out",
+        "z": "1aa068dd.618597",
+        "name": "Server Cabinet",
+        "topic": "iot/relays/3B1650",
+        "qos": "2",
+        "retain": "false",
+        "broker": "20e28edf.311c92",
+        "x": 700,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "8e6abcb3.0c4ac",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "OTA Update RELAY Build",
+        "topic": "",
+        "payload": "{\"command\":\"upgrade\",\"host\":\"10.0.0.4\",\"port\":8888,\"path\":\"/AthosIoT/RELAY_firmware.bin\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 190,
+        "y": 320,
+        "wires": [
+            [
+                "1c5e14e7.af0943",
+                "7af6a54d.482ee4",
+                "9c091774.eb866",
+                "91cacc72.6eb918",
+                "c02ba8e8.88f508",
+                "d4eac883.0e87b"
+            ]
+        ]
+    },
+    {
+        "id": "478ea7be.2df67",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "OTA Update BMP Build",
+        "topic": "",
+        "payload": "{\"command\":\"upgrade\",\"host\":\"10.0.0.4\",\"port\":8888,\"path\":\"/AthosIoT/BMP280_firmware.bin\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 360,
+        "wires": [
+            [
+                "1c5e14e7.af0943",
+                "7af6a54d.482ee4",
+                "9c091774.eb866",
+                "91cacc72.6eb918",
+                "c02ba8e8.88f508",
+                "d4eac883.0e87b"
+            ]
+        ]
+    },
+    {
+        "id": "a7c225bf.619778",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"reset\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 660,
+        "wires": [
+            [
+                "8a8c16f2.85bd48"
+            ]
+        ]
+    },
+    {
+        "id": "1ae80895.4f6dff",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"restart\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 700,
+        "wires": [
+            [
+                "8a8c16f2.85bd48"
+            ]
+        ]
+    },
+    {
+        "id": "531a21d1.cc6c98",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"wipe\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 740,
+        "wires": [
+            [
+                "8a8c16f2.85bd48"
+            ]
+        ]
+    },
+    {
+        "id": "c5c7ece6.d4e6e8",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "Update Wifi Config",
+        "topic": "",
+        "payload": "{\"command\" : \"reconfigure\", \"wifi\" : {\"ssid\" : \"IoT\", \"password\" : \"XXXXXXXX\"}}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 170,
+        "y": 780,
+        "wires": [
+            [
+                "8a8c16f2.85bd48"
+            ]
+        ]
+    },
+    {
+        "id": "979b173e.e6a61",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "OTA Update RELAY Build",
+        "topic": "",
+        "payload": "{\"command\":\"upgrade\",\"host\":\"10.0.0.4\",\"port\":8888,\"path\":\"/AthosIoT/RELAY_firmware.bin\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 190,
+        "y": 820,
+        "wires": [
+            [
+                "8a8c16f2.85bd48"
+            ]
+        ]
+    },
+    {
+        "id": "43139c61.3c2b7c",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "OTA Update BMP Build",
+        "topic": "",
+        "payload": "{\"command\":\"upgrade\",\"host\":\"10.0.0.4\",\"port\":8888,\"path\":\"/AthosIoT/BMP280_firmware.bin\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 860,
+        "wires": [
+            [
+                "8a8c16f2.85bd48"
+            ]
+        ]
+    },
+    {
+        "id": "8a8c16f2.85bd48",
+        "type": "mqtt out",
+        "z": "1aa068dd.618597",
+        "name": "Living Room",
+        "topic": "iot/relays/D65D09",
+        "qos": "2",
+        "retain": "false",
+        "broker": "20e28edf.311c92",
+        "x": 490,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "e68783ed.e1a49",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"reset\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 720,
+        "y": 640,
+        "wires": [
+            [
+                "bf373f26.6015e8"
+            ]
+        ]
+    },
+    {
+        "id": "60da889.694fef8",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"restart\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 720,
+        "y": 680,
+        "wires": [
+            [
+                "bf373f26.6015e8"
+            ]
+        ]
+    },
+    {
+        "id": "242c74c8.babae4",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"wipe\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 720,
+        "y": 720,
+        "wires": [
+            [
+                "bf373f26.6015e8"
+            ]
+        ]
+    },
+    {
+        "id": "62c77568.0c80a4",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "Update Wifi Config",
+        "topic": "",
+        "payload": "{\"command\" : \"reconfigure\", \"wifi\" : {\"ssid\" : \"IoT\", \"password\" : \"XXXXXXXX\"}}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 710,
+        "y": 760,
+        "wires": [
+            [
+                "bf373f26.6015e8"
+            ]
+        ]
+    },
+    {
+        "id": "a30b251e.aa9fe",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "OTA Update RELAY Build",
+        "topic": "",
+        "payload": "{\"command\":\"upgrade\",\"host\":\"10.0.0.4\",\"port\":8888,\"path\":\"/AthosIoT/RELAY_firmware.bin\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 730,
+        "y": 800,
+        "wires": [
+            [
+                "bf373f26.6015e8"
+            ]
+        ]
+    },
+    {
+        "id": "d1ca2a92.187728",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "OTA Update BMP Build",
+        "topic": "",
+        "payload": "{\"command\":\"upgrade\",\"host\":\"10.0.0.4\",\"port\":8888,\"path\":\"/AthosIoT/BMP280_firmware.bin\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 720,
+        "y": 840,
+        "wires": [
+            [
+                "bf373f26.6015e8"
+            ]
+        ]
+    },
+    {
+        "id": "bf373f26.6015e8",
+        "type": "mqtt out",
+        "z": "1aa068dd.618597",
+        "name": "Lab",
+        "topic": "iot/relays/828732",
+        "qos": "2",
+        "retain": "false",
+        "broker": "20e28edf.311c92",
+        "x": 1030,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "894d8b79.ab52f8",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"reset\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 940,
+        "wires": [
+            [
+                "f2079078.abfbf"
+            ]
+        ]
+    },
+    {
+        "id": "f646e1c2.42f11",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"restart\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 980,
+        "wires": [
+            [
+                "f2079078.abfbf"
+            ]
+        ]
+    },
+    {
+        "id": "ae6d6d07.e64dc",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"wipe\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 1020,
+        "wires": [
+            [
+                "f2079078.abfbf"
+            ]
+        ]
+    },
+    {
+        "id": "97cd1f0f.ad6c1",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "Update Wifi Config",
+        "topic": "",
+        "payload": "{\"command\" : \"reconfigure\", \"wifi\" : {\"ssid\" : \"IoT\", \"password\" : \"XXXXXXXX\"}}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 170,
+        "y": 1060,
+        "wires": [
+            [
+                "f2079078.abfbf"
+            ]
+        ]
+    },
+    {
+        "id": "663d97fe.d63988",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "OTA Update RELAY Build",
+        "topic": "",
+        "payload": "{\"command\":\"upgrade\",\"host\":\"10.0.0.4\",\"port\":8888,\"path\":\"/AthosIoT/RELAY_firmware.bin\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 190,
+        "y": 1100,
+        "wires": [
+            [
+                "f2079078.abfbf"
+            ]
+        ]
+    },
+    {
+        "id": "568e6d58.513e74",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "OTA Update BMP Build",
+        "topic": "",
+        "payload": "{\"command\":\"upgrade\",\"host\":\"10.0.0.4\",\"port\":8888,\"path\":\"/AthosIoT/BMP280_firmware.bin\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 1140,
+        "wires": [
+            [
+                "f2079078.abfbf"
+            ]
+        ]
+    },
+    {
+        "id": "f2079078.abfbf",
+        "type": "mqtt out",
+        "z": "1aa068dd.618597",
+        "name": "Sun Room",
+        "topic": "iot/relays/B1C69A",
+        "qos": "2",
+        "retain": "false",
+        "broker": "20e28edf.311c92",
+        "x": 470,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "311bbcdc.69dba4",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"reset\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 720,
+        "y": 940,
+        "wires": [
+            [
+                "bd57bad8.c5324"
+            ]
+        ]
+    },
+    {
+        "id": "62fc8d8a.1013a4",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"restart\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 720,
+        "y": 980,
+        "wires": [
+            [
+                "bd57bad8.c5324"
+            ]
+        ]
+    },
+    {
+        "id": "9d15b56e.bb4a78",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"wipe\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 720,
+        "y": 1020,
+        "wires": [
+            [
+                "bd57bad8.c5324"
+            ]
+        ]
+    },
+    {
+        "id": "77ae6049.f5019",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "Update Wifi Config",
+        "topic": "",
+        "payload": "{\"command\" : \"reconfigure\", \"wifi\" : {\"ssid\" : \"IoT\", \"password\" : \"XXXXXXXX\"}}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 710,
+        "y": 1060,
+        "wires": [
+            [
+                "bd57bad8.c5324"
+            ]
+        ]
+    },
+    {
+        "id": "108425f9.569072",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "OTA Update RELAY Build",
+        "topic": "",
+        "payload": "{\"command\":\"upgrade\",\"host\":\"10.0.0.4\",\"port\":8888,\"path\":\"/AthosIoT/RELAY_firmware.bin\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 730,
+        "y": 1100,
+        "wires": [
+            [
+                "bd57bad8.c5324"
+            ]
+        ]
+    },
+    {
+        "id": "d1f287fb.6aa0a8",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "OTA Update BMP Build",
+        "topic": "",
+        "payload": "{\"command\":\"upgrade\",\"host\":\"10.0.0.4\",\"port\":8888,\"path\":\"/AthosIoT/BMP280_firmware.bin\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 720,
+        "y": 1140,
+        "wires": [
+            [
+                "bd57bad8.c5324"
+            ]
+        ]
+    },
+    {
+        "id": "bd57bad8.c5324",
+        "type": "mqtt out",
+        "z": "1aa068dd.618597",
+        "name": "Deck",
+        "topic": "iot/relays/B1C535",
+        "qos": "2",
+        "retain": "false",
+        "broker": "20e28edf.311c92",
+        "x": 1030,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "9bb66a74.31768",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"reset\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 1240,
+        "wires": [
+            [
+                "8ba94d45.c102c8"
+            ]
+        ]
+    },
+    {
+        "id": "f14b33c7.ac3a78",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"restart\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 1280,
+        "wires": [
+            [
+                "8ba94d45.c102c8"
+            ]
+        ]
+    },
+    {
+        "id": "14a978f3.c9ed87",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"wipe\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 1320,
+        "wires": [
+            [
+                "8ba94d45.c102c8"
+            ]
+        ]
+    },
+    {
+        "id": "e50964f3.be801",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "Update Wifi Config",
+        "topic": "",
+        "payload": "{\"command\" : \"reconfigure\", \"wifi\" : {\"ssid\" : \"IoT\", \"password\" : \"XXXXXXXX\"}}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 170,
+        "y": 1360,
+        "wires": [
+            [
+                "8ba94d45.c102c8"
+            ]
+        ]
+    },
+    {
+        "id": "48cb5df0.49c90c",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "OTA Update RELAY Build",
+        "topic": "",
+        "payload": "{\"command\":\"upgrade\",\"host\":\"10.0.0.4\",\"port\":8888,\"path\":\"/AthosIoT/RELAY_firmware.bin\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 190,
+        "y": 1400,
+        "wires": [
+            [
+                "8ba94d45.c102c8"
+            ]
+        ]
+    },
+    {
+        "id": "decedf12.b6eea",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "OTA Update BMP Build",
+        "topic": "",
+        "payload": "{\"command\":\"upgrade\",\"host\":\"10.0.0.4\",\"port\":8888,\"path\":\"/AthosIoT/BMP280_firmware.bin\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 180,
+        "y": 1440,
+        "wires": [
+            [
+                "8ba94d45.c102c8"
+            ]
+        ]
+    },
+    {
+        "id": "8ba94d45.c102c8",
+        "type": "mqtt out",
+        "z": "1aa068dd.618597",
+        "name": "Server Cabinet",
+        "topic": "iot/relays/3B1650",
+        "qos": "2",
+        "retain": "false",
+        "broker": "20e28edf.311c92",
+        "x": 480,
+        "y": 1320,
+        "wires": []
+    },
+    {
+        "id": "edc38764.e30b3",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"reset\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 720,
+        "y": 1240,
+        "wires": [
+            [
+                "288ac84b.a7dc98"
+            ]
+        ]
+    },
+    {
+        "id": "a02c8b1b.692ba8",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"restart\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 720,
+        "y": 1280,
+        "wires": [
+            [
+                "288ac84b.a7dc98"
+            ]
+        ]
+    },
+    {
+        "id": "3f5b0edb.f20b82",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "",
+        "topic": "",
+        "payload": "{\"command\" : \"wipe\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 720,
+        "y": 1320,
+        "wires": [
+            [
+                "288ac84b.a7dc98"
+            ]
+        ]
+    },
+    {
+        "id": "1b308505.2a34ab",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "Update Wifi Config",
+        "topic": "",
+        "payload": "{\"command\" : \"reconfigure\", \"wifi\" : {\"ssid\" : \"IoT\", \"password\" : \"XXXXXXXX\"}}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 710,
+        "y": 1360,
+        "wires": [
+            [
+                "288ac84b.a7dc98"
+            ]
+        ]
+    },
+    {
+        "id": "3fc5fb82.6e9b3c",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "OTA Update RELAY Build",
+        "topic": "",
+        "payload": "{\"command\":\"upgrade\",\"host\":\"10.0.0.4\",\"port\":8888,\"path\":\"/AthosIoT/RELAY_firmware.bin\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 730,
+        "y": 1400,
+        "wires": [
+            [
+                "288ac84b.a7dc98"
+            ]
+        ]
+    },
+    {
+        "id": "a6192bbf.dcb388",
+        "type": "inject",
+        "z": "1aa068dd.618597",
+        "name": "OTA Update PIR Build",
+        "topic": "",
+        "payload": "{\"command\":\"upgrade\",\"host\":\"10.0.0.4\",\"port\":8888,\"path\":\"/AthosIoT/PIR_firmware.bin\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 720,
+        "y": 1440,
+        "wires": [
+            [
+                "288ac84b.a7dc98"
+            ]
+        ]
+    },
+    {
+        "id": "288ac84b.a7dc98",
+        "type": "mqtt out",
+        "z": "1aa068dd.618597",
+        "name": "Dev Device (82855C)",
+        "topic": "iot/relays/82855C",
+        "qos": "2",
+        "retain": "false",
+        "broker": "20e28edf.311c92",
+        "x": 1060,
+        "y": 1340,
+        "wires": []
+    },
+    {
+        "id": "f8062f92.e1218",
+        "type": "mqtt in",
+        "z": "9ecd6665.a47c58",
+        "name": "",
+        "topic": "iot/motion/+",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "20e28edf.311c92",
+        "x": 170,
+        "y": 80,
+        "wires": [
+            [
+                "8d8c128d.4cc73"
+            ]
+        ]
+    },
+    {
+        "id": "47cb0596.ba2e3c",
+        "type": "debug",
+        "z": "9ecd6665.a47c58",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 510,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "8d8c128d.4cc73",
+        "type": "function",
+        "z": "9ecd6665.a47c58",
+        "name": "",
+        "func": "\n\nreturn msg;",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 350,
+        "y": 80,
+        "wires": [
+            [
+                "47cb0596.ba2e3c"
+            ],
+            []
+        ],
+        "inputLabels": [
+            "MQTT"
+        ],
+        "outputLabels": [
+            "Dev",
+            "Living Room"
+        ]
+    },
+    {
+        "id": "1cc9e81b.7c526",
+        "type": "mqtt in",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "topic": "iot/raw/motion/+",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "20e28edf.311c92",
+        "x": 140,
+        "y": 460,
+        "wires": [
+            [
+                "f60257cc.f66cd8"
+            ]
+        ]
+    },
+    {
+        "id": "f60257cc.f66cd8",
+        "type": "function",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "func": "\nvar deviceid = msg.topic.split(\"/\")[3];\n\nmsg.topic = \"iot/motion/\" + deviceid;\n\ndevices = flow.get(\"iot-devices\");\n\nif(devices && msg.payload.deviceid) {\n   for(var d in devices) {\n       var device = devices[d];\n       if(device.deviceid === msg.payload.deviceid) {\n           msg.payload.name = device.name;\n       }\n   }\n}\n\nif(msg.payload.ts) {\n    msg.payload.timeStamp = new Date(0);\n    msg.payload.timeStamp.setUTCSeconds(msg.payload.ts);\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 330,
+        "y": 460,
+        "wires": [
+            [
+                "efd93390.97c348",
+                "f704790b.727c9"
+            ]
+        ]
+    },
+    {
+        "id": "efd93390.97c348",
+        "type": "debug",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 490,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "f704790b.727c9",
+        "type": "mqtt out",
+        "z": "a382654b.5f9ce8",
+        "name": "",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "broker": "20e28edf.311c92",
+        "x": 490,
+        "y": 460,
+        "wires": []
     }
 ]
