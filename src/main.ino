@@ -48,7 +48,7 @@ void setup()
   //while (!Serial);
   Serial.begin(115200);
   Log.begin(LOG_LEVEL_VERBOSE, &Serial);
-  Log.setPrefix(printTimestamp); // Uncomment to get timestamps as prefix
+  //Log.setPrefix(printTimestamp); // Uncomment to get timestamps as prefix
   Log.setSuffix(printNewline); // Uncomment to get newline as suffix
 
   Log.trace("~~~~~~~~~~SETUP STARTING~~~~~~~~~~");
