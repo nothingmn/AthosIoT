@@ -16,7 +16,7 @@
 //max variation in temperature before reporting
 //https://www.analog.com/media/en/technical-documentation/data-sheets/TMP35_36_37.pdf
 //±2°C accuracy over temperature (typ)
-float temp_max_variation = 2.0;  //even though the spec says 2C accuracy, im opting for 1C since we are smoothing.
+float temp_max_variation = 2.0; 
 
 int TMP36_sensorPin = A0;
 
