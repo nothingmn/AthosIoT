@@ -28,24 +28,29 @@ jobs:
           mv .pio/build/BMP280/firmware.bin .pio/build/BMP280/AthosIoT.BMP280.bin  
           mv .pio/build/PIR/firmware.bin .pio/build/PIR/AthosIoT.PIR.bin  
           mv .pio/build/DHT11/firmware.bin .pio/build/DHT11/AthosIoT.DHT11.bin  
-      - uses: actions/upload-artifact@v1
-        with:
-          name: AthosIoT.RELAY
-          path: .pio/build/RELAY/AthosIoT.RELAY.bin       
-      - uses: actions/upload-artifact@v1
-        with:
-          name: AthosIoT.TMP36
-          path: .pio/build/TMP36/AthosIoT.TMP36.bin      
-      - uses: actions/upload-artifact@v1
-        with:
-          name: AthosIoT.BMP280
-          path: .pio/build/BMP280/AthosIoT.BMP280.bin       
-      - uses: actions/upload-artifact@v1
-        with:
-          name: AthosIoT.PIR
-          path: .pio/build/PIR/AthosIoT.PIR.bin       
-      - uses: actions/upload-artifact@v1
-        with:
-          name: AthosIoT.DHT11
-          path: .pio/build/DHT11/AthosIoT.DHT11.bin       
+      - name: Bundling Artiface -AthosIoT.RELAY
+        - uses: actions/upload-artifact@v1
+          with:
+            name: AthosIoT.RELAY
+            path: .pio/build/RELAY/AthosIoT.RELAY.bin       
+      - name: Bundling Artiface -AthosIoT.TMP36
+        - uses: actions/upload-artifact@v1
+          with:
+            name: AthosIoT.TMP36
+            path: .pio/build/TMP36/AthosIoT.TMP36.bin      
+      - name: Bundling Artiface -AthosIoT.BMP280
+        - uses: actions/upload-artifact@v1
+          with:
+            name: AthosIoT.BMP280
+            path: .pio/build/BMP280/AthosIoT.BMP280.bin       
+      - name: Bundling Artiface -AthosIoT.PIR
+        - uses: actions/upload-artifact@v1
+          with:
+            name: AthosIoT.PIR
+            path: .pio/build/PIR/AthosIoT.PIR.bin       
+      - name: Bundling Artiface -AthosIoT.DHT11
+        - uses: actions/upload-artifact@v1
+          with:
+            name: AthosIoT.DHT11
+            path: .pio/build/DHT11/AthosIoT.DHT11.bin       
           
