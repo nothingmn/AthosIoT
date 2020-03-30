@@ -20,4 +20,4 @@ jobs:
           platformio lib -g install ArduinoLog NTPClient ArduinoJson PubSubClient
       - name: Build
         run: |
-          platformio run
+          platformio run --environment RELAY
