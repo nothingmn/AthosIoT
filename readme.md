@@ -31,23 +31,23 @@ Allow for multiple types of sensors, from a basic TMP sensor to a more advanced 
 
 Major Features
 --------------
-1. Support and tested on NodeMCUv1
-2. Support for a TMP36 Sensor (Temperature only)
-3. Support for DHT11 Sensor (Temperature, head index, and humidity)
-4. Support for BMP280 Sensor (Temperature, humidity, air pressure, altitude)
-5. If Wifi is not configured, it will setup a soft AP for the user to join, and configure Wifi 
-6. Node will automatically find (on the network via UDP) the Node-Red instance, and the Node-Red instance will send a UDP configuration packet back to the Node to get the initial setup complete
-7. Support for unlimited number of GPIO based Relays.  
-8. All sensor report data to MQTT
-9. Relay subscriibes to MQTT topic, and will respond by controlling the relays
-10. We also have more global commands, reset, restart, wipe and reconfigure; which gives you braoder control over the device.  All of these changes will cause the device to recycle.
-11. All nodes automatically generate a "deviceid", which is the last 6 digits of the device Mac Address which we determine is unique enough.  I uses this device ID as the Soft AP, the ClientID for MQTT and it adds it to each message we send to MQTT.
-12. NTP Time server sync and constantly self-updating
-13. Internal/Onboad LED control, with helper methods to wrap the LEDs
-14. Save and Load all configuration from EEPROM, so they last across restarts.
-15. Each node will self-report capabilities to MQTT
-16. Node-red instance stores the deviceid and device name mappings
-17. Node-red will take the raw sensor data, and perform basic transform to it to ensure it is ready for consumption downstreams, then re-queues
+1. Support and tested on NodeMCUv1  (DONE)
+2. Support for a TMP36 Sensor (Temperature only)  (DONE)
+3. Support for DHT11 Sensor (Temperature, head index, and humidity)  (DONE)
+4. Support for BMP280 Sensor (Temperature, humidity, air pressure, altitude)  (DONE)
+5. If Wifi is not configured, it will setup a soft AP for the user to join, and configure Wifi   (DONE)
+6. Node will automatically find (on the network via UDP) the Node-Red instance, and the Node-Red instance will send a UDP configuration packet back to the Node to get the initial setup complete  (DONE)
+7. Support for unlimited number of GPIO based Relays.    (DONE)
+8. All sensor report data to MQTT  (DONE)
+9. Relay subscriibes to MQTT topic, and will respond by controlling the relays  (DONE)
+10. We also have more global commands, reset, restart, wipe and reconfigure; which gives you braoder control over the device.  All of these changes will cause the device to recycle.  (DONE)
+11. All nodes automatically generate a "deviceid", which is the last 6 digits of the device Mac Address which we determine is unique enough.  I uses this device ID as the Soft AP, the ClientID for MQTT and it adds it to each message we send to MQTT.  (DONE)
+12. NTP Time server sync and constantly self-updating  (DONE)
+13. Internal/Onboad LED control, with helper methods to wrap the LEDs  (DONE)
+14. Save and Load all configuration from EEPROM, so they last across restarts.  (DONE)
+15. Each node will self-report capabilities to MQTT  (DONE)
+16. Node-red instance stores the deviceid and device name mappings  (DONE)
+17. Node-red will take the raw sensor data, and perform basic transform to it to ensure it is ready for consumption downstreams, then re-queues  (DONE)
 
 
 Possible Major Features
@@ -115,4 +115,6 @@ Getting started
 15. Open the file "Athos.code-workspace"
 16. Plug in your NodeMCU (ESP8266 device) into your machine
 17. You should be able to hit Control-Alt-B to build, Control-Alt-U to upload
+18. Control-Shift-B will allow you to choose to build/deploy each type of node available (VSCode Tasks)
+
 
