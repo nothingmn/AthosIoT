@@ -3,8 +3,7 @@ AthosIoT
 
 Build Status
 ------------
-![Main Build](https://github.com/nothingmn/AthosIoT/workflows/Main%20Build/badge.svg)
-
+[![Main Build](https://github.com/nothingmn/AthosIoT/workflows/Main%20Build/badge.svg)](https://github.com/nothingmn/AthosIoT/actions)
 
 Objective
 ---------
