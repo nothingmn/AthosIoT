@@ -1,6 +1,11 @@
 AthosIoT
 =========
 
+Build Status
+------------
+![Main Build](https://github.com/nothingmn/AthosIoT/workflows/Main%20Build/badge.svg)
+
+
 Objective
 ---------
 Leveraging ESP8266 and Node-Red on a RasperryPi to build a sensor and relay network. 
