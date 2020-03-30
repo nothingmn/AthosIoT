@@ -17,7 +17,7 @@ jobs:
           pip install -U platformio
       - name: Install library dependencies
         run: |
-          platformio lib -g install ArduinoLog NTPClient ArduinoJson
+          platformio lib -g install ArduinoLog NTPClient ArduinoJson PubSubClient
       - name: Build
         run: |
           platformio run
