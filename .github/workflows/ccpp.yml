@@ -16,7 +16,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -U platformio
       - name: Install library dependencies
-        run: platformio lib -g install 1                
+        run: |
+          platformio lib -g install ArduinoLog
       - name: Build
         run: |
-          platformio run  --environment TMP36
+          platformio run
