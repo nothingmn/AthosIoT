@@ -25,7 +25,7 @@ PubSubClient _tmp36_mqtt_client;
 String _tmp36_deviceId;
 StorageValues _tmp36_config;
 
-AnalogSmooth as = AnalogSmooth(100);
+AnalogSmooth TMP_AnalogSmooth = AnalogSmooth(100);
 
 
 void TMP_sendCapsToMQTT()
@@ -64,7 +64,7 @@ float TMP36_readTemperature() {
 
     float temp = (voltage - 0.5) * 100;
 
-    float smoothed = as.smooth(temp);
+    float smoothed = TMP_AnalogSmooth.smooth(temp);
     return smoothed;
 }
 

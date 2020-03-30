@@ -14,6 +14,11 @@
 #define DHTPIN D4
 #define DHTTYPE DHT11
 
+#ifndef AnalogSmooth_h
+  #include "AnalogSmooth.h"
+  #include "AnalogSmooth.cpp"
+#endif
+
 //max variation in temperature before reporting
 float temp_max_variation = 1;
 //max time between mandatory reporting
@@ -27,6 +32,8 @@ DHT dht(DHTPIN, DHTTYPE);
 PubSubClient _DHT11_mqtt_client;
 String _DHT11_deviceId;
 StorageValues _DHT11_config;
+
+AnalogSmooth DHT11_AnalogSmooth = AnalogSmooth(100);
 
 void DHT11_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
 {

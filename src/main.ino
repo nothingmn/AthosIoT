@@ -12,7 +12,7 @@
 //#define ATH_PIR
 
 //#define ATH_RELAY
-#define ATH_TMP36
+//#define ATH_TMP36
 //#define ATH_DHT11
 //#define ATH_BMP280
 

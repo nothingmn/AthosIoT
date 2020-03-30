@@ -1,5 +1,4 @@
 #ifdef ATH_BMP280
-
 // Wiring:
 //BMP  -> NodeMCU
 //VCC  -> 3V
@@ -15,14 +14,16 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 
+#ifndef AnalogSmooth_h
+  #include "AnalogSmooth.h"
+  #include "AnalogSmooth.cpp"
+#endif
+
 #define SEALEVELPRESSURE_HPA (1013.25)
 
 //Try to avoid having anything in global scope
 
-//max variation in temperature before reporting
-float _BMP280_temp_max_variation = 1;
 //max time between mandatory reporting
-float _BMP280_max_time_between = 1000 * 10; //10 seconds
 int _BMP280_loop_delay = 1000;
 
 Adafruit_BME280 bme; // I2C
@@ -32,7 +33,10 @@ PubSubClient _BMP280_mqtt_client;
 String _BMP280_deviceId;
 StorageValues _BMP280_config;
 
-
+AnalogSmooth BMP_AnalogSmooth_temp = AnalogSmooth(100);
+AnalogSmooth BMP_AnalogSmooth_humid = AnalogSmooth(100);
+AnalogSmooth BMP_AnalogSmooth_press = AnalogSmooth(100);
+AnalogSmooth BMP_AnalogSmooth_alt = AnalogSmooth(100);
 
 void BMP280_sendCapsToMQTT()
 {
@@ -98,16 +102,30 @@ void sendReadingToMQTT(float temp, float humidity, float pressure, float altitud
   doc.clear();
 }
 
-float last_recorded_temp = 0;
-float time_since_last = 0;
 
-void checkAndReportReadings()
+
+float _BMP280_last_recorded_temp = 0;
+float _BMP280_last_recorded_humid = 0;
+float _BMP280_last_recorded_press = 0;
+float _BMP280_last_recorded_alt = 0;
+
+//https://www.bosch-sensortec.com/media/boschsensortec/downloads/environmental_sensors_2/humidity_sensors_1/bme280/bst-bme280-ds002.pdf
+float _BMP280_temp_max_variation = 1.0;
+float _BMP280_humid_max_variation = 3.0;
+float _BMP280_press_max_variation = 1.7;
+
+bool shouldSend(float current, float last, float max_diff) {
+  float diff = abs(current - last);
+  return (diff > max_diff);
+}
+
+void BMP280_checkAndReportReadings()
 {
   // Now we can publish stuff!
-  float temperature = bme.readTemperature();
-  float humidity = bme.readHumidity();
-  float pressure = bme.readPressure();
-  float altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
+  float temperature = BMP_AnalogSmooth_temp.smooth(bme.readTemperature());
+  float humidity = BMP_AnalogSmooth_humid.smooth(bme.readHumidity());
+  float pressure =BMP_AnalogSmooth_press.smooth( bme.readPressure());
+  float altitude = BMP_AnalogSmooth_alt.smooth(bme.readAltitude(SEALEVELPRESSURE_HPA));
 
   if (isnan(humidity) || isnan(temperature) || isnan(pressure))
   {
@@ -115,22 +133,27 @@ void checkAndReportReadings()
     return;
   }
 
-  float diff = abs(temperature - last_recorded_temp);
-  if (diff > _BMP280_temp_max_variation || time_since_last > _BMP280_max_time_between)
-  {
-    sendReadingToMQTT(temperature, humidity, pressure, altitude);
-    last_recorded_temp = temperature;
-    time_since_last = 0;
-  }
-  else
-  {
-    time_since_last += _BMP280_loop_delay;
+  bool send = false;
+
+  if(shouldSend(temperature, _BMP280_last_recorded_temp, _BMP280_temp_max_variation)) {
+    send = true;
+    _BMP280_last_recorded_temp = temperature;
+  } else if(shouldSend(humidity, _BMP280_last_recorded_humid, _BMP280_humid_max_variation)) {
+    send = true;
+    _BMP280_last_recorded_humid = humidity;
+  } else if(shouldSend(pressure, _BMP280_last_recorded_press, _BMP280_press_max_variation)) {
+    send = true;
+    _BMP280_last_recorded_press = pressure;
+  } 
+
+  if(send) {
+        sendReadingToMQTT(temperature, humidity, pressure, altitude);
   }
 }
 
 void BMP280_Loop()
 {
-  checkAndReportReadings();
+  BMP280_checkAndReportReadings();
 }
 
 
