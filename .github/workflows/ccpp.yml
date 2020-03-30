@@ -18,6 +18,7 @@ jobs:
       - name: Install library dependencies
         run: |
           platformio lib -g install ArduinoLog
+          platformio lib -g install ArduinoJson
       - name: Build
         run: |
           platformio run
