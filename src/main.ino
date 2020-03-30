@@ -36,7 +36,6 @@
 #include "AthosBMP280.h"
 #include "AthosPIR.h"
 
-
 String DeviceId = getDeviceId();
 
 //our main loop delay.
@@ -119,7 +118,7 @@ void setup()
 #endif
 
 
-  Log.trace("~~~~~~~~~~SETUP COMPLETED~~~~~~~~~~");
+  Log.trace("~~~~~~~~~~SETUP COMPLETED %s~~~~~~~~~~", getVersion().c_str());
 }
 
 void loop()

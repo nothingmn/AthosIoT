@@ -36,6 +36,7 @@ void TMP_sendCapsToMQTT()
   doc["caps"]["cap"] = "TMP36";
   doc["caps"]["ts"] = ts;
   doc["deviceid"] = _tmp36_deviceId;
+  doc["v"] = getVersion();
   String json;
   serializeJson(doc, json);
   Log.trace(json.c_str());
@@ -76,6 +77,7 @@ void sendTemperatureToMQTT(float value, float diff)
   doc["temp"] = value;
   doc["diff"] = diff;
   doc["ts"] = ts;
+  doc["v"] = getVersion();
   doc["deviceid"] = _tmp36_deviceId;
   String json;
   serializeJson(doc, json);

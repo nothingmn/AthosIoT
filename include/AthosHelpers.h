@@ -1,5 +1,6 @@
 #include <string>
 #include <ESP8266WiFi.h>
+//#include <time.h>
 
 #define ATH_HELPERS
 
@@ -20,9 +21,31 @@ struct storageValues
 
 typedef struct storageValues StorageValues;
 
+
+time_t build_time() {
+  static const char *built = __DATE__ " " __TIME__;  
+  struct tm t;
+  const char *ret = strptime(built, "%b %d %Y %H:%M:%S", &t);
+  return mktime(&t);
+}
+
+
+String _version;
+String getVersion()
+{
+  if (_version != NULL)
+  {
+    return _version;
+  }
+  char buff[20];  
+  time_t now = build_time();
+  strftime(buff, 20, "1.0.%Y%m%d.%H%M%S", localtime(&now));
+  _version = String(buff);
+  return _version;
+}
+
 String getDeviceId()
 {
-  //B4:E6:2D: 34:AD:0C
   String address = WiFi.macAddress();
   std::string s(address.c_str());
   s = s.substr(9, 8);
@@ -91,20 +114,20 @@ void NoMotionDetected_LED()
 #endif
 }
 
-
-bool shouldSend(float current, float last, float max_diff) {
+bool shouldSend(float current, float last, float max_diff)
+{
   float diff = abs(current - last);
   return (diff > max_diff);
 }
 
-
-
-void printTimestamp(Print* _logOutput) {
+void printTimestamp(Print *_logOutput)
+{
   char c[12];
   sprintf(c, "%10lu ", millis());
   _logOutput->print(c);
 }
 
-void printNewline(Print* _logOutput) {
+void printNewline(Print *_logOutput)
+{
   _logOutput->print('\n');
 }

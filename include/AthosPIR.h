@@ -34,6 +34,8 @@ void sendMovementToMQTT(int movement)
   doc["move"] = movement;
   doc["ts"] = ts;
   doc["deviceid"] = _PIR_deviceId;
+  doc["v"] = getVersion();
+
   String json;
   serializeJson(doc, json);
   Log.trace("%s %s", _PIR_config.mqttMotionTopic.c_str(), json.c_str());
