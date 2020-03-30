@@ -114,10 +114,6 @@ float _BMP280_temp_max_variation = 1.0;
 float _BMP280_humid_max_variation = 3.0;
 float _BMP280_press_max_variation = 1.7;
 
-bool shouldSend(float current, float last, float max_diff) {
-  float diff = abs(current - last);
-  return (diff > max_diff);
-}
 
 void BMP280_checkAndReportReadings()
 {

@@ -92,6 +92,11 @@ void NoMotionDetected_LED()
 }
 
 
+bool shouldSend(float current, float last, float max_diff) {
+  float diff = abs(current - last);
+  return (diff > max_diff);
+}
+
 
 
 void printTimestamp(Print* _logOutput) {

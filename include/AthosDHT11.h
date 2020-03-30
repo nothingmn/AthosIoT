@@ -15,47 +15,41 @@
 #define DHTTYPE DHT11
 
 #ifndef AnalogSmooth_h
-  #include "AnalogSmooth.h"
-  #include "AnalogSmooth.cpp"
+#include "AnalogSmooth.h"
+#include "AnalogSmooth.cpp"
 #endif
 
-//max variation in temperature before reporting
-float temp_max_variation = 1;
-//max time between mandatory reporting
-float max_time_between = 1000 * 10; //10 seconds
-
-int _DHT11_loop_delay = 1000;
 //Try to avoid having anything in global scope
 
 DHT dht(DHTPIN, DHTTYPE);
-
+int _DHT11_loop_delay = 1000;
 PubSubClient _DHT11_mqtt_client;
 String _DHT11_deviceId;
 StorageValues _DHT11_config;
 
-AnalogSmooth DHT11_AnalogSmooth = AnalogSmooth(100);
-
 void DHT11_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
 {
-    _DHT11_mqtt_client = mqtt_client;
-    _DHT11_deviceId = deviceId;
-    _DHT11_config = rootConfig;
-    _DHT11_loop_delay = loop_delay;
+  _DHT11_mqtt_client = mqtt_client;
+  _DHT11_deviceId = deviceId;
+  _DHT11_config = rootConfig;
+  _DHT11_loop_delay = loop_delay;
 
-    dht.begin();
+  dht.begin();
 
-    Log.trace("Waiting for the DHT11 sensor to come online");
-    bool ready = false;
-    while(!ready){
-      float temperature = dht.readTemperature();
-      ready = !isnan(temperature);
-      delay(100);
-    }
-    Log.trace("DHT11 sensor is online, proceeding.");
+  Log.trace("Waiting for the DHT11 sensor to come online");
+  bool ready = false;
+  while (!ready)
+  {
+    float temperature = dht.readTemperature();
+    ready = !isnan(temperature);
+    delay(100);
+  }
+  Log.trace("DHT11 sensor is online, proceeding.");
 }
 
-void sendReadingToMQTT(float temp, float humidity, float heatIndex) {
-  
+void DHT11_sendReadingToMQTT(float temp, float humidity, float heatIndex)
+{
+
   long ts = NTP_getEpochTime();
 
   StaticJsonDocument<200> doc;
@@ -67,47 +61,60 @@ void sendReadingToMQTT(float temp, float humidity, float heatIndex) {
   String json;
   serializeJson(doc, json);
   Log.trace(json.c_str());
-  if (! _DHT11_mqtt_client.publish(_DHT11_config.mqttSensorTopic.c_str(), json.c_str()), false) {
-      Log.trace(F("Failed"));
+  if (!_DHT11_mqtt_client.publish(_DHT11_config.mqttSensorTopic.c_str(), json.c_str()), false)
+  {
+    Log.trace(F("Failed"));
   }
   MQTTTransmitLed();
 }
 
 
-float last_recorded_temp = 0;
-float time_since_last = 0;
+AnalogSmooth DHT11_AnalogSmooth_temp = AnalogSmooth(100);
+AnalogSmooth DHT11_AnalogSmooth_humid = AnalogSmooth(100);
+//max variation in temperature before reporting
+//https://cdn-learn.adafruit.com/downloads/pdf/dht.pdf
+float DHT11_temp_max_variation = 2;
+float DHT11_humid_max_variation = 3;  //5% accuracy
+
+float DHT11_temp_last = 1;
+float DHT11_humid_last = 1;
 
 void checkAndReportReadings()
 {
   // Now we can publish stuff!
-  float temperature = dht.readTemperature();
-  float humidity = dht.readHumidity();
+  float temperature = DHT11_AnalogSmooth_temp.smooth(dht.readTemperature());
+  float humidity = DHT11_AnalogSmooth_humid.smooth(dht.readHumidity());
 
-  if (isnan(humidity) || isnan(temperature)) {
+  if (isnan(humidity) || isnan(temperature))
+  {
     Log.trace(F("Failed to read from DHT sensor!"));
     return;
   }
 
   float heatIndex = dht.computeHeatIndex(temperature, humidity, false);
 
-  float diff = temperature - last_recorded_temp;
-  if (abs(diff) > temp_max_variation || time_since_last > max_time_between)
+  bool send = false;
+
+  if (shouldSend(temperature, DHT11_temp_last, DHT11_temp_max_variation))
   {
-    sendReadingToMQTT(temperature, humidity, heatIndex);
-    last_recorded_temp = temperature;
-    time_since_last = 0;
+    send = true;
+    DHT11_temp_last = temperature;
   }
-  else
+  else if (shouldSend(humidity, DHT11_humid_last, DHT11_humid_max_variation))
   {
-    time_since_last += _DHT11_loop_delay;
+    send = true;
+    DHT11_humid_last = humidity;
+  }
+
+  if (send)
+  {
+    DHT11_sendReadingToMQTT(temperature, humidity, heatIndex);
   }
 }
 
-
-
 void DHT11_Loop()
 {
-    checkAndReportReadings();
+  checkAndReportReadings();
 }
 
 #endif

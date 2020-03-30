@@ -40,12 +40,7 @@
 String DeviceId = getDeviceId();
 
 //our main loop delay.
-int loop_delay = 10;
-// #ifdef ATH_PIR
-//    int loop_delay = 10;
-// #else
-//    int loop_delay = 1000;
-// #endif
+int loop_delay = 1000 / 10;   //10Hz
 
 StorageValues rootConfig;
 PubSubClient root_mqtt_client;
