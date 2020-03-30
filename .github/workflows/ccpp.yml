@@ -21,8 +21,20 @@ jobs:
       - name: Build
         run: |
           platformio run
+      - name: Prepare artifacts
+        run: |
           mv .pio/build/RELAY/firmware.bin .pio/build/RELAY/RELAY.bin  
+          mv .pio/build/TMP36/firmware.bin .pio/build/TMP36/TMP36.bin  
+          mv .pio/build/BMP280/firmware.bin .pio/build/BMP280/BMP280.bin  
+          mv .pio/build/PIR/firmware.bin .pio/build/PIR/PIR.bin  
+          mv .pio/build/DHT11/firmware.bin .pio/build/DHT11/DHT11.bin  
       - uses: actions/upload-artifact@v1
         with:
-          name: RELAY
-          path: .pio/build/RELAY/RELAY.bin       
+          name: AthosIoT.Builds
+          path: |
+          .pio/build/RELAY/RELAY.bin       
+          .pio/build/TMP36/TMP36.bin      
+          .pio/build/BMP280/BMP280.bin       
+          .pio/build/PIR/PIR.bin       
+          .pio/build/DHT11/DHT11.bin       
+          
