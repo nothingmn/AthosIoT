@@ -23,29 +23,13 @@ jobs:
           platformio run
       - name: Prepare artifacts
         run: |
-          mv .pio/build/RELAY/firmware.bin .pio/build/RELAY/AthosIoT.RELAY.bin  
-          mv .pio/build/TMP36/firmware.bin .pio/build/TMP36/AthosIoT.TMP36.bin  
-          mv .pio/build/BMP280/firmware.bin .pio/build/BMP280/AthosIoT.BMP280.bin  
-          mv .pio/build/PIR/firmware.bin .pio/build/PIR/AthosIoT.PIR.bin  
-          mv .pio/build/DHT11/firmware.bin .pio/build/DHT11/AthosIoT.DHT11.bin  
+          mkdir out
+          mv .pio/build/RELAY/firmware.bin out/AthosIoT.RELAY.bin  
+          mv .pio/build/TMP36/firmware.bin out/AthosIoT.TMP36.bin  
+          mv .pio/build/BMP280/firmware.bin out/AthosIoT.BMP280.bin  
+          mv .pio/build/PIR/firmware.bin out/AthosIoT.PIR.bin  
+          mv .pio/build/DHT11/firmware.bin out/AthosIoT.DHT11.bin  
       - uses: actions/upload-artifact@v1
         with:
-          name: AthosIoT.RELAY
-          path: .pio/build/RELAY/AthosIoT.RELAY.bin       
-      - uses: actions/upload-artifact@v1
-        with:
-          name: AthosIoT.TMP36
-          path: .pio/build/TMP36/AthosIoT.TMP36.bin      
-      - uses: actions/upload-artifact@v1
-        with:
-          name: AthosIoT.BMP280
-          path: .pio/build/BMP280/AthosIoT.BMP280.bin       
-      - uses: actions/upload-artifact@v1
-        with:
-          name: AthosIoT.PIR
-          path: .pio/build/PIR/AthosIoT.PIR.bin       
-      - uses: actions/upload-artifact@v1
-        with:
-          name: AthosIoT.DHT11
-          path: .pio/build/DHT11/AthosIoT.DHT11.bin       
-          
+          name: AthosIoT Binaries
+          path: .pio/build/RELAY/AthosIoT.*.bin       
