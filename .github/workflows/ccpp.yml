@@ -24,12 +24,12 @@ jobs:
       - name: Prepare artifacts
         run: |
           mkdir out
-          cp .pio/build/RELAY/firmware.bin out/AthosIoT.RELAY.bin  
-          cp .pio/build/TMP36/firmware.bin out/AthosIoT.TMP36.bin  
-          cp .pio/build/BMP280/firmware.bin out/AthosIoT.BMP280.bin  
-          cp .pio/build/PIR/firmware.bin out/AthosIoT.PIR.bin  
-          cp .pio/build/DHT11/firmware.bin out/AthosIoT.DHT11.bin  
+          cp .pio/build/RELAY/firmware.bin ./out/AthosIoT.RELAY.bin  
+          cp .pio/build/TMP36/firmware.bin ./out/AthosIoT.TMP36.bin  
+          cp .pio/build/BMP280/firmware.bin ./out/AthosIoT.BMP280.bin  
+          cp .pio/build/PIR/firmware.bin ./out/AthosIoT.PIR.bin  
+          cp .pio/build/DHT11/firmware.bin ./out/AthosIoT.DHT11.bin  
       - uses: actions/upload-artifact@v1
         with:
           name: AthosIoT Binaries
-          path: out/AthosIoT.*.bin       
+          path: ./out/AthosIoT.*.bin       
