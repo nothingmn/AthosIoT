@@ -1,6 +1,6 @@
 #ifdef ATH_MQTT
 #include <PubSubClient.h>
-#include <esp8266httpupdate.h>
+#include <ESP8266httpUpdate.h>
 
 WiFiClient mqtt_wclient; //Declares a WifiClient Object using ESP8266WiFi
 PubSubClient mqtt_client(mqtt_wclient);
