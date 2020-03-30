@@ -21,3 +21,8 @@ jobs:
       - name: Build
         run: |
           platformio run
+          mv .pio/build/RELAY/firmware.bin .pio/build/RELAY/RELAY.bin  
+      - uses: actions/upload-artifact@v1
+        with:
+          name: RELAY
+          path: .pio/build/RELAY/RELAY.bin       
