@@ -2,7 +2,10 @@
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 
-
+#ifndef AnalogSmooth_h
+  #include "AnalogSmooth.h"
+  #include "AnalogSmooth.cpp"
+#endif
 // Wiring:
 //TMP     -> NodeMCU
 //VC/1    -> 3V
@@ -11,9 +14,9 @@
 //http://www.esp8266learning.com/wemos-tmp36-example.php
 
 //max variation in temperature before reporting
-float temp_max_variation = 1;
-//max time between mandatory reporting
-float max_time_between = 1000 * 10; //10 seconds
+//https://www.analog.com/media/en/technical-documentation/data-sheets/TMP35_36_37.pdf
+//±2°C accuracy over temperature (typ)
+float temp_max_variation = 2.0;  //even though the spec says 2C accuracy, im opting for 1C since we are smoothing.
 
 int TMP36_sensorPin = A0;
 
@@ -22,6 +25,7 @@ PubSubClient _tmp36_mqtt_client;
 String _tmp36_deviceId;
 StorageValues _tmp36_config;
 
+AnalogSmooth as = AnalogSmooth(100);
 
 
 void TMP_sendCapsToMQTT()
@@ -58,30 +62,19 @@ float TMP36_readTemperature() {
     float voltage = reading * 3.3;
     voltage /= 1024.0;
 
-    // now print out the temperature
-    return (voltage - 0.5) * 100;
+    float temp = (voltage - 0.5) * 100;
+
+    float smoothed = as.smooth(temp);
+    return smoothed;
 }
 
-
-float readTemperature()
-{
-  int sensorPin = 0;
-  int reading = analogRead(sensorPin);
-  // measure the 3.3v with a meter for an accurate value
-  //In particular if your Arduino is USB powered
-  float voltage = reading * 3.3;
-  voltage /= 1024.0;
-
-  // now print out the temperature
-  return (voltage - 0.5) * 100;
-}
-
-void sendTemperatureToMQTT(float value)
+void sendTemperatureToMQTT(float value, float diff)
 {
   long ts = NTP_getEpochTime();
 
   StaticJsonDocument<200> doc;
   doc["temp"] = value;
+  doc["diff"] = diff;
   doc["ts"] = ts;
   doc["deviceid"] = _tmp36_deviceId;
   String json;
@@ -102,17 +95,12 @@ float time_since_last = 0;
 void checkAndReportReadings()
 {
   // Now we can publish stuff!
-  float temperature = readTemperature();
+  float temperature = TMP36_readTemperature();
   float diff = temperature - last_recorded_temp;
-  if (abs(diff) > temp_max_variation || time_since_last > max_time_between)
+  if (abs(diff) > temp_max_variation)
   {
-    sendTemperatureToMQTT(temperature);
+    sendTemperatureToMQTT(temperature, diff);
     last_recorded_temp = temperature;
-    time_since_last = 0;
-  }
-  else
-  {
-    time_since_last += _tmp36_loop_delay;
   }
 }
 

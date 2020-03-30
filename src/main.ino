@@ -9,10 +9,10 @@
 #define ATH_NTP
 #define ATH_UDP
 #define ATH_MQTT
-#define ATH_PIR
+//#define ATH_PIR
 
 //#define ATH_RELAY
-//#define ATH_TMP36
+#define ATH_TMP36
 //#define ATH_DHT11
 //#define ATH_BMP280
 
@@ -40,11 +40,12 @@
 String DeviceId = getDeviceId();
 
 //our main loop delay.
-#ifdef ATH_PIR
-   int loop_delay = 10;
-#else
-   int loop_delay = 1000;
-#endif
+int loop_delay = 10;
+// #ifdef ATH_PIR
+//    int loop_delay = 10;
+// #else
+//    int loop_delay = 1000;
+// #endif
 
 StorageValues rootConfig;
 PubSubClient root_mqtt_client;

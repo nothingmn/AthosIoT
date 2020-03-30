@@ -1,0 +1,1 @@
+https://github.com/MichaelThessel/arduino-analog-smooth
