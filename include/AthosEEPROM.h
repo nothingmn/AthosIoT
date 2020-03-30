@@ -91,7 +91,7 @@ void writeEEPROMData(StorageValues config) {
   _json += EEPROM_TERMINATER;
 
   EEPROM.begin(EEPROM_SIZE);
-  for (long i = 0; i < _json.length()-1; ++i)
+  for (uint i = 0; i < _json.length()-(unsigned)1; ++i)
   {
     EEPROM.put(i, _json[i]);
   }

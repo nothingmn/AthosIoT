@@ -52,7 +52,7 @@ float AnalogSmooth::smooth(float value)
 	
 	// Calculate the moving average
 	float total = 0;
-	for (int i = 0; i <= this->_maxPointer; i++) {
+	for (uint i = 0; i <= this->_maxPointer; i++) {
 		total = total + this->_analog[i];
 	}
 	float avg = total / (this->_maxPointer + 1);

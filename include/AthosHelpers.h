@@ -25,7 +25,7 @@ typedef struct storageValues StorageValues;
 time_t build_time() {
   static const char *built = __DATE__ " " __TIME__;  
   struct tm t;
-  const char *ret = strptime(built, "%b %d %Y %H:%M:%S", &t);
+  strptime(built, "%b %d %Y %H:%M:%S", &t);
   return mktime(&t);
 }
 
