@@ -54,7 +54,7 @@ Possible Major Features
 -----------------------
 1. Remote flashing new firmware on the device (via MQTT/URL?)  (DONE)
 2. PIR Sensors (DONE)
-3. Remote configuration of sensor tolerances and minimum reporting timing
+3. Node-side sensor data smoothing, moving average and tolerance based reporting  (DONE)
 4. GPS Support
 5. Partially connected scenarios
 6. PH Sensor

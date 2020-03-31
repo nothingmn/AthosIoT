@@ -43,6 +43,8 @@ void listenForUDPMessages()
       _udp_config.mqttUsername = doc["mqtt"]["username"].as<String>();
       _udp_config.mqttPassword = doc["mqtt"]["password"].as<String>();
       _udp_config.mqttPort = doc["mqtt"]["port"].as<String>();
+      _udp_config.ssid = doc["wifi"]["ssid"].as<String>();
+      _udp_config.password = doc["wifi"]["password"].as<String>();
       
       Log.trace("Received MQTT Payload:");
       Log.trace(_udp_config.mqttServer.c_str());
