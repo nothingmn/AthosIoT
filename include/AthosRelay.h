@@ -28,6 +28,7 @@ void RELAY_sendCapsToMQTT()
   doc["caps"]["ts"] = ts;
   doc["deviceid"] = _Relay_deviceId;
   doc["v"] = getVersion();
+  doc["b"] = getBuild();
 
   String json;
   serializeJson(doc, json);

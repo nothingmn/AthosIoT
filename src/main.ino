@@ -9,8 +9,8 @@
 #define ATH_NTP
 #define ATH_UDP
 #define ATH_MQTT
-//#define ATH_PIR
 
+//#define ATH_PIR
 //#define ATH_RELAY
 //#define ATH_TMP36
 //#define ATH_DHT11
@@ -51,7 +51,7 @@ void setup()
   //Log.setPrefix(printTimestamp); // Uncomment to get timestamps as prefix
   Log.setSuffix(printNewline); // Uncomment to get newline as suffix
 
-  Log.trace("~~~~~~~~~~SETUP STARTING~~~~~~~~~~");
+  Log.trace("~~~~~~~~~~SETUP STARTING~~~~~~~~~~Version:%s Build:%s", getVersion().c_str(), getBuild().c_str());
 
   rootConfig = EEPROM_setup();
 
@@ -118,7 +118,7 @@ void setup()
 #endif
 
 
-  Log.trace("~~~~~~~~~~SETUP COMPLETED %s~~~~~~~~~~", getVersion().c_str());
+  Log.trace("~~~~~~~~~~SETUP COMPLETED ~~~~~~~~~~Version:%s Build:%s", getVersion().c_str(), getBuild().c_str());
 }
 
 void loop()

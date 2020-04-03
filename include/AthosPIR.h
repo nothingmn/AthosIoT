@@ -35,6 +35,7 @@ void sendMovementToMQTT(int movement)
   doc["ts"] = ts;
   doc["deviceid"] = _PIR_deviceId;
   doc["v"] = getVersion();
+  doc["b"] = getBuild();
 
   String json;
   serializeJson(doc, json);

@@ -59,7 +59,8 @@ void DHT11_sendReadingToMQTT(float temp, float humidity, float heatIndex)
   doc["heatIndex"] = heatIndex;
   doc["deviceid"] = _DHT11_deviceId;
   doc["v"] = getVersion();
-
+  doc["b"] = getBuild();
+  
   String json;
   serializeJson(doc, json);
   Log.trace(json.c_str());

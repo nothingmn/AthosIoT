@@ -44,6 +44,28 @@ String getVersion()
   return _version;
 }
 
+String getBuild() {
+  String build = "";
+
+#ifdef ATH_PIR
+  build = build + "PIR,";
+#endif
+#ifdef ATH_RELAY
+  build = build + "RELAY,";
+#endif
+#ifdef ATH_TMP36
+  build = build + "TMP36,";
+#endif
+#ifdef ATH_DHT11
+  build = build + "DHT11,";
+#endif
+#ifdef ATH_BMP280
+  build = build + "BMP280,";
+#endif
+
+  return build.substring(0, build.length()-1);
+}
+
 String getDeviceId()
 {
   String address = WiFi.macAddress();

@@ -47,6 +47,7 @@ void BMP280_sendCapsToMQTT()
   doc["caps"]["ts"] = ts;
   doc["deviceid"] = _BMP280_deviceId;
   doc["v"] = getVersion();
+  doc["b"] = getBuild();  
   String json;
   serializeJson(doc, json);
   Log.trace(json.c_str());
@@ -88,7 +89,8 @@ void sendReadingToMQTT(float temp, float humidity, float pressure, float altitud
   doc["press"]  = pressure;
   doc["alt"]  = altitude;
   doc["v"] = getVersion();
-  
+  doc["b"] = getBuild();
+
   String json;
   serializeJson(doc, json);
   Log.trace(json.c_str());
