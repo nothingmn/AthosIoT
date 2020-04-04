@@ -14,7 +14,6 @@ struct storageValues
   String mqttPort;
   String mqttSensorTopic;
   String mqttRelayTopic;
-  String mqttCapsTopic;
   String mqttPingTopic;
   String mqttMotionTopic;
 };
@@ -30,22 +29,30 @@ time_t build_time() {
 }
 
 
-String _version;
-String getVersion()
+String  _version;
+String getVersion(void)
 {
   if (_version != NULL)
   {
     return _version;
   }
-  char buff[20];  
+  char buff[25];  
+
   time_t now = build_time();
-  strftime(buff, 20, "1.0.%Y%m%d.%H%M%S", localtime(&now));
+  size_t size = strftime(buff, 25, "1.0.%Y%m%d", localtime(&now));
   _version = String(buff);
   return _version;
 }
 
+String  _build;
 String getBuild() {
-  String build = "";
+
+  if (_build != NULL)
+  {
+    return _build;
+  }
+
+String build = "";
 
 #ifdef ATH_PIR
   build = build + "PIR,";
@@ -62,8 +69,9 @@ String getBuild() {
 #ifdef ATH_BMP280
   build = build + "BMP280,";
 #endif
-
-  return build.substring(0, build.length()-1);
+  
+  _build = String(build.substring(0, build.length()-1));
+  return _build;
 }
 
 String getDeviceId()

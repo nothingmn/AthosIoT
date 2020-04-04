@@ -1,5 +1,6 @@
 #!/bin/bash
-PLATFORMIOBIN=C:/Users/robch/.platformio/penv/Scripts/platformio.exe
+PLATFORMIOBIN=/mnt/c/Users/robch/.platformio/penv/Scripts/platformio.exe
+#PLATFORMIOBIN=C:/Users/robch/.platformio/penv/Scripts/platformio.exe
 BUILDROOT=./.pio/build
 OUTROOT=./out/
 

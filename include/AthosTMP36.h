@@ -28,26 +28,6 @@ StorageValues _tmp36_config;
 AnalogSmooth TMP_AnalogSmooth = AnalogSmooth(100);
 
 
-void TMP_sendCapsToMQTT()
-{
-  Log.trace("TMP_sendCapsToMQTT");
-  long ts = NTP_getEpochTime();
-  StaticJsonDocument<200> doc;
-  doc["caps"]["cap"] = "TMP36";
-  doc["caps"]["ts"] = ts;
-  doc["deviceid"] = _tmp36_deviceId;
-  doc["v"] = getVersion();
-  doc["b"] = getBuild();
-
-  String json;
-  serializeJson(doc, json);
-  Log.trace(json.c_str());
-  Log.trace(_tmp36_config.mqttCapsTopic.c_str());
-  _tmp36_mqtt_client.publish(_tmp36_config.mqttCapsTopic.c_str(), json.c_str());
-  MQTTTransmitLed();
-}
-
-
 void TMP_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
 {
     _tmp36_mqtt_client = mqtt_client;
@@ -55,7 +35,6 @@ void TMP_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConf
     _tmp36_config = rootConfig;
     _tmp36_loop_delay = loop_delay;
 
-    TMP_sendCapsToMQTT();
 }
 
 float TMP36_readTemperature() {
@@ -74,22 +53,14 @@ float TMP36_readTemperature() {
 void sendTemperatureToMQTT(float value, float diff)
 {
   long ts = NTP_getEpochTime();
+  String csv = String("TMP36," + getVersion() + "," + ts + "," + value + "," + diff);
+  const char* payload = csv.c_str();
+  const char* topic = _tmp36_config.mqttSensorTopic.c_str();
+  Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());
 
-  StaticJsonDocument<200> doc;
-  doc["temp"] = value;
-  doc["diff"] = diff;
-  doc["ts"] = ts;
-  doc["v"] = getVersion();
-  doc["deviceid"] = _tmp36_deviceId;
-  doc["b"] = getBuild();
 
-  String json;
-  serializeJson(doc, json);
-  Log.trace(json.c_str());
-  
-
-  if (!_tmp36_mqtt_client.publish(_tmp36_config.mqttSensorTopic.c_str(), json.c_str())) {
-      Log.trace(F("Failed"));
+  if (!_tmp36_mqtt_client.publish(topic, payload)) {
+    Log.trace("TMP36 Data to MQTT Failed. Packet > 128?");
   }
 
   MQTTTransmitLed();

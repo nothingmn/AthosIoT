@@ -51,22 +51,14 @@ void DHT11_sendReadingToMQTT(float temp, float humidity, float heatIndex)
 {
 
   long ts = NTP_getEpochTime();
+  String csv = String("DHT11," + getVersion() + "," + ts + "," + temp + "," + humidity + ","+ heatIndex);
+  const char* payload = csv.c_str();
+  const char* topic = _DHT11_config.mqttSensorTopic.c_str();
+  Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());
 
-  StaticJsonDocument<200> doc;
-  doc["ts"] = ts;
-  doc["temp"] = temp;
-  doc["humidity"] = humidity;
-  doc["heatIndex"] = heatIndex;
-  doc["deviceid"] = _DHT11_deviceId;
-  doc["v"] = getVersion();
-  doc["b"] = getBuild();
-  
-  String json;
-  serializeJson(doc, json);
-  Log.trace(json.c_str());
-  if (!_DHT11_mqtt_client.publish(_DHT11_config.mqttSensorTopic.c_str(), json.c_str()), false)
+  if (!_DHT11_mqtt_client.publish(topic, payload))
   {
-    Log.trace(F("Failed"));
+    Log.trace("DHT11 Data to MQTT Failed. Packet > 128?");
   }
   MQTTTransmitLed();
 }

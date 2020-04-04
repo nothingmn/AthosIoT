@@ -54,7 +54,6 @@ StorageValues readEEPROMData() {
     values.mqttPassword =    readDoc["mqtt"]["password"].as<String>();
     values.mqttPort =        readDoc["mqtt"]["port"].as<String>();
     values.mqttSensorTopic = readDoc["mqtt"]["sensor"].as<String>();
-    values.mqttCapsTopic = readDoc["mqtt"]["caps"].as<String>();
     values.mqttPingTopic = readDoc["mqtt"]["ping"].as<String>();
     values.mqttRelayTopic = readDoc["mqtt"]["relay"].as<String>();
     values.mqttMotionTopic = readDoc["mqtt"]["motion"].as<String>();
@@ -79,7 +78,6 @@ void writeEEPROMData(StorageValues config) {
   writeDoc["mqtt"]["port"] =      config.mqttPort;
   writeDoc["mqtt"]["sensor"] =    config.mqttSensorTopic;
   writeDoc["mqtt"]["ping"] =      config.mqttPingTopic;
-  writeDoc["mqtt"]["caps"] =      config.mqttCapsTopic;
   writeDoc["mqtt"]["relay"] =     config.mqttRelayTopic;
   writeDoc["mqtt"]["motion"] =     config.mqttMotionTopic;
 

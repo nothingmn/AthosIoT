@@ -18,28 +18,6 @@ String _Relay_deviceId;
 StorageValues _Relay_config;
 int _Relay_loop_delay;
 
-void RELAY_sendCapsToMQTT()
-{
-  Log.trace("RELAY_sendCapsToMQTT");
-  long ts = NTP_getEpochTime();
-  StaticJsonDocument<200> doc;
-  doc["caps"]["cap"] = "RELAY";
-  doc["caps"]["channels"] = "[\"D0\"]";
-  doc["caps"]["ts"] = ts;
-  doc["deviceid"] = _Relay_deviceId;
-  doc["v"] = getVersion();
-  doc["b"] = getBuild();
-
-  String json;
-  serializeJson(doc, json);
-  Log.trace(json.c_str());
-  Log.trace(_Relay_config.mqttCapsTopic.c_str());
-  _Relay_mqtt_client.publish(_Relay_config.mqttCapsTopic.c_str(), json.c_str());
-  MQTTTransmitLed();
-}
-
-
-
 void Relay_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
 {
   _Relay_mqtt_client = mqtt_client;
@@ -52,7 +30,6 @@ void Relay_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootCo
     pinMode(RELAY_PINS[x], OUTPUT);
     digitalWrite(RELAY_PINS[x], turn_Off);
   }
-  RELAY_sendCapsToMQTT();
 }
 
 

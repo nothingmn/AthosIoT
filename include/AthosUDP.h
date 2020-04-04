@@ -35,7 +35,6 @@ void listenForUDPMessages()
       deserializeJson(doc, packetBuffer);
 
       _udp_config.mqttRelayTopic = doc["mqtt"]["relay"].as<String>();
-      _udp_config.mqttCapsTopic = doc["mqtt"]["caps"].as<String>();
       _udp_config.mqttPingTopic = doc["mqtt"]["ping"].as<String>();
       _udp_config.mqttSensorTopic = doc["mqtt"]["sensor"].as<String>();
       _udp_config.mqttMotionTopic = doc["mqtt"]["motion"].as<String>();

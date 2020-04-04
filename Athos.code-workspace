@@ -17,7 +17,11 @@
 			"vector": "cpp",
 			"initializer_list": "cpp",
 			"cmath": "cpp",
-			"*.tcc": "cpp"
+			"*.tcc": "cpp",
+			"limits": "cpp",
+			"tuple": "cpp",
+			"type_traits": "cpp",
+			"utility": "cpp"
 		}
 	}
 }

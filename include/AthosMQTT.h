@@ -21,12 +21,12 @@ bool ConnectToMqtt()
       int result = 0;
       if (_mqtt_config.mqttUsername != NULL && _mqtt_config.mqttPassword != NULL && _mqtt_config.mqttUsername != "" && _mqtt_config.mqttPassword != "")
       {
-        Log.trace("MQTT Using Password authentication");
+        Log.trace("MQTT Using Password authentication ClientID:%s", clientId.c_str());
         result = mqtt_client.connect(clientId.c_str(), _mqtt_config.mqttUsername.c_str(), _mqtt_config.mqttPassword.c_str());
       }
       else
       {
-        Log.trace("MQTT NOT using authentication");
+        Log.trace("MQTT NOT using authentication ClientID:%s", clientId.c_str());
         result = mqtt_client.connect(clientId.c_str());
       }
       if (result)
@@ -134,7 +134,6 @@ void callback(char *topic, byte *payload, unsigned int length)
       _mqtt_config.password = GetValueOrDefault(readDoc, "wifi", "password", config.password);
 
       _mqtt_config.mqttRelayTopic = GetValueOrDefault(readDoc, "mqtt", "relay", config.mqttRelayTopic);
-      _mqtt_config.mqttCapsTopic = GetValueOrDefault(readDoc, "mqtt", "caps", config.mqttCapsTopic);
       _mqtt_config.mqttPingTopic = GetValueOrDefault(readDoc, "mqtt", "ping", config.mqttPingTopic);
       _mqtt_config.mqttMotionTopic = GetValueOrDefault(readDoc, "mqtt", "motion", config.mqttMotionTopic);
       

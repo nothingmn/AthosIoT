@@ -6,8 +6,9 @@
 //SCL  -> D1
 //SDA  -> D2
 // https://randomnerdtutorials.com/esp8266-bme280-arduino-ide/
-//https://github.com/adafruit/Adafruit_BME280_Library/blob/master/examples/bme280test/bme280test.ino
+// https://github.com/adafruit/Adafruit_BME280_Library/blob/master/examples/bme280test/bme280test.ino
 
+#include <string>
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <Wire.h>
@@ -38,24 +39,6 @@ AnalogSmooth BMP_AnalogSmooth_humid = AnalogSmooth(100);
 AnalogSmooth BMP_AnalogSmooth_press = AnalogSmooth(100);
 AnalogSmooth BMP_AnalogSmooth_alt = AnalogSmooth(100);
 
-void BMP280_sendCapsToMQTT()
-{
-  Log.trace("BMP280_sendCapsToMQTT");
-  long ts = NTP_getEpochTime();
-  StaticJsonDocument<200> doc;
-  doc["caps"]["cap"] = "BMP280";
-  doc["caps"]["ts"] = ts;
-  doc["deviceid"] = _BMP280_deviceId;
-  doc["v"] = getVersion();
-  doc["b"] = getBuild();  
-  String json;
-  serializeJson(doc, json);
-  Log.trace(json.c_str());
-  Log.trace(_BMP280_config.mqttCapsTopic.c_str());
-  _BMP280_mqtt_client.publish(_BMP280_config.mqttCapsTopic.c_str(), json.c_str());
-  MQTTTransmitLed();
-}
-
 
 void BMP280_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
 {
@@ -63,50 +46,40 @@ void BMP280_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootC
   _BMP280_deviceId = deviceId;
   _BMP280_config = rootConfig;
   _BMP280_loop_delay = loop_delay;
-  if (!bme.begin(i2cAddress))
+  bool errorShown = false;
+  while (!bme.begin(i2cAddress))
   {
-    Log.trace("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
-    Log.trace("SensorID was: %i %i", bme.sensorID(), 16);
-    Log.trace("        ID of 0xFF probably means a bad address, a BMP 180 or BMP 085");
-    Log.trace("   ID of 0x56-0x58 represents a BMP 280,");
-    Log.trace("        ID of 0x60 represents a BME 280.");
-    Log.trace("        ID of 0x61 represents a BME 680.");
+    if(!errorShown) {
+      Log.trace("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
+      Log.trace("SensorID was: %i %i", bme.sensorID());
+      Log.trace("   ID of 0xFF probably means a bad address, a BMP 180 or BMP 085");
+      Log.trace("   ID of 0x56-0x58 represents a BMP 280,");
+      Log.trace("   ID of 0x60 represents a BME 280.");
+      Log.trace("   ID of 0x61 represents a BME 680.");
+      errorShown = true;  
+      Log.trace("Waiting for BME280 sensor...");
+    }  
+    Log.trace(".");
+    delay(1000);
   }
-  BMP280_sendCapsToMQTT();
 }
 
 void sendReadingToMQTT(float temp, float humidity, float pressure, float altitude)
 {
 
   long ts = NTP_getEpochTime();
-
-  StaticJsonDocument<128> doc;
-  doc.clear();
-  doc["ts"] = ts;
-  doc["deviceid"]  = _BMP280_deviceId.c_str();
-  doc["temp"]  = temp;
-  doc["hum"]  = humidity;
-  doc["press"]  = pressure;
-  doc["alt"]  = altitude;
-  doc["v"] = getVersion();
-  doc["b"] = getBuild();
-
-  String json;
-  serializeJson(doc, json);
-  Log.trace(json.c_str());
-  Log.trace(_BMP280_config.mqttSensorTopic.c_str());
+  String csv = String("BMP280," + getVersion() + "," + ts + "," + temp + "," + humidity + ","+ pressure + ","+ altitude);
+  const char* payload = csv.c_str();
+  const char* topic = _BMP280_config.mqttSensorTopic.c_str();
+  Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());
   
-  if (!_BMP280_mqtt_client.publish(_BMP280_config.mqttSensorTopic.c_str(), json.c_str()))
-  {
-    Log.trace(F("BMP20 Data to MQTT Failed"));
-    //_BMP280_mqtt_client.disconnect();
+  if (!_BMP280_mqtt_client.publish(topic, payload))
+  {    
+    Log.trace("BMP20 Data to MQTT Failed. Packet > 128?");
   } else {
     MQTTTransmitLed();
   }
-  doc.clear();
 }
-
-
 
 float _BMP280_last_recorded_temp = 0;
 float _BMP280_last_recorded_humid = 0;

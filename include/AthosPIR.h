@@ -30,19 +30,13 @@ void sendMovementToMQTT(int movement)
 {
   long ts = NTP_getEpochTime();
 
-  StaticJsonDocument<200> doc;
-  doc["move"] = movement;
-  doc["ts"] = ts;
-  doc["deviceid"] = _PIR_deviceId;
-  doc["v"] = getVersion();
-  doc["b"] = getBuild();
+  String csv = String("PIR," + getVersion() + "," + ts + "," + movement);
+  const char* payload = csv.c_str();
+  const char* topic = _PIR_config.mqttSensorTopic.c_str();
+  Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());
 
-  String json;
-  serializeJson(doc, json);
-  Log.trace("%s %s", _PIR_config.mqttMotionTopic.c_str(), json.c_str());
-  
-  if (!_PIR_mqtt_client.publish(_PIR_config.mqttMotionTopic.c_str(), json.c_str())) {
-      Log.trace(F("Failed"));
+  if (!_PIR_mqtt_client.publish(topic, payload)) {
+    Log.trace("PIR Data to MQTT Failed. Packet > 128?");
   }
 
   MQTTTransmitLed();
