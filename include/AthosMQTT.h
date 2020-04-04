@@ -101,10 +101,12 @@ void callback(char *topic, byte *payload, unsigned int length)
     if (command == "reset")
     {
       ESP.reset();
+      delay(1000);
     }
     else if (command == "restart")
     {
       ESP.restart();
+      delay(1000);
     }
     else if (command == "upgrade") {
         String host = readDoc["host"].as<String>();
