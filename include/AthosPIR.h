@@ -30,7 +30,7 @@ void sendMovementToMQTT(int movement)
 {
   long ts = NTP_getEpochTime();
 
-  String csv = String("PIR," + getVersion() + "," + ts + "," + movement);
+  String csv = String("PIR," + getVersion() + "," + ts + "," + movement + "," + _PIR_deviceId);
   const char* payload = csv.c_str();
   const char* topic = _PIR_config.mqttSensorTopic.c_str();
   Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());

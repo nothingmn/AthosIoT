@@ -51,7 +51,7 @@ void DHT11_sendReadingToMQTT(float temp, float humidity, float heatIndex)
 {
 
   long ts = NTP_getEpochTime();
-  String csv = String("DHT11," + getVersion() + "," + ts + "," + temp + "," + humidity + ","+ heatIndex);
+  String csv = String("DHT11," + getVersion() + "," + ts + "," + temp + "," + humidity + ","+ heatIndex + "," + _DHT11_deviceId);
   const char* payload = csv.c_str();
   const char* topic = _DHT11_config.mqttSensorTopic.c_str();
   Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());

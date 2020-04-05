@@ -53,7 +53,7 @@ float TMP36_readTemperature() {
 void sendTemperatureToMQTT(float value, float diff)
 {
   long ts = NTP_getEpochTime();
-  String csv = String("TMP36," + getVersion() + "," + ts + "," + value + "," + diff);
+  String csv = String("TMP36," + getVersion() + "," + ts + "," + value + "," + diff + "," + _tmp36_deviceId);
   const char* payload = csv.c_str();
   const char* topic = _tmp36_config.mqttSensorTopic.c_str();
   Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());

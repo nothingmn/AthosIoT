@@ -68,7 +68,7 @@ void sendReadingToMQTT(float temp, float humidity, float pressure, float altitud
 {
 
   long ts = NTP_getEpochTime();
-  String csv = String("BMP280," + getVersion() + "," + ts + "," + temp + "," + humidity + ","+ pressure + ","+ altitude);
+  String csv = String("BMP280," + getVersion() + "," + ts + "," + temp + "," + humidity + ","+ pressure + ","+ altitude + "," + _BMP280_deviceId);
   const char* payload = csv.c_str();
   const char* topic = _BMP280_config.mqttSensorTopic.c_str();
   Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());
