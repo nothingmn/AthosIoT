@@ -39,7 +39,7 @@ String getVersion(void)
   char buff[25];  
 
   time_t now = build_time();
-  size_t size = strftime(buff, 25, "1.0.%Y%m%d", localtime(&now));
+  size_t size = strftime(buff, 25, "1.0.%Y%m%d.%H:%M", localtime(&now));
   _version = String(buff);
   return _version;
 }

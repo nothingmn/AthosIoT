@@ -27,7 +27,7 @@ bool testWifi(void)
     Log.trace("*");
     c++;
   }
-  Log.trace("Connect timed out, opening AP");
+  Log.trace("Connect timed out");
   return false;
 }
 
