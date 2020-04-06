@@ -9,7 +9,7 @@
         <button type="submit" class="btn btn-light float-right" @click.prevent="reset">
           Reset
         </button>
-        <button type="submit" class="btn btn-secondary  float-right" @click.prevent="rename">
+        <button type="submit" class="btn btn-secondary  float-right" @click.prevent="rename(device)">
           Rename
         </button>
         <button type="submit" class="btn btn-secondary float-right" @click.prevent="ping">
@@ -51,7 +51,7 @@
               <li v-for="o in device.relay" class="list-group-item list-group-item-action flex-column align-items-start">
                 <div v-if="o.id">
                   {{o.id}} : {{o.name}}
-                  <button type="submit" class="btn btn-secondary  float-right" @click.prevent="relay_rename(device, o)">
+                  <button type="submit" class="btn btn-secondary  float-right" @click="relay_rename(device, o)">
                     Rename
                   </button>
                   <button type="submit" class="btn btn-secondary  float-right" @click.prevent="relay_off(device, o)">
@@ -66,21 +66,29 @@
           </div>          
           {{device.last.timeStamp}}
           <div v-if="device.ping">
-            Ping Delay:{{device.ping.pongDiff}}            
+            Ping Delay:{{device.ping.roundTrip}}            
           </div>    
         </div>          
       </div>
     </div>
     <div class="clearfix"></div>
-  </card>
+    <rename-relay-modal name="rename-relay-modal"/>
+    <rename-device-modal name="rename-device-modal"/>
+
+  </card>  
+
 </template>
 <script>
 import Card from 'src/components/Cards/Card.vue'
 import Vue from 'vue'
+import RenameRelayModal from 'src/components/RenameRelayModal.vue'
+import RenameDeviceModal from 'src/components/RenameDeviceModal.vue'
 
 export default {
     components: {
-      Card
+      Card,
+      RenameRelayModal,
+      RenameDeviceModal
     },
     props : ['device'],
     data () {
@@ -88,19 +96,6 @@ export default {
       }
     },
       mounted() {    
-        // var vm = this;    
-        // var sock = Vue.prototype.$socket;
-        // sock.send(JSON.stringify({ action : "get-wifi" }));
-
-        // sock.onmessage = function(event) {
-        //   if(event && event.data) {
-        //     var msg = JSON.parse(event.data);
-        //     if(msg.action && msg.action === "update-wifi") {
-        //       if(msg.ssid) vm.wifi.ssid = msg.ssid;
-        //       if(msg.password) vm.wifi.password = msg.password;
-        //     }
-        //   }
-        // };
       },   
       methods: {
         all_on(device) {
@@ -114,18 +109,11 @@ export default {
         },
         relay_rename(device, relay){
           console.log('rename relay:',  device.deviceid, relay.id);
-          //rename-relay-node
-          var existingName = "My Relay Switch";
 
-          if(relay.name && relay.name !== "") {
-             existingName = relay.name;
-          }
-          var name = window.prompt("Rename Relay Switch" + this.device.deviceid + " ("+relay.id+")", existingName);
-          if(name) {
-            console.log('renaming relay switch:', relay.id, name );
-            relay.name = name;
-            Vue.prototype.$socket.send(JSON.stringify({ action : "rename-relay-switch", device, relay, name }));
-          }
+          this.$modal.show('rename-relay-modal', { model : {
+            relay : relay,
+            device : device,
+          }});
         },
         relay_on(device, relay){
           console.log('on relay:',  device.deviceid, relay.id);
@@ -139,16 +127,8 @@ export default {
           console.log('pinging device:', this.device.deviceid );
           Vue.prototype.$socket.send(JSON.stringify({ action : "ping-device", ts: new Date(), deviceid : this.device.deviceid }));
         }, 
-        rename() {
-          var existingName = "My Device";
-          if(this.device.name && this.device.name !== "") {
-             existingName = this.device.name;
-          }
-          var name = window.prompt("Rename device" + this.device.deviceid,existingName);
-          if(name) {
-            console.log('renaming device:', this.device.deviceid, name );
-            Vue.prototype.$socket.send(JSON.stringify({ action : "rename-device", deviceid : this.device.deviceid, name }));
-          }
+        rename(device) {
+          this.$modal.show('rename-device-modal', { model : { device : device }});
         }, 
         wipe() {
           console.log('wiping device:', this.device.deviceid );

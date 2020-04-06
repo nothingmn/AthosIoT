@@ -17,7 +17,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import App from './App.vue'
 import VueNativeSock from 'vue-native-websocket'
-
+import VModal from 'vue-js-modal'
 // LightBootstrap plugin
 import LightBootstrap from './light-bootstrap-main'
 
@@ -28,10 +28,12 @@ import './registerServiceWorker'
 // plugin setup
 Vue.use(VueRouter)
 Vue.use(LightBootstrap)
+Vue.use(VModal)                                              
 Vue.use(VueNativeSock, 'ws://10.0.0.144:1880/ws/athos', {
                                                 withCredentials: false, 
                                                 format: 'json' 
                                               });
+
 function waitForSocketConnection(socket, callback){
   setTimeout(
       function () {

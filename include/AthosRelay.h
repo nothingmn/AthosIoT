@@ -9,7 +9,7 @@
 //add or remove and sort items from the array to control the pins as you like.
 uint RELAY_PINS[] {D0};
 //change this so we can report up to to the server
-String RELAY_Report_PINS = "D0";
+String RELAY_Report_PINS = "D0,D1,D2,D3,D4,D5";
 
 #define turn_On 1
 #define turn_Off 0
