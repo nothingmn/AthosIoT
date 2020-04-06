@@ -59,22 +59,21 @@ void MQTT_PongResponse(int senderTS)
 {
   Log.trace("MQTT_PongResponse");
   int ts = NTP_getEpochTime();
-  int diff = ts - senderTS;
-  StaticJsonDocument<200> doc;
-  doc["command"] = "pong";
-  doc["senderTS"] = senderTS;
-  doc["ts"] = ts;
-  doc["diff"] = diff;
-  doc["deviceid"] = _mqtt_deviceId;
-  String json;
-  serializeJson(doc, json);
-  Log.trace(json.c_str());
-  Log.trace(_mqtt_config.mqttPingTopic.c_str());
-  mqtt_client.publish(_mqtt_config.mqttPingTopic.c_str(), json.c_str());
+  int diff = abs(ts - senderTS);
+
+  String csv = String("PONG," + getVersion() + "," + ts + "," + senderTS + "," + diff + ","+ _mqtt_deviceId);
+  const char* payload = csv.c_str();
+  const char* topic = _mqtt_config.mqttPingTopic.c_str();
+  Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());
+
+  if (!mqtt_client.publish(topic, payload))
+  {
+    Log.trace("PONG Data to MQTT Failed. Packet > 128?");
+  }
   MQTTTransmitLed();
 }
 
-void callback(char *topic, byte *payload, unsigned int length)
+void MQTT_Callback(char *topic, byte *payload, unsigned int length)
 {
 
   payload[length] = '\0';
@@ -100,15 +99,18 @@ void callback(char *topic, byte *payload, unsigned int length)
     String command = readDoc["command"].as<String>();
     if (command == "reset")
     {
+      Log.trace("Reset command received");
       ESP.reset();
       delay(1000);
     }
     else if (command == "restart")
     {
+      Log.trace("Restart command received");
       ESP.restart();
       delay(1000);
     }
     else if (command == "upgrade") {
+      Log.trace("Upgrade command received");
         String host = readDoc["host"].as<String>();
         int port = readDoc["port"].as<int>();
         String path = readDoc["path"].as<String>();
@@ -120,16 +122,19 @@ void callback(char *topic, byte *payload, unsigned int length)
     }
     else if (command == "wipe")
     {
+      Log.trace("Wipe command received");
       wipeEEPROM();
       ESP.reset();
       Log.trace("EEPROM KILLED!");
     }
     else if(command == "ping") {
+      Log.trace("Ping command received");
       String _ts = readDoc["ts"].as<String>();
       MQTT_PongResponse(atoi(_ts.c_str()));
     }
     else if (command == "reconfigure")
     {
+      Log.trace("Reconfigure command received");
       StorageValues config = readEEPROMData();
 
       _mqtt_config.ssid = GetValueOrDefault(readDoc, "wifi", "ssid", config.ssid);
@@ -166,7 +171,7 @@ PubSubClient MQTT_Setup(String deviceId, StorageValues rootConfig)
   _mqtt_config = rootConfig;
   Log.trace("Connecting to MQTT server: %s %s", _mqtt_config.mqttServer.c_str(), _mqtt_config.mqttPort.c_str());
   mqtt_client.setServer(_mqtt_config.mqttServer.c_str(), _mqtt_config.mqttPort.toInt());
-  mqtt_client.setCallback(callback);
+  mqtt_client.setCallback(MQTT_Callback);
 
   ConnectAndSubscribe();
 

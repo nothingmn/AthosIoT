@@ -26,24 +26,25 @@
     },
       mounted() {    
         var vm = this;    
+
         var sock = Vue.prototype.$socket;
         sock.send(JSON.stringify({ action : "get-devices" }));
         console.log("get-devices sent");
 
-        sock.onmessage = function(event) {
+        sock.onmessage = function(event) {          
           if(event && event.data) {
             var msg = JSON.parse(event.data);
+            console.log(msg);        
+
             if(msg.action && msg.action === "devices-list") {
-              vm.cards = [];
+                vm.cards = [];
+
               for(var d in msg.devices) {
                 var device = msg.devices[d];                
-
                 if(device && device.last && device.last.timeStamp) {
                   device.last.timeStamp = (new Date(device.last.timeStamp));
                 }
-
                 var exists = false;
-
                 if(vm.cards) {
                   for(var c in vm.cards) {
                     var card = vm.cards[c];
@@ -54,9 +55,10 @@
                   }
                 }
                 if(!exists) {
-                var card = {'card': { device : device }, 'card-type' : DeviceView};
-                vm.cards.push(card);
+                  var card = {'card': { device : device }, 'card-type' : DeviceView};
+                  vm.cards.push(card);
                 }
+
               }
             }          
         }

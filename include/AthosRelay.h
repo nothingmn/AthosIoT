@@ -2,13 +2,14 @@
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 
+#ifndef ATH_MQTT
+  #include "AthosMQTT.h"
+#endif
 
-//{"command":"on","pin":0}
-// "pin" in that JSON document will match the index of the RELAY_PINS array
 //add or remove and sort items from the array to control the pins as you like.
-//uint RELAY_PINS[] {};
 uint RELAY_PINS[] {D0};
-//uint RELAY_PINS[6] {D0, D1, D2, D3, D4, D5};
+//change this so we can report up to to the server
+String RELAY_Report_PINS = "D0";
 
 #define turn_On 1
 #define turn_Off 0
@@ -35,7 +36,7 @@ void Relay_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootCo
 
 void RunFun() {
   for(int x=0;x<=5;x++) {
-    for(int y=0;y<sizeof(RELAY_PINS);x++) {
+    for(int y=0;y<sizeof(RELAY_PINS);y++) {
       digitalWrite(RELAY_PINS[y], turn_Off);      
     }
     delay(100);
@@ -50,6 +51,9 @@ void RunFun() {
 bool Relay_MQTT_Received(String topic, String json) {
   
   if(topic.endsWith("/" + _Relay_deviceId)) {
+
+    Log.trace("Relay_MQTT_Received  \nTopic:%s\nPayload:%s", topic.c_str(), json.c_str());
+    
     //matched to the current device.  now do something with the JSON payload;
     StaticJsonDocument<255> readDoc;
     deserializeJson(readDoc, json);
@@ -58,6 +62,9 @@ bool Relay_MQTT_Received(String topic, String json) {
     if(command == "on" || command == "off") {
       int vpin = readDoc["pin"].as<int>();
       int pin = RELAY_PINS[0];
+
+      Log.trace("Relay_MQTT_Received:\npin:%i\npin:%i\ncommand:%s", vpin, pin, command.c_str());
+
       if(vpin <= sizeof(RELAY_PINS)) {
         pin = RELAY_PINS[vpin];
       }
@@ -90,9 +97,33 @@ bool Relay_MQTT_Received(String topic, String json) {
   return false;
 }
 
+void RELAY_CheckIn()
+{
+  Log.trace("RELAY_CheckIn");
+  int ts = NTP_getEpochTime();
+  
+  String csv = String("RELAY," + getVersion() + "," + ts + "," + RELAY_Report_PINS + "," +  _Relay_deviceId);
+  const char* payload = csv.c_str();
+  const char* topic = _Relay_config.mqttSensorTopic.c_str();
+  Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());
 
+  if (!_Relay_mqtt_client.publish(topic, payload))
+  {
+    Log.trace("RELAY Checkin Data to MQTT Failed. Packet > 128?");
+  }
+  MQTTTransmitLed();
+}
+
+long relay_last = 0;
+long relay_max_diff = 60;
 void Relay_Loop()
 {
+  long now = NTP_getEpochTime();
+  long diff = abs(now - relay_last);  
+  if(diff > relay_max_diff) {
+    relay_last = now;
+    RELAY_CheckIn();
+  }
 }
 
 #endif
