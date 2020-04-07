@@ -6,6 +6,7 @@ import NotFound from '../pages/NotFoundPage.vue'
 import Overview from 'src/pages/Overview.vue'
 import ConfigureWifi from 'src/pages/ConfigureWifi.vue'
 import Devices from 'src/pages/Devices.vue'
+import ManageFirmware from 'src/pages/ManageFirmware.vue'
 
 
 const routes = [
@@ -33,7 +34,13 @@ const routes = [
         path: 'devices',
         name: 'Devices',
         component: Devices
+      },
+      {
+        path: 'firmware',
+        name: 'Firmware',
+        component: ManageFirmware
       }
+
     ]
   },
   { path: '*', component: NotFound }

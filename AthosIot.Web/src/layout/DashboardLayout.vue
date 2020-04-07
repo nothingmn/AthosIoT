@@ -14,6 +14,10 @@
         <i class="nc-icon nc-preferences-circle-rotate"></i>
         <p>Manage Devices</p>
       </sidebar-link>
+      <sidebar-link to="/admin/firmware">
+        <i class="nc-icon nc-app"></i>
+        <p>Manage Firmware</p>
+      </sidebar-link>
     </side-bar>
     <div class="main-panel">
       <top-navbar></top-navbar>

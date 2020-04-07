@@ -20,6 +20,7 @@ import VueNativeSock from 'vue-native-websocket'
 import VModal from 'vue-js-modal'
 // LightBootstrap plugin
 import LightBootstrap from './light-bootstrap-main'
+import FileUpload from 'v-file-upload'
 
 // router setup
 import routes from './routes/routes'
@@ -28,7 +29,8 @@ import './registerServiceWorker'
 // plugin setup
 Vue.use(VueRouter)
 Vue.use(LightBootstrap)
-Vue.use(VModal)                                              
+Vue.use(VModal)         
+Vue.use(FileUpload)                                     
 Vue.use(VueNativeSock, 'ws://10.0.0.144:1880/ws/athos', {
                                                 withCredentials: false, 
                                                 format: 'json' 

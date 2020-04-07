@@ -15,6 +15,9 @@
         <button type="submit" class="btn btn-secondary float-right" @click.prevent="ping">
           Ping
         </button>        
+        <button type="submit" class="btn btn-secondary float-right" @click.prevent="firmware_update(device)">
+          Firmware
+        </button>        
         <div v-if="device.last.type == 'RELAY'">
             <button type="submit" class="btn btn-secondary  float-right" @click.prevent="all_off(device)">
               All Off
@@ -73,7 +76,7 @@
     </div>
     <div class="clearfix"></div>
     <rename-relay-modal name="rename-relay-modal"/>
-    <rename-device-modal name="rename-device-modal"/>
+    <device-firmware-update-modal name="device-firmware-update-modal"/>
 
   </card>  
 
@@ -83,12 +86,14 @@ import Card from 'src/components/Cards/Card.vue'
 import Vue from 'vue'
 import RenameRelayModal from 'src/components/RenameRelayModal.vue'
 import RenameDeviceModal from 'src/components/RenameDeviceModal.vue'
+import DeviceFirmwareUpdateModal from 'src/components/DeviceFirmwareUpdateModal.vue'
 
 export default {
     components: {
       Card,
       RenameRelayModal,
-      RenameDeviceModal
+      RenameDeviceModal,
+      DeviceFirmwareUpdateModal
     },
     props : ['device'],
     data () {
@@ -106,6 +111,13 @@ export default {
         all_off(device) {
           console.log('all_off:',  device.deviceid);
           Vue.prototype.$socket.send(JSON.stringify({ action : "all-off", deviceid : device.deviceid }));
+        },
+        firmware_update(device) {
+          console.log('firmware_update:',  device.deviceid);
+
+          this.$modal.show('device-firmware-update-modal', { model : {
+            device : device
+          }});
         },
         relay_rename(device, relay){
           console.log('rename relay:',  device.deviceid, relay.id);
