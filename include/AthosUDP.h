@@ -15,7 +15,7 @@ bool UDP_configComplete = false;
 void listenForUDPMessages()
 {
     // if there's data available, read a packet
-    char packetBuffer[512]; //buffer to hold incoming packet
+    char packetBuffer[1500]; //buffer to hold incoming packet
     int packetSize = listenUDP.parsePacket();
     if (packetSize)
     {

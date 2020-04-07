@@ -76,6 +76,7 @@
     </div>
     <div class="clearfix"></div>
     <rename-relay-modal name="rename-relay-modal"/>
+    <rename-device-modal name="rename-device-modal"/>
     <device-firmware-update-modal name="device-firmware-update-modal"/>
 
   </card>  
@@ -140,6 +141,7 @@ export default {
           Vue.prototype.$socket.send(JSON.stringify({ action : "ping-device", ts: new Date(), deviceid : this.device.deviceid }));
         }, 
         rename(device) {
+          console.log('rename device:', this.device.deviceid );
           this.$modal.show('rename-device-modal', { model : { device : device }});
         }, 
         wipe() {
