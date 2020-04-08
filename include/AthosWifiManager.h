@@ -1,4 +1,3 @@
-#ifdef ATH_WIFIMANAGER
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WebServer.h>
@@ -201,5 +200,3 @@ void WifiManager_Loop()
   //we should have never gotten past setup so we assume Wifi is already configured and ready
   EnsureWifiConnected();
 }
-
-#endif

@@ -87,61 +87,43 @@ String getDeviceId()
 
 void BlinkLed(int blinkCount, int blinkDelay)
 {
-#ifdef ATH_LED
   LED_Blink(blinkCount, blinkDelay);
-#endif
 }
 void BlinkLed()
 {
-#ifdef ATH_LED
   LED_Blink();
-#endif
 }
 
 void MQTTTransmitLed()
 {
-#ifdef ATH_LED
   LED_Blink(5);
-#endif
 }
 void WifiSetupStartLed()
 {
-#ifdef ATH_LED
   LED_Blink(2);
-#endif
 }
 void WifiSetupCompleteLed()
 {
-#ifdef ATH_LED
   LED_Blink(3);
-#endif
 }
 
 void Relay_ON_Led()
 {
-#ifdef ATH_LED
   LED_ON();
-#endif
 }
 void Relay_OFF_Led()
 {
-#ifdef ATH_LED
   LED_OFF();
-#endif
 }
 
 void MotionDetected_LED()
 {
-#ifdef ATH_LED
   LED_Blink(4);
-#endif
 }
 
 void NoMotionDetected_LED()
 {
-#ifdef ATH_LED
   LED_Blink(3);
-#endif
 }
 
 bool shouldSend(float current, float last, float max_diff)

@@ -1,7 +1,5 @@
 
 
-#ifdef ATH_LED
-
 #define ATHLED_PIN LED_BUILTIN //Led in NodeMCU at pin GPIO16 (D0) 
 #define ATHLED_DEFAULT_DELAY 50
 #define ATHLED_DEFAULT_COUNT 5
@@ -40,5 +38,3 @@ void LED_Blink(int blinkCount) {
 void LED_Blink() {
   LED_Blink(ATHLED_DEFAULT_COUNT, ATHLED_DEFAULT_DELAY);
 }
-
-#endif

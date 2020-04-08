@@ -1,5 +1,4 @@
 
-#ifdef ATH_NTP
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 #include <time.h>
@@ -58,5 +57,3 @@ void NTP_Loop()
     NTP_last = current;
   }
 }
-
-#endif

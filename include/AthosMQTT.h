@@ -1,4 +1,3 @@
-#ifdef ATH_MQTT
 #include <PubSubClient.h>
 #include <ESP8266httpUpdate.h>
 
@@ -183,5 +182,3 @@ void MQTT_Loop()
   ConnectAndSubscribe();
   mqtt_client.loop();
 }
-
-#endif

@@ -4,11 +4,6 @@
 //Step 2, deploy to your NodeMCU device
 //
 //
-#define ATH_LED
-#define ATH_WIFIMANAGER
-#define ATH_NTP
-#define ATH_UDP
-#define ATH_MQTT
 
 //#define ATH_PIR
 //#define ATH_RELAY
@@ -55,36 +50,27 @@ void setup()
 
   rootConfig = EEPROM_setup();
 
-#ifdef ATH_LED
+
   Log.trace("LED Start");
   LED_Setup();
   Log.trace("LED Done");
-#endif
 
-#ifdef ATH_WIFIMANAGER
   Log.trace("WifiManager Start");
   rootConfig = WifiManager_Setup(DeviceId, rootConfig);
   Log.trace("WifiManager Done");
-#endif
 
-#ifdef ATH_NTP
   Log.trace("NTP Start");
   NTP_Setup();
   Log.trace("NTP Done");
-#endif
 
-#ifdef ATH_UDP
   Log.trace("UDP Start");
   rootConfig = UDP_Setup(DeviceId, rootConfig);
   Log.trace("UDP Done");
-#endif
 
-#ifdef ATH_MQTT
   Log.trace("MQTT Start");
   root_mqtt_client = MQTT_Setup(DeviceId, rootConfig);
   delay(1000);
   Log.trace("MQTT Done");
-#endif
 
 #ifdef ATH_TMP36
   Log.trace("TMP Start");
@@ -124,25 +110,11 @@ void setup()
 void loop()
 {
 
-#ifdef ATH_LED
   LED_Loop();
-#endif
-
-#ifdef ATH_WIFIMANAGER
   WifiManager_Loop();
-#endif
-
-#ifdef ATH_NTP
   NTP_Loop();
-#endif
-
-#ifdef ATH_UDP
   UDP_Loop();
-#endif
-
-#ifdef ATH_MQTT
   MQTT_Loop();
-#endif
 
 #ifdef ATH_TMP36
   TMP_Loop();
