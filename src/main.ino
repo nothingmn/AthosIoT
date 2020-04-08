@@ -16,8 +16,6 @@
 
 
 //setup which sensors, etc you want included.
-#include <ArduinoLog.h>
-#include <ESP8266WiFi.h>
 #include "AthosLED.h"
 #include "AthosHelpers.h"
 #include "AthosEEPROM.h"
@@ -30,6 +28,10 @@
 #include "AthosDHT11.h"
 #include "AthosBMP280.h"
 #include "AthosPIR.h"
+
+#include "Arduino.h"
+#include <ArduinoLog.h>
+#include <ESP8266WiFi.h>
 
 String DeviceId = getDeviceId();
 

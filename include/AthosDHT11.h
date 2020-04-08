@@ -1,5 +1,8 @@
 #ifdef ATH_DHT11
 
+#ifndef ATH_DHT11_
+#define ATH_DHT11_
+
 // Wiring:
 //BMP     -> NodeMCU
 //VCC     -> 3V
@@ -112,4 +115,5 @@ void DHT11_Loop()
   checkAndReportReadings();
 }
 
+#endif
 #endif

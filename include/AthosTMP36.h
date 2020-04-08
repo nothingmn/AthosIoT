@@ -1,4 +1,8 @@
 #ifdef ATH_TMP36
+
+#ifndef ATH_TMP36_
+#define ATH_TMP36_
+
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 
@@ -88,4 +92,5 @@ void TMP_Loop()
     checkAndReportReadings();
 }
 
+#endif
 #endif

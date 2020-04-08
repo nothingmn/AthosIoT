@@ -1,4 +1,8 @@
 #ifdef ATH_BMP280
+
+#ifndef ATH_BMP280_
+#define ATH_BMP280_
+
 // Wiring:
 //BMP  -> NodeMCU
 //VCC  -> 3V
@@ -133,4 +137,4 @@ void BMP280_Loop()
 
 
 #endif
-
+#endif

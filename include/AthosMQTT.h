@@ -1,4 +1,12 @@
+#ifndef ATH_MQTT
+#define ATH_MQTT
+
+#ifdef ATH_RELAY
+  #include "AthosRelay.h"
+#endif
+
 #include <PubSubClient.h>
+#include <ArduinoLog.h>
 #include <ESP8266httpUpdate.h>
 
 WiFiClient mqtt_wclient; //Declares a WifiClient Object using ESP8266WiFi
@@ -182,3 +190,5 @@ void MQTT_Loop()
   ConnectAndSubscribe();
   mqtt_client.loop();
 }
+
+#endif

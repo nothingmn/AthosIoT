@@ -1,8 +1,10 @@
+#ifndef ATH_HELPERS
+#define ATH_HELPERS
+
+
 #include <string>
 #include <ESP8266WiFi.h>
 //#include <time.h>
-
-#define ATH_HELPERS
 
 struct storageValues
 {
@@ -143,3 +145,6 @@ void printNewline(Print *_logOutput)
 {
   _logOutput->print('\n');
 }
+
+
+#endif

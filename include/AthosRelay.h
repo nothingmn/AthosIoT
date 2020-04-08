@@ -1,10 +1,15 @@
 #ifdef ATH_RELAY
+
+#ifndef ATH_RELAY_
+#define ATH_RELAY_
+
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
+#include <ArduinoLog.h>
 
-#ifndef ATH_MQTT
+#ifdef ATH_MQTT
   #include "AthosMQTT.h"
-#endif
+#endif 
 
 //add or remove and sort items from the array to control the pins as you like.
 uint RELAY_PINS[] {D0};
@@ -126,4 +131,5 @@ void Relay_Loop()
   }
 }
 
+#endif
 #endif

@@ -1,4 +1,8 @@
+#ifndef ATH_UDP
+#define ATH_UDP
+
 #include <ArduinoJson.h>
+#include <ArduinoLog.h>
 
 int broadcastPort = 3000;
 int udpListenPort = 3001;
@@ -106,3 +110,5 @@ void UDP_Loop()
     //will need to check back with the server via UDP for any changes in config
     //once every minute
 }
+
+#endif

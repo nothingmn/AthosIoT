@@ -1,7 +1,10 @@
+#ifdef ATH_PIR
+#ifndef ATH_PIR_
+#define ATH_PIR_
+
 ///Make sure you have a 3V PIR Sensor
 ///In this sketch, we are using a D0 for the data pin
 
-#ifdef ATH_PIR
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 
@@ -69,4 +72,5 @@ void PIR_Loop()
   }
 }
 
+#endif
 #endif

@@ -1,5 +1,10 @@
+#ifndef ATH_EEPROM
+#define ATH_EEPROM
+
+
 #include <EEPROM.h>
 #include <ArduinoJson.h>
+#include <ArduinoLog.h>
 
 #ifndef ATH_LOG
   //#include "AthosLog.h"
@@ -107,3 +112,5 @@ StorageValues EEPROM_setup() {
   }
   return readEEPROMData();
 }
+
+#endif

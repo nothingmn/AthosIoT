@@ -1,4 +1,7 @@
+#ifndef ATH_NTP
+#define ATH_NTP
 
+#include <ArduinoLog.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 #include <time.h>
@@ -57,3 +60,4 @@ void NTP_Loop()
     NTP_last = current;
   }
 }
+#endif
