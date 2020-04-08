@@ -16,7 +16,6 @@
 #include "AthosNTP.h"
 
 #include <string>
-#include <ArduinoJson.h>
 #include <ArduinoLog.h>
 #include <PubSubClient.h>
 #include <Wire.h>

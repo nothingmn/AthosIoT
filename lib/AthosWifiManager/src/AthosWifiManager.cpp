@@ -2,7 +2,6 @@
 #include "AthosWifiManager.h"
 #include "AthosHelpers.h"
 #include "AthosEEPROM.h"
-#include <ArduinoJson.h>
 #include <ArduinoLog.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>

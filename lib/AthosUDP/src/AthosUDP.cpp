@@ -20,8 +20,8 @@ StorageValues _udp_config;
 AthosHelpers _udp_helpers;
 AthosEEPROM _udp_eeprom;
 AthosNTP _udp_ntp;
-
 bool UDP_configComplete = false;
+
 void AthosUDP::listenForUDPMessages(void)
 {
     // if there's data available, read a packet

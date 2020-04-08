@@ -6,7 +6,6 @@
 #include "AthosHelpers.h"
 #include "AthosNTP.h"
 #include "AthosEEPROM.h"
-#include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 
 class AthosUDP {
@@ -22,11 +21,6 @@ class AthosUDP {
         AthosHelpers _udp_helpers;
         AthosNTP _udp_ntp;        
         AthosEEPROM _udp_eeprom;
-        int broadcastPort;
-        int udpListenPort;
-        IPAddress broadcastIp;
-        WiFiUDP broadcastUDP;
-        WiFiUDP listenUDP;
         String udp_deviceId;
         StorageValues _udp_config;
         bool UDP_configComplete;

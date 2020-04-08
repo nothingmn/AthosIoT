@@ -12,7 +12,6 @@
 #include "AthosHelpers.h"
 #include "AthosNTP.h"
 #include "AnalogSmooth.h"
-#include <ArduinoJson.h>
 #include <ArduinoLog.h>
 #include <PubSubClient.h>
 #include "Wire.h"

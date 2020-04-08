@@ -5,7 +5,6 @@
 #include "AnalogSmooth.h"
 #include "AthosHelpers.h"
 #include "AthosNTP.h"
-#include <ArduinoJson.h>
 #include <ArduinoLog.h>
 #include <PubSubClient.h>
 
@@ -60,7 +59,9 @@ void AthosTMP36::sendTemperatureToMQTT(float value, float diff)
   String csv = String("TMP36," + _tmp36_helpers.getVersion() + "," + ts + "," + value + "," + diff + "," + _tmp36_deviceId);
   const char* payload = csv.c_str();
   const char* topic = _tmp36_config.mqttSensorTopic.c_str();
-  Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());
+  bool connected = _tmp36_mqtt_client.connected();
+
+  Log.trace("\nConnected:%i\nTopic:%s\nPayload:%s\nLength:%i\n",connected?1:0, topic, payload, csv.length());
 
 
   if (!_tmp36_mqtt_client.publish(topic, payload)) {

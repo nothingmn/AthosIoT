@@ -4,8 +4,8 @@
 #include "AthosHelpers.h"
 #include "AthosNTP.h"
 #include <PubSubClient.h>
+#include "Arduino.h"
 #include <ArduinoLog.h>
-#include <ArduinoJson.h>
 #include <ESP8266httpUpdate.h>
 
 WiFiClient mqtt_wclient; //Declares a WifiClient Object using ESP8266WiFi
@@ -24,22 +24,25 @@ bool AthosMQTT::ConnectToMqtt(void)
 
   if (!mqtt_client.connected())
   {
+    Log.trace("MQTT not connected, we are going to connect to it now..");
     //client object makes connection to server
     String clientId = "ATH" + _mqtt_deviceId;
-
+    const char* _clientId = clientId.c_str();
     //Authenticating the client object
     while (!mqtt_client.connected())
     {
       int result = 0;
       if (_mqtt_config.mqttUsername != NULL && _mqtt_config.mqttPassword != NULL && _mqtt_config.mqttUsername != "" && _mqtt_config.mqttPassword != "")
       {
-        Log.trace("MQTT Using Password authentication ClientID:%s", clientId.c_str());
-        result = mqtt_client.connect(clientId.c_str(), _mqtt_config.mqttUsername.c_str(), _mqtt_config.mqttPassword.c_str());
+        Log.trace("MQTT Using Password authentication ClientID:%s", _clientId);
+        result = mqtt_client.connect(_clientId, _mqtt_config.mqttUsername.c_str(), _mqtt_config.mqttPassword.c_str());
       }
       else
       {
-        Log.trace("MQTT NOT using authentication ClientID:%s", clientId.c_str());
-        result = mqtt_client.connect(clientId.c_str());
+        Log.trace("MQTT NOT using authentication ClientID:%s", _clientId);
+        result = mqtt_client.connect(_clientId);
+        Log.trace("XXXX MQTT NOT using authentication ClientID:%s", _clientId);
+
       }
       if (result)
       {
@@ -47,7 +50,7 @@ bool AthosMQTT::ConnectToMqtt(void)
       }
       else
       {
-        Log.trace("failed, mqtt state:\"%d\", try again in 5 seconds",mqtt_client.state());
+        Log.trace("failed, mqtt state:\"%i\", try again in 5 seconds",mqtt_client.state());
         // Wait 5 seconds before retrying
         delay(5000);
       }
@@ -89,6 +92,7 @@ void AthosMQTT::MQTT_PongResponse(int senderTS)
 
 void AthosMQTT::MQTT_Callback(char *topic, uint8_t *payload, unsigned int length)
 {
+  Log.trace("MQTT_Callback");
 
   payload[length] = '\0';
   String json = String((char *)payload);
@@ -100,9 +104,9 @@ void AthosMQTT::MQTT_Callback(char *topic, uint8_t *payload, unsigned int length
 
   bool handled = false;
 
-#ifdef ATH_RELAY
-  handled = _mqtt_relay.Relay_MQTT_Received(strTopic, json);
-#endif
+// #ifdef ATH_RELAY
+//   handled = _mqtt_relay.Relay_MQTT_Received(strTopic, json);
+// #endif
 
   if (!handled)
   {
@@ -186,12 +190,12 @@ PubSubClient AthosMQTT::MQTT_Setup(String deviceId, StorageValues rootConfig)
   Log.trace("Connecting to MQTT server: %s %s", _mqtt_config.mqttServer.c_str(), _mqtt_config.mqttPort.c_str());
   mqtt_client.setServer(_mqtt_config.mqttServer.c_str(), _mqtt_config.mqttPort.toInt());
 
-  using std::placeholders::_1;
-  using std::placeholders::_2;
-  using std::placeholders::_3;
-  mqtt_client.setCallback(std::bind( &AthosMQTT::MQTT_Callback, this, _1,_2,_3));
+  // using std::placeholders::_1;
+  // using std::placeholders::_2;
+  // using std::placeholders::_3;
+  // mqtt_client.setCallback(std::bind( &AthosMQTT::MQTT_Callback, this, _1,_2,_3));
 
-  // mqtt_client.setCallback(AthosMQTT::MQTT_Callback);
+  //  mqtt_client.setCallback(this->MQTT_Callback);
 
   ConnectAndSubscribe();
 

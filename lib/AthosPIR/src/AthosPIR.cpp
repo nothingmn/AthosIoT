@@ -7,7 +7,6 @@
 #include "AthosPIR.h"
 #include "AthosNTP.h"
 #include "AthosHelpers.h"
-#include <ArduinoJson.h>
 #include <ArduinoLog.h>
 #include <PubSubClient.h>
 

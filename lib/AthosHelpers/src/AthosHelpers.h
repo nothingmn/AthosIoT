@@ -3,7 +3,7 @@
 #define ATH_HELPERS_h
 
 #include "AthosLED.h"
-#include <ArduinoJson.h>
+#include "Arduino.h"
 
 class AthosHelpers {
     public:

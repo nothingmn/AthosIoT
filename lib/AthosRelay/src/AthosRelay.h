@@ -5,7 +5,6 @@
 
 #include "AthosHelpers.h"
 #include "AthosNTP.h"
-#include <ArduinoJson.h>
 #include <PubSubClient.h>
 
 class AthosRelay {

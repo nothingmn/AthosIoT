@@ -76,7 +76,12 @@ PubSubClient root_mqtt_client;
 void setup()
 {
   //while (!Serial);
-  Serial.begin(115200);
+  Serial.begin(115200);  
+  while(!Serial.availableForWrite()){
+      delay(100);
+  }
+  //delay(1000*10);
+
   Log.begin(LOG_LEVEL_VERBOSE, &Serial);
   //Log.setPrefix(_helpers.printTimestamp); // Uncomment to get timestamps as prefix
   Log.setSuffix(printNewline); // Uncomment to get newline as suffix
@@ -89,30 +94,22 @@ void setup()
   _led.LED_Setup();
   Log.trace("LED Done");
 
-#ifdef ATH_WIFIMANAGER
   Log.trace("WifiManager Start");
   rootConfig = _wifi.WifiManager_Setup(DeviceId, rootConfig);
   Log.trace("WifiManager Done");
-#endif
 
-#ifdef ATH_NTP
   Log.trace("NTP Start");
   _ntp.NTP_Setup();
   Log.trace("NTP Done");
-#endif
 
-#ifdef ATH_UDP
   Log.trace("UDP Start");
   rootConfig = _udp.UDP_Setup(DeviceId, rootConfig);
   Log.trace("UDP Done");
-#endif
 
-#ifdef ATH_MQTT
   Log.trace("MQTT Start");
   root_mqtt_client = _mqtt.MQTT_Setup(DeviceId, rootConfig);
   delay(1000);
   Log.trace("MQTT Done");
-#endif
 
 #ifdef ATH_TMP36
   Log.trace("TMP Start");
@@ -154,21 +151,10 @@ void loop()
 
   _led.LED_Loop();
 
-#ifdef ATH_WIFIMANAGER
   _wifi.WifiManager_Loop();
-#endif
-
-#ifdef ATH_NTP
   _ntp.NTP_Loop();
-#endif
-
-#ifdef ATH_UDP
   _udp.UDP_Loop();
-#endif
-
-#ifdef ATH_MQTT
   _mqtt.MQTT_Loop();
-#endif
 
 #ifdef ATH_TMP36
   _tmp36.TMP_Loop();

@@ -24,7 +24,7 @@ long AthosNTP::NTP_getEpochTime(void) {
 void AthosNTP::NTP_updateTime(void) {
   while(!timeClient.update()) {
     Log.trace("Failed to get an updated ntp time, will try again");
-    delay(100);
+    delay(1000);
   }
 }
 void AthosNTP::setTime(long secondsSinceEpoc) {

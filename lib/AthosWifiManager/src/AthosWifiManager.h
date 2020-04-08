@@ -5,7 +5,6 @@
 
 #include "AthosHelpers.h"
 #include "AthosEEPROM.h"
-#include <ArduinoJson.h>
 #include <ESP8266WebServer.h>
 
 class AthosWifiManager {

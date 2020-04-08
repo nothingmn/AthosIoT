@@ -5,7 +5,6 @@
 #include "AthosNTP.h"
 #include "AthosMQTT.h"
 #include "AthosHelpers.h"
-#include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <ArduinoLog.h>
 

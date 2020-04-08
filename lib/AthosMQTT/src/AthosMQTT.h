@@ -6,10 +6,9 @@
 #include "AthosHelpers.h"
 #include "AthosRelay.h"
 #include "AthosNTP.h"
+#include "Arduino.h"
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
-
-
 
 class AthosMQTT {
     public:
@@ -24,10 +23,10 @@ class AthosMQTT {
 #endif
         
     private:
+        String GetValueOrDefault(StaticJsonDocument<256> doc, String group, String name, String defaultValue);
         bool ConnectToMqtt(void);
         void MQTT_PongResponse(int senderTS);        
         void ConnectAndSubscribe(void);
-        String GetValueOrDefault(StaticJsonDocument<256> doc, String group, String name, String defaultValue);
         AthosHelpers _mqtt_helpers;
         AthosNTP _mqtt_ntp;
         AthosEEPROM _eeprom;

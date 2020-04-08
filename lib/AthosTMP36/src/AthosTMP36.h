@@ -6,7 +6,6 @@
 #include "AthosHelpers.h"
 #include "AthosNTP.h"
 #include "AnalogSmooth.h"
-#include <ArduinoJson.h>
 #include <PubSubClient.h>
 
 class AthosTMP36 {

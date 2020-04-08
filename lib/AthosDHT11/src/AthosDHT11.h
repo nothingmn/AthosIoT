@@ -7,7 +7,6 @@
 #include "Arduino.h"
 #include "DHT.h"
 #include <PubSubClient.h>
-#include <ArduinoJson.h>
 
 class AthosDHT11
 {
