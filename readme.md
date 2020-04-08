@@ -56,7 +56,7 @@ Possible Major Features
 2. PIR Sensors (DONE)
 3. Node-side sensor data smoothing, moving average and tolerance based reporting  (DONE)
 4. GPS Support
-5. Partially connected scenarios
+5. Partially connected scenarios (DONE, via MQTT and WiFi will reconnect gracefully)
 6. PH Sensor
 7. Water (level) Sensor
 8. Volumentric water content sensor
@@ -77,14 +77,14 @@ Possible Major Features
 23. Better web API and portal
 24. Alerting (SMS, Telegram, PushBullet)
 
-Slave node sequencing
+Slave node sequencing (DONE)
 --------------------
 1. Read EEPROM for device configuration
 2. Ensure Wifi is setup (from device config)
-   1. If not configured setup a soft access point, and allow the user to specify the AP.
-   2. If configured then connect to the wifi access point
-3. Setup an NTP client, and ensure that the NTP client is up to date (self updates, every XX minutes)
-4. Ensure MQTT is configured
+   1. If not configured, attempt to connect to RaspberryPi's Hidden Access Point (which is isolated from users home network)
+   2. Otherwise, if configured then connect to the wifi access point
+   3. Setup an NTP client, and ensure that the NTP client is up to date (self updates, every XX minutes)
+   4. Ensure MQTT is configured
 5. If not configured, broadcast a UDP packet (255.255.255.255:3000)
    1. This UDP Package will be picked up by Node-Red and will send a configuration message to the specific device via UDP directly.
    2. The device will receive the UDP package, and store the configuration
@@ -94,27 +94,17 @@ Slave node sequencing
 
 Getting started
 -----------------------
-*Install MQTT and Node-Red*
-1. Install Rasbian on a Raspberry Pi  https://www.raspberrypi.org/documentation/installation/installing-images/
-2. Once you have the OS installed, SSH into it
-3. Install our MQTT Server (Mosquitto)   sudo apt-get install mosquitto
-4. Optionally setup credentials for your Mosquitto installation http://www.steves-internet-guide.com/mqtt-username-password-example/
-5. Install Node-Red   https://nodered.org/docs/getting-started/raspberrypi
-6. Optionally setup credentials for your Node-Red instance https://nodered.org/docs/user-guide/runtime/securing-node-red
-7. Launch your browser, and point your browser to  http://{raspberrypi}:1880, where {raspberrypi} is either your DNS name or IP address of your new raspberrypi machine. Login in if necessary
-8. Fork this repository, and clone your fork to your development machine
-9. In the node-red folder, there is a flows.json file.  Upload that via the "Import from clipboard" functionality in Node-Red.  Typically this is in the top right menu.
-10. Update the configuration for the MQTT server, just under the hamburger menu on the top right, there is a down arrow, choose "Configuration Nodes" and on "On All Flows" section you should see a node for MQTT.  Change that to your local instance (its find to use localhost)
-11. Open the "Form reponse packet" node on the "Flow 1" Tab, and change the "server" variable to the IP address of your MQTT machine.  This CANNOT be localhost or 127.0.0.1.  Give it the IP address of your MQTT instance, or some other DNS name.  This is the value which the slave nodes will use to resolve the MQTT server.
-12. Assuming the flows were correctly imported, Deploy your node-red instance (top right "Deploy" button)
+1. For the rasperrypi machine, download our Pi4/16GB SD Card Image here
+2. Use a tool similar to win32diskimager to write the image to your 16GB card
+3. Boot. 
+
 
 *Install VSCode and PlatformIO*
 
-13. Install Visual Studio Code from here: https://code.visualstudio.com/Download
-14. Install PlatformIO from within Visual Studio Code, be patient, it takes a while https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide
-15. Open the file "Athos.code-workspace"
-16. Plug in your NodeMCU (ESP8266 device) into your machine
-17. You should be able to hit Control-Alt-B to build, Control-Alt-U to upload
-18. Control-Shift-B will allow you to choose to build/deploy each type of node available (VSCode Tasks)
+1. Install Visual Studio Code from here: https://code.visualstudio.com/Download
+2. Install PlatformIO from within Visual Studio Code, be patient, it takes a while https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide
+3. Open the file "Athos.code-workspace"
+4. Plug in your NodeMCU (ESP8266 device) into your machine
+5. You should be able to hit Control-Shift-B and choose which node-type to build and/or upload
 
-
+Once you have the raspberrypi machine online browse to the admin page at http://raspberrypi, or use the IP address as per your route. At a minimum update the "Configure Node Wifi" page with the desired Wifi AP.  Next, the ESP8266 nodes should automatically discover and connect once they are powered up; and once they do the "Managed Devices" screen should start to pupulate.
