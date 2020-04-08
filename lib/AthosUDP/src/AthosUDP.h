@@ -7,6 +7,8 @@
 #include "AthosNTP.h"
 #include "AthosEEPROM.h"
 #include <ArduinoJson.h>
+#include <ESP8266WiFi.h>
+#include <WiFiUDP.h>
 
 class AthosUDP {
     public:
