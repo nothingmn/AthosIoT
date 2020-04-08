@@ -1,5 +1,13 @@
-#ifdef ATH_UDP
+//AthosUDP.cpp
+
+#include "AthosUDP.h"
+#include "AthosNTP.h"
+#include "AthosHelpers.h"
+#include "AthosEEPROM.h"
+#include <ArduinoLog.h>
 #include <ArduinoJson.h>
+#include <ESP8266WiFi.h>
+#include <WiFiUDP.h>
 
 int broadcastPort = 3000;
 int udpListenPort = 3001;
@@ -10,9 +18,12 @@ WiFiUDP listenUDP;
 
 String udp_deviceId;
 StorageValues _udp_config;
+AthosHelpers _udp_helpers;
+AthosEEPROM _udp_eeprom;
+AthosNTP _udp_ntp;
 
 bool UDP_configComplete = false;
-void listenForUDPMessages()
+void AthosUDP::listenForUDPMessages(void)
 {
     // if there's data available, read a packet
     char packetBuffer[1500]; //buffer to hold incoming packet
@@ -48,7 +59,7 @@ void listenForUDPMessages()
       Log.trace("Received MQTT Payload:");
       Log.trace(_udp_config.mqttServer.c_str());
       Log.trace(_udp_config.mqttSensorTopic.c_str());
-      writeEEPROMData(_udp_config);
+      _udp_eeprom.writeEEPROMData(_udp_config);
       delay(100);
       UDP_configComplete = true;
       ESP.reset();
@@ -58,9 +69,9 @@ void listenForUDPMessages()
 
 
 long last_udp_broadcast = 0;
-void publishUDP()
+void AthosUDP::publishUDP(void)
 {
-  long ts = NTP_getEpochTime();
+  long ts = _udp_ntp.NTP_getEpochTime();
   long diff = abs(last_udp_broadcast - ts);
   
   if (diff > 10)
@@ -78,7 +89,7 @@ void publishUDP()
     last_udp_broadcast = ts;    
   }
 }
-StorageValues UDP_Setup(String DeviceId, StorageValues rootConfig)
+StorageValues AthosUDP::UDP_Setup(String DeviceId, StorageValues rootConfig)
 {
   udp_deviceId = DeviceId;
   _udp_config = rootConfig;
@@ -102,10 +113,21 @@ StorageValues UDP_Setup(String DeviceId, StorageValues rootConfig)
   return _udp_config;
 }
 
-void UDP_Loop()
+void AthosUDP::UDP_Loop(void)
 {
     //will need to check back with the server via UDP for any changes in config
     //once every minute
 }
+/*
+  Constructor
+*/
+AthosUDP::AthosUDP()
+{
+}
 
-#endif
+AthosUDP::AthosUDP(AthosHelpers helpers, AthosNTP ntp, AthosEEPROM eeprom) {
+  _udp_helpers = helpers;
+  _udp_ntp = ntp;
+  _udp_eeprom = eeprom;
+}
+

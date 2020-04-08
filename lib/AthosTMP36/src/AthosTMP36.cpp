@@ -1,11 +1,14 @@
+//AthosTMP36.cpp
+
 #ifdef ATH_TMP36
+#include "AthosTMP36.h"
+#include "AnalogSmooth.h"
+#include "AthosHelpers.h"
+#include "AthosNTP.h"
 #include <ArduinoJson.h>
+#include <ArduinoLog.h>
 #include <PubSubClient.h>
 
-#ifndef AnalogSmooth_h
-  #include "AnalogSmooth.h"
-  #include "AnalogSmooth.cpp"
-#endif
 // Wiring:
 //TMP     -> NodeMCU
 //VC/1    -> 3V
@@ -26,9 +29,10 @@ String _tmp36_deviceId;
 StorageValues _tmp36_config;
 
 AnalogSmooth TMP_AnalogSmooth = AnalogSmooth(100);
+AthosHelpers _tmp36_helpers;
+AthosNTP _tmp36_ntp;
 
-
-void TMP_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
+void AthosTMP36::TMP_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
 {
     _tmp36_mqtt_client = mqtt_client;
     _tmp36_deviceId = deviceId;
@@ -37,7 +41,7 @@ void TMP_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConf
 
 }
 
-float TMP36_readTemperature() {
+float AthosTMP36::TMP36_readTemperature(void) {
     int reading = analogRead(TMP36_sensorPin);
     // measure the 3.3v with a meter for an accurate value
     //In particular if your Arduino is USB powered
@@ -50,10 +54,10 @@ float TMP36_readTemperature() {
     return smoothed;
 }
 
-void sendTemperatureToMQTT(float value, float diff)
+void AthosTMP36::sendTemperatureToMQTT(float value, float diff)
 {
-  long ts = NTP_getEpochTime();
-  String csv = String("TMP36," + getVersion() + "," + ts + "," + value + "," + diff + "," + _tmp36_deviceId);
+  long ts = _tmp36_ntp.NTP_getEpochTime();
+  String csv = String("TMP36," + _tmp36_helpers.getVersion() + "," + ts + "," + value + "," + diff + "," + _tmp36_deviceId);
   const char* payload = csv.c_str();
   const char* topic = _tmp36_config.mqttSensorTopic.c_str();
   Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());
@@ -63,13 +67,13 @@ void sendTemperatureToMQTT(float value, float diff)
     Log.trace("TMP36 Data to MQTT Failed. Packet > 128?");
   }
 
-  MQTTTransmitLed();
+  _tmp36_helpers.MQTTTransmitLed();
 }
 
 float last_recorded_temp = 0;
 float time_since_last = 0;
 
-void checkAndReportReadings()
+void AthosTMP36::checkAndReportReadings(void)
 {
   // Now we can publish stuff!
   float temperature = TMP36_readTemperature();
@@ -83,9 +87,21 @@ void checkAndReportReadings()
 
 
 
-void TMP_Loop()
+void AthosTMP36::TMP_Loop(void)
 {
     checkAndReportReadings();
 }
 
+/*
+  Constructor
+*/
+AthosTMP36::AthosTMP36()
+{
+}
+
+AthosTMP36::AthosTMP36(AthosHelpers helpers, AthosNTP ntp)
+{
+  _tmp36_helpers = helpers;
+  _tmp36_ntp = ntp;
+}
 #endif

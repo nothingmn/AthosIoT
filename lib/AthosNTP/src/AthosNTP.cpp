@@ -1,5 +1,6 @@
-
-#ifdef ATH_NTP
+//AthosNTP.cpp
+#include "AthosNTP.h"
+#include <ArduinoLog.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 #include <time.h>
@@ -17,16 +18,16 @@ const int NTP_max_diff = 1 * 60 * 60;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, ntp_server, utcOffsetInSeconds);
 
-long NTP_getEpochTime() {
+long AthosNTP::NTP_getEpochTime(void) {
   return timeClient.getEpochTime();
 }
-void NTP_updateTime() {
+void AthosNTP::NTP_updateTime(void) {
   while(!timeClient.update()) {
     Log.trace("Failed to get an updated ntp time, will try again");
     delay(100);
   }
 }
-void setTime(long secondsSinceEpoc) {
+void AthosNTP::setTime(long secondsSinceEpoc) {
     time_t t = secondsSinceEpoc;
     //struct tm tm = *localtime(&t);
     Log.trace("Setting time: %i", secondsSinceEpoc);
@@ -34,11 +35,11 @@ void setTime(long secondsSinceEpoc) {
     settimeofday(&now, NULL);
     Log.trace("time of day setup complete");
 }
-void setTime() {
+void AthosNTP::setTime(void) {
     setTime(NTP_getEpochTime());    
 }
 
-void NTP_Setup()
+void AthosNTP::NTP_Setup(void)
 {
   timeClient.begin();
   NTP_updateTime();
@@ -46,7 +47,7 @@ void NTP_Setup()
 
 }
 int NTP_last = 0;
-void NTP_Loop()
+void AthosNTP::NTP_Loop(void)
 {
   int current = NTP_getEpochTime();
   int diff = abs(current - NTP_last);
@@ -59,4 +60,10 @@ void NTP_Loop()
   }
 }
 
-#endif
+/*
+  Constructor
+*/
+AthosNTP::AthosNTP()
+{
+}
+

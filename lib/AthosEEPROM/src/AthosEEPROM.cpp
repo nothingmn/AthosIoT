@@ -1,17 +1,15 @@
+//AthosEEPROM.cpp
+
+#include "AthosEEPROM.h"
+#include "AthosHelpers.h"
 #include <EEPROM.h>
 #include <ArduinoJson.h>
-
-#ifndef ATH_LOG
-  //#include "AthosLog.h"
-#endif
-#ifndef ATH_HELPERS
-  #include "AthosHelpers.h"
-#endif
+#include <ArduinoLog.h>
 
 #define EEPROM_SIZE 1024
 #define EEPROM_TERMINATER 0
 
-void wipeEEPROM()
+void AthosEEPROM::wipeEEPROM(void)
 {
   Log.trace("Wiping EEPROM");
   EEPROM.begin(EEPROM_SIZE);
@@ -24,7 +22,7 @@ void wipeEEPROM()
 }
 
 
-StorageValues readEEPROMData() {
+StorageValues AthosEEPROM::readEEPROMData(void) {
 
   StorageValues values;
   
@@ -64,7 +62,7 @@ StorageValues readEEPROMData() {
   return values;
 }
 
-void writeEEPROMData(StorageValues config) {
+void AthosEEPROM::writeEEPROMData(StorageValues config) {
 
   wipeEEPROM();
 
@@ -99,11 +97,18 @@ void writeEEPROMData(StorageValues config) {
 
 
 
-StorageValues EEPROM_setup() {
+StorageValues AthosEEPROM::EEPROM_setup(void) {
 
   if(false) {
     wipeEEPROM();   
     Log.trace("EEPROM KILLED!"); 
   }
   return readEEPROMData();
+}
+
+/*
+  Constructor
+*/
+AthosEEPROM::AthosEEPROM()
+{
 }

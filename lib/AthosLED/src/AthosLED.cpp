@@ -1,28 +1,26 @@
-
-
-#ifdef ATH_LED
+//AthosLED.cpp
+#include "AthosLED.h"
+#include <Arduino.h>
 
 #define ATHLED_PIN LED_BUILTIN //Led in NodeMCU at pin GPIO16 (D0) 
 #define ATHLED_DEFAULT_DELAY 50
 #define ATHLED_DEFAULT_COUNT 5
 
-void LED_Setup()
-{
+void AthosLED::LED_Setup(void) {
     pinMode(ATHLED_PIN, OUTPUT); //LED pin as output
 }
-void LED_Loop()
-{
+void AthosLED::LED_Loop(void) {
 }
 
-void LED_ON() {
+void AthosLED::LED_ON(void) {
     digitalWrite(ATHLED_PIN, LOW); //turn the led on
 }
 
-void LED_OFF() {
+void AthosLED::LED_OFF(void) {
     digitalWrite(ATHLED_PIN, HIGH); //turn the led on
 }
 
-void LED_Blink(int blinkCount, int blinkDelay) {
+void AthosLED::LED_Blink(int blinkCount, int blinkDelay) {
 
   for(int x=0;x<blinkCount;x++) {
     digitalWrite(ATHLED_PIN, LOW); //turn the led on
@@ -33,12 +31,19 @@ void LED_Blink(int blinkCount, int blinkDelay) {
 }
 
 
-void LED_Blink(int blinkCount) {
+void AthosLED::LED_Blink(int blinkCount) {
   LED_Blink(blinkCount, ATHLED_DEFAULT_DELAY);
 }
 
-void LED_Blink() {
+void AthosLED::LED_Blink(void) {
   LED_Blink(ATHLED_DEFAULT_COUNT, ATHLED_DEFAULT_DELAY);
 }
 
-#endif
+
+/*
+  Constructor
+*/
+AthosLED::AthosLED()
+{
+}
+

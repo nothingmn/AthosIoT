@@ -1,27 +1,17 @@
+//AthosHelpers.cpp
+
+#include "AthosHelpers.h"
+#include "AthosLED.h"
 #include <string>
 #include <ESP8266WiFi.h>
-//#include <time.h>
+#include <time.h>
 
-#define ATH_HELPERS
-
-struct storageValues
-{
-  String ssid;
-  String password;
-  String mqttServer;
-  String mqttUsername;
-  String mqttPassword;
-  String mqttPort;
-  String mqttSensorTopic;
-  String mqttRelayTopic;
-  String mqttPingTopic;
-  String mqttMotionTopic;
-};
+AthosLED _helperled;
 
 typedef struct storageValues StorageValues;
 
 
-time_t build_time() {
+time_t AthosHelpers::build_time(void) {
   static const char *built = __DATE__ " " __TIME__;  
   struct tm t;
   strptime(built, "%b %d %Y %H:%M:%S", &t);
@@ -30,7 +20,7 @@ time_t build_time() {
 
 
 String  _version;
-String getVersion(void)
+String AthosHelpers::getVersion(void)
 {
   if (_version != NULL)
   {
@@ -45,7 +35,7 @@ String getVersion(void)
 }
 
 String  _build;
-String getBuild() {
+String AthosHelpers::getBuild(void) {
 
   if (_build != NULL)
   {
@@ -74,7 +64,7 @@ String build = "";
   return _build;
 }
 
-String getDeviceId()
+String AthosHelpers::getDeviceId(void)
 {
   String address = WiFi.macAddress();
   std::string s(address.c_str());
@@ -85,79 +75,63 @@ String getDeviceId()
   return sAddress;
 }
 
-void BlinkLed(int blinkCount, int blinkDelay)
+void AthosHelpers::BlinkLed(int blinkCount, int blinkDelay)
 {
-#ifdef ATH_LED
-  LED_Blink(blinkCount, blinkDelay);
-#endif
+  _helperled.LED_Blink(blinkCount, blinkDelay);
 }
-void BlinkLed()
+void AthosHelpers::BlinkLed(void)
 {
-#ifdef ATH_LED
-  LED_Blink();
-#endif
+  _helperled.LED_Blink();
 }
 
-void MQTTTransmitLed()
+void AthosHelpers::MQTTTransmitLed(void)
 {
-#ifdef ATH_LED
-  LED_Blink(5);
-#endif
+  _helperled.LED_Blink(5);
 }
-void WifiSetupStartLed()
+void AthosHelpers::WifiSetupStartLed(void)
 {
-#ifdef ATH_LED
-  LED_Blink(2);
-#endif
+  _helperled.LED_Blink(2);
 }
-void WifiSetupCompleteLed()
+void AthosHelpers::WifiSetupCompleteLed(void)
 {
-#ifdef ATH_LED
-  LED_Blink(3);
-#endif
+  _helperled.LED_Blink(3);
 }
 
-void Relay_ON_Led()
+void AthosHelpers::Relay_ON_Led(void)
 {
-#ifdef ATH_LED
-  LED_ON();
-#endif
+  _helperled.LED_ON();
 }
-void Relay_OFF_Led()
+void AthosHelpers::Relay_OFF_Led(void)
 {
-#ifdef ATH_LED
-  LED_OFF();
-#endif
+  _helperled.LED_OFF();
 }
 
-void MotionDetected_LED()
+void AthosHelpers::MotionDetected_LED(void)
 {
-#ifdef ATH_LED
-  LED_Blink(4);
-#endif
+  _helperled.LED_Blink(4);
 }
 
-void NoMotionDetected_LED()
+void AthosHelpers::NoMotionDetected_LED(void)
 {
-#ifdef ATH_LED
-  LED_Blink(3);
-#endif
+  _helperled.LED_Blink(3);
 }
 
-bool shouldSend(float current, float last, float max_diff)
+bool AthosHelpers::shouldSend(float current, float last, float max_diff)
 {
   float diff = abs(current - last);
   return (diff > max_diff);
 }
 
-void printTimestamp(Print *_logOutput)
+
+/*
+  Constructor
+*/
+AthosHelpers::AthosHelpers()
 {
-  char c[12];
-  sprintf(c, "%10lu ", millis());
-  _logOutput->print(c);
+  _helperled = AthosLED();
 }
 
-void printNewline(Print *_logOutput)
+AthosHelpers::AthosHelpers(AthosLED led)
 {
-  _logOutput->print('\n');
+  _helperled = led;
 }

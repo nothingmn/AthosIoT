@@ -1,13 +1,25 @@
-#ifdef ATH_MQTT
+//AthosMQTT.cpp
+#include "AthosEEPROM.h"
+#include "AthosMQTT.h"
+#include "AthosHelpers.h"
+#include "AthosNTP.h"
 #include <PubSubClient.h>
+#include <ArduinoLog.h>
+#include <ArduinoJson.h>
 #include <ESP8266httpUpdate.h>
 
 WiFiClient mqtt_wclient; //Declares a WifiClient Object using ESP8266WiFi
 PubSubClient mqtt_client(mqtt_wclient);
 String _mqtt_deviceId;
 StorageValues _mqtt_config;
+AthosHelpers _mqtt_helpers;
+AthosNTP _mqtt_ntp;
+AthosEEPROM _mqtt_eeprom;
+#ifdef ATH_RELAY
+    AthosRelay _mqtt_relay;
+#endif
 
-bool ConnectToMqtt()
+bool AthosMQTT::ConnectToMqtt(void)
 {
 
   if (!mqtt_client.connected())
@@ -44,7 +56,9 @@ bool ConnectToMqtt()
   }
   return false;
 }
-String GetValueOrDefault(StaticJsonDocument<256> doc, String group, String name, String defaultValue)
+
+
+String AthosMQTT::GetValueOrDefault(StaticJsonDocument<256> doc, String group, String name, String defaultValue)
 {
   String v = doc[group][name].as<String>();
   if (v == NULL || v == "" || v == "null")
@@ -55,13 +69,13 @@ String GetValueOrDefault(StaticJsonDocument<256> doc, String group, String name,
 }
 
 
-void MQTT_PongResponse(int senderTS)
+void AthosMQTT::MQTT_PongResponse(int senderTS)
 {
   Log.trace("MQTT_PongResponse");
-  int ts = NTP_getEpochTime();
+  int ts = _mqtt_ntp.NTP_getEpochTime();
   int diff = abs(ts - senderTS);
 
-  String csv = String("PONG," + getVersion() + "," + ts + "," + senderTS + "," + diff + ","+ _mqtt_deviceId);
+  String csv = String("PONG," + _mqtt_helpers.getVersion() + "," + ts + "," + senderTS + "," + diff + ","+ _mqtt_deviceId);
   const char* payload = csv.c_str();
   const char* topic = _mqtt_config.mqttPingTopic.c_str();
   Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());
@@ -70,10 +84,10 @@ void MQTT_PongResponse(int senderTS)
   {
     Log.trace("PONG Data to MQTT Failed. Packet > 128?");
   }
-  MQTTTransmitLed();
+  _mqtt_helpers.MQTTTransmitLed();
 }
 
-void MQTT_Callback(char *topic, byte *payload, unsigned int length)
+void AthosMQTT::MQTT_Callback(char *topic, uint8_t *payload, unsigned int length)
 {
 
   payload[length] = '\0';
@@ -87,7 +101,7 @@ void MQTT_Callback(char *topic, byte *payload, unsigned int length)
   bool handled = false;
 
 #ifdef ATH_RELAY
-  handled = Relay_MQTT_Received(strTopic, json);
+  handled = _mqtt_relay.Relay_MQTT_Received(strTopic, json);
 #endif
 
   if (!handled)
@@ -123,7 +137,7 @@ void MQTT_Callback(char *topic, byte *payload, unsigned int length)
     else if (command == "wipe")
     {
       Log.trace("Wipe command received");
-      wipeEEPROM();
+      _mqtt_eeprom.wipeEEPROM();
       ESP.reset();
       Log.trace("EEPROM KILLED!");
     }
@@ -135,7 +149,7 @@ void MQTT_Callback(char *topic, byte *payload, unsigned int length)
     else if (command == "reconfigure")
     {
       Log.trace("Reconfigure command received");
-      StorageValues config = readEEPROMData();
+      StorageValues config = _mqtt_eeprom.readEEPROMData();
 
       _mqtt_config.ssid = GetValueOrDefault(readDoc, "wifi", "ssid", config.ssid);
       _mqtt_config.password = GetValueOrDefault(readDoc, "wifi", "password", config.password);
@@ -150,14 +164,14 @@ void MQTT_Callback(char *topic, byte *payload, unsigned int length)
       _mqtt_config.mqttPassword = GetValueOrDefault(readDoc, "mqtt", "password", config.mqttPassword);
       _mqtt_config.mqttPort = GetValueOrDefault(readDoc, "mqtt", "port", config.mqttPort);
 
-      writeEEPROMData(_mqtt_config);
+      _mqtt_eeprom.writeEEPROMData(_mqtt_config);
       ESP.restart();
     }
     readDoc.clear();
   }
 }
 
-void ConnectAndSubscribe()
+void AthosMQTT::ConnectAndSubscribe(void)
 {
   if (ConnectToMqtt())
   {
@@ -165,23 +179,49 @@ void ConnectAndSubscribe()
     Log.trace("Setup MQTT Subscriber complete:%s", _mqtt_config.mqttRelayTopic.c_str());
   }
 }
-PubSubClient MQTT_Setup(String deviceId, StorageValues rootConfig)
+PubSubClient AthosMQTT::MQTT_Setup(String deviceId, StorageValues rootConfig)
 {
   _mqtt_deviceId = deviceId;
   _mqtt_config = rootConfig;
   Log.trace("Connecting to MQTT server: %s %s", _mqtt_config.mqttServer.c_str(), _mqtt_config.mqttPort.c_str());
   mqtt_client.setServer(_mqtt_config.mqttServer.c_str(), _mqtt_config.mqttPort.toInt());
-  mqtt_client.setCallback(MQTT_Callback);
+
+  using std::placeholders::_1;
+  using std::placeholders::_2;
+  using std::placeholders::_3;
+  mqtt_client.setCallback(std::bind( &AthosMQTT::MQTT_Callback, this, _1,_2,_3));
+
+  // mqtt_client.setCallback(AthosMQTT::MQTT_Callback);
 
   ConnectAndSubscribe();
 
   return mqtt_client;
 }
 
-void MQTT_Loop()
+void AthosMQTT::MQTT_Loop(void)
 {
   ConnectAndSubscribe();
   mqtt_client.loop();
 }
-
+#ifdef ATH_RELAY
+  void AthosMQTT::InitRelay(AthosRelay relay) {
+    _mqtt_relay = relay;
+  }
 #endif
+
+/*
+  Constructor
+*/
+AthosMQTT::AthosMQTT()
+{
+}
+
+AthosMQTT::AthosMQTT(AthosHelpers helpers, AthosNTP ntp, AthosEEPROM eeprom)
+{
+  _mqtt_helpers = helpers;
+  _mqtt_ntp = ntp;  
+  _mqtt_eeprom = eeprom;  
+}
+
+
+

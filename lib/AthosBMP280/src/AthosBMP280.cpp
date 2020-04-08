@@ -1,4 +1,6 @@
+//AthosBMP280.cpp
 #ifdef ATH_BMP280
+
 // Wiring:
 //BMP  -> NodeMCU
 //VCC  -> 3V
@@ -8,21 +10,20 @@
 // https://randomnerdtutorials.com/esp8266-bme280-arduino-ide/
 // https://github.com/adafruit/Adafruit_BME280_Library/blob/master/examples/bme280test/bme280test.ino
 
+#include "AthosBMP280.h"
+#include "AnalogSmooth.h"
+#include "AthosHelpers.h"
+#include "AthosNTP.h"
+
 #include <string>
 #include <ArduinoJson.h>
+#include <ArduinoLog.h>
 #include <PubSubClient.h>
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 
-#ifndef AnalogSmooth_h
-  #include "AnalogSmooth.h"
-  #include "AnalogSmooth.cpp"
-#endif
-
 #define SEALEVELPRESSURE_HPA (1013.25)
-
-//Try to avoid having anything in global scope
 
 //max time between mandatory reporting
 int _BMP280_loop_delay = 1000;
@@ -39,8 +40,10 @@ AnalogSmooth BMP_AnalogSmooth_humid = AnalogSmooth(100);
 AnalogSmooth BMP_AnalogSmooth_press = AnalogSmooth(100);
 AnalogSmooth BMP_AnalogSmooth_alt = AnalogSmooth(100);
 
+AthosHelpers _bmp_helpers;
+AthosNTP _bmp_ntp;
 
-void BMP280_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
+void AthosBMP280::BMP280_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
 {
   _BMP280_mqtt_client = mqtt_client;
   _BMP280_deviceId = deviceId;
@@ -64,11 +67,11 @@ void BMP280_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootC
   }
 }
 
-void sendReadingToMQTT(float temp, float humidity, float pressure, float altitude)
+void AthosBMP280::sendReadingToMQTT(float temp, float humidity, float pressure, float altitude)
 {
 
-  long ts = NTP_getEpochTime();
-  String csv = String("BMP280," + getVersion() + "," + ts + "," + temp + "," + humidity + ","+ pressure + ","+ altitude + "," + _BMP280_deviceId);
+  long ts = _bmp_ntp.NTP_getEpochTime();
+  String csv = String("BMP280," + _bmp_helpers.getVersion() + "," + ts + "," + temp + "," + humidity + ","+ pressure + ","+ altitude + "," + _BMP280_deviceId);
   const char* payload = csv.c_str();
   const char* topic = _BMP280_config.mqttSensorTopic.c_str();
   Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());
@@ -77,7 +80,7 @@ void sendReadingToMQTT(float temp, float humidity, float pressure, float altitud
   {    
     Log.trace("BMP20 Data to MQTT Failed. Packet > 128?");
   } else {
-    MQTTTransmitLed();
+    _bmp_helpers.MQTTTransmitLed();
   }
 }
 
@@ -92,7 +95,7 @@ float _BMP280_humid_max_variation = 3.0;
 float _BMP280_press_max_variation = 1.7;
 
 
-void BMP280_checkAndReportReadings()
+void AthosBMP280::BMP280_checkAndReportReadings(void)
 {
   // Now we can publish stuff!
   float temperature = BMP_AnalogSmooth_temp.smooth(bme.readTemperature());
@@ -108,13 +111,13 @@ void BMP280_checkAndReportReadings()
 
   bool send = false;
 
-  if(shouldSend(temperature, _BMP280_last_recorded_temp, _BMP280_temp_max_variation)) {
+  if(_bmp_helpers.shouldSend(temperature, _BMP280_last_recorded_temp, _BMP280_temp_max_variation)) {
     send = true;
     _BMP280_last_recorded_temp = temperature;
-  } else if(shouldSend(humidity, _BMP280_last_recorded_humid, _BMP280_humid_max_variation)) {
+  } else if(_bmp_helpers.shouldSend(humidity, _BMP280_last_recorded_humid, _BMP280_humid_max_variation)) {
     send = true;
     _BMP280_last_recorded_humid = humidity;
-  } else if(shouldSend(pressure, _BMP280_last_recorded_press, _BMP280_press_max_variation)) {
+  } else if(_bmp_helpers.shouldSend(pressure, _BMP280_last_recorded_press, _BMP280_press_max_variation)) {
     send = true;
     _BMP280_last_recorded_press = pressure;
   } 
@@ -124,13 +127,24 @@ void BMP280_checkAndReportReadings()
   }
 }
 
-void BMP280_Loop()
+void AthosBMP280::BMP280_Loop(void)
 {
   BMP280_checkAndReportReadings();
 }
 
 
+/*
+  Constructor
+*/
+AthosBMP280::AthosBMP280()
+{
+}
 
+AthosBMP280::AthosBMP280(AthosHelpers helpers, AthosNTP ntp)
+{
+  _bmp_helpers = helpers;
+  _bmp_ntp = ntp;
+}
 
 #endif
 

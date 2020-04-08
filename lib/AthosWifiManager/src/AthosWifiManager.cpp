@@ -1,4 +1,9 @@
-#ifdef ATH_WIFIMANAGER
+//AthosWifiManager.cpp
+#include "AthosWifiManager.h"
+#include "AthosHelpers.h"
+#include "AthosEEPROM.h"
+#include <ArduinoJson.h>
+#include <ArduinoLog.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WebServer.h>
@@ -6,13 +11,15 @@
 String _deviceId;
 StorageValues _wifi_config;
 String _wifiAPName;
-String WIFI_content;
-ESP8266WebServer WIFI_server(80);
+
 String WIFI_st;
 int WIFI_statusCode;
+AthosEEPROM _wifi_eeprom;
+AthosHelpers _wifi_helpers;
+ESP8266WebServer WIFI_server(80);
 
 //-------- Fuctions used for WiFi credentials saving and connecting to it which you do not need to change
-bool testWifi(void)
+bool AthosWifiManager::testWifi(void)
 {
   int c = 0;
   Log.trace("Waiting for Wifi to connect");
@@ -31,13 +38,14 @@ bool testWifi(void)
   return false;
 }
 
-void createWebServer()
+void AthosWifiManager::createWebServer(void)
 {
   // Start the server
   WIFI_server.begin();
   Log.trace("Server started");
+  String WIFI_content;
 
-  WIFI_server.on("/", []() {
+  WIFI_server.on("/", [&]() {
     IPAddress ip = WiFi.softAPIP();
     String ipStr = String(ip[0]) + '.' + String(ip[1]) + '.' + String(ip[2]) + '.' + String(ip[3]);
     WIFI_content = "<!DOCTYPE HTML>\r\n<html>Hello from ESP8266 at ";
@@ -49,16 +57,16 @@ void createWebServer()
     WIFI_content += "</html>";
     WIFI_server.send(200, "text/html", WIFI_content);
   });
-  WIFI_server.on("/scan", []() {
+  WIFI_server.on("/scan", [&]() {
     //setupAP();
     IPAddress ip = WiFi.softAPIP();
     String ipStr = String(ip[0]) + '.' + String(ip[1]) + '.' + String(ip[2]) + '.' + String(ip[3]);
 
-    WIFI_content = "<!DOCTYPE HTML>\r\n<html>go back";
-    WIFI_server.send(200, "text/html", WIFI_content);
+    WIFI_server.send(200, "text/html",  "<!DOCTYPE HTML>\r\n<html>go back");
   });
 
-  WIFI_server.on("/setting", []() {
+  WIFI_server.on("/setting", [&]() {
+    String WIFI_content;
     bool reboot = false;
     String qsid = WIFI_server.arg("ssid");
     String qpass = WIFI_server.arg("pass");
@@ -66,7 +74,7 @@ void createWebServer()
     {
       _wifi_config.ssid = qsid;
       _wifi_config.password = qpass;
-      writeEEPROMData(_wifi_config);
+      _wifi_eeprom.writeEEPROMData(_wifi_config);
       WIFI_content = "{\"Success\":\"saved to eeprom... reset to boot into new wifi\"}";
       WIFI_statusCode = 200;
       reboot = true;
@@ -88,7 +96,7 @@ void createWebServer()
   });
 }
 
-void launchWeb()
+void AthosWifiManager::launchWeb(void)
 {
   Log.trace("");
   if (WiFi.status() == WL_CONNECTED)
@@ -99,7 +107,7 @@ void launchWeb()
   createWebServer();
 }
 
-void setupAP(void)
+void AthosWifiManager::setupAP(void)
 {
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
@@ -130,9 +138,9 @@ void setupAP(void)
   launchWeb();
 }
 
-StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
+StorageValues AthosWifiManager::WifiManager_Setup(String deviceId, StorageValues rootConfig)
 {
-  WifiSetupStartLed();
+  _wifi_helpers.WifiSetupStartLed();
   _deviceId = deviceId;
   _wifi_config = rootConfig;
   _wifiAPName = "ATH_" + _deviceId;
@@ -175,11 +183,11 @@ StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
     delay(100);
     WIFI_server.handleClient();
   }
-  WifiSetupCompleteLed();
+  _wifi_helpers.WifiSetupCompleteLed();
   return _wifi_config;
 }
 
-void EnsureWifiConnected()
+void AthosWifiManager::EnsureWifiConnected(void)
 {
   if (WiFi.status() != WL_CONNECTED)
   {
@@ -196,10 +204,21 @@ void EnsureWifiConnected()
     Log.trace("Connected to the WiFi network");
   }
 }
-void WifiManager_Loop()
+void AthosWifiManager::WifiManager_Loop()
 {
   //we should have never gotten past setup so we assume Wifi is already configured and ready
   EnsureWifiConnected();
 }
 
-#endif
+/*
+  Constructor
+*/
+AthosWifiManager::AthosWifiManager()
+{
+}
+
+AthosWifiManager::AthosWifiManager(AthosHelpers helpers, AthosEEPROM eeprom)
+{
+  _wifi_eeprom= eeprom;
+  _wifi_helpers=helpers;
+}
