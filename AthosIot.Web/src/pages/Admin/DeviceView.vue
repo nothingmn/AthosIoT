@@ -1,6 +1,7 @@
 <template>
   <card>
-    <h4 slot="header" class="card-title">{{device.name}} <div class="float-right small">({{device.deviceid}} - {{device.type}} - {{device.version}})</div></h4>
+    <h4 slot="header" class="card-title">{{device.name}} <div class="float-right small">({{device.deviceid}} - {{device.type}} - {{device.version}})</div></h4>    
+    <hr width="80%" />
     <div class="row">
       <div class="col-lg-12">
         <button type="submit" class="btn btn-secondary float-right" @click.prevent="wipe">
@@ -32,22 +33,112 @@
       <div class="col-md-12">
         <div v-if="device.last">
           <div v-if="device.last.type == 'BMP280'">
-              Temperature: {{device.last.temp}}&deg;C<br/>
-              Humidity: {{device.last.humidity}}<br/>
-              Pressure: {{device.last.pressure}}<br/>
-              Altitude: {{device.last.altitude}}<br/>
+            <div class="table-responsive col-md-12">
+              <table class="table table-hover">
+                  <tbody>
+                    <tr>
+                      <th scope="row">Temperature</th>
+                      <td>{{device.last.temp}}&deg;C</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Humidity</th>
+                      <td>{{device.last.humidity}}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Pressure</th>
+                      <td>{{device.last.pressure}}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Altitude</th>
+                      <td>{{device.last.altitude}}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Ping Delay</th>
+                      <td>
+                        <div v-if="device.ping">{{device.ping.roundTrip}}</div></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Last Updated</th>
+                      <td>{{device.last.timeStamp}}</td>
+                    </tr>
+                  </tbody>
+              </table>
+            </div>
           </div>          
           <div v-if="device.last.type == 'TMP36'">
-              Temperature: {{device.last.temp}}&deg;C<br/>
-          </div>          
+            <div class="table-responsive col-md-12">
+              <table class="table table-hover">
+                  <tbody>
+                    <tr>
+                      <th scope="row">Temperature</th>
+                      <td>{{device.last.temp}}&deg;C</td>
+                    </tr>                  
+                    <tr>
+                      <th scope="row">Ping Delay</th>
+                      <td>
+                        <div v-if="device.ping">{{device.ping.roundTrip}}</div></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Last Updated</th>
+                      <td>{{device.last.timeStamp}}</td>
+                    </tr>
+                  </tbody>
+              </table>
+            </div>          </div>          
           <div v-if="device.last.type == 'DHT11'">
-              Temperature: {{device.last.temp}}&deg;C<br/>
-              Humidity: {{device.last.humidity}}<br/>
-              Heat Index: {{device.last.headIndex}}<br/>
+            <div class="table-responsive col-md-12">
+              <table class="table table-hover">
+                  <tbody>
+                    <tr>
+                      <th scope="row">Temperature</th>
+                      <td>{{device.last.temp}}&deg;C</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Humidity</th>
+                      <td>{{device.last.humidity}}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Heat Index</th>
+                      <td>{{device.last.headIndex}}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Ping Delay</th>
+                      <td>
+                        <div v-if="device.ping">{{device.ping.roundTrip}}</div></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Last Updated</th>
+                      <td>{{device.last.timeStamp}}</td>
+                    </tr>
+                  </tbody>
+              </table>
+            </div>            
           </div>          
           <div v-if="device.last.type == 'PIR'">
-              Movement: {{device.last_motion.timeStamp}}&deg;C<br/>
-              State: {{device.last_motion.movement}}<br/>
+
+            <div class="table-responsive col-md-12">
+              <table class="table table-hover">
+                  <tbody>
+                    <tr>
+                      <th scope="row">Movement</th>
+                      <td>{{device.last_motion.timeStamp}}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">State</th>
+                      <td>{{device.last_motion.movement}}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Ping Delay</th>
+                      <td>
+                        <div v-if="device.ping">{{device.ping.roundTrip}}</div></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Last Updated</th>
+                      <td>{{device.last.timeStamp}}</td>
+                    </tr>
+                  </tbody>
+              </table>
+            </div>               
           </div>          
           <div v-if="device.last.type == 'RELAY'">
             <ul list-group class="list-group">
@@ -67,10 +158,6 @@
               </li>
             </ul>
           </div>          
-          {{device.last.timeStamp}}
-          <div v-if="device.ping">
-            Ping Delay:{{device.ping.roundTrip}}            
-          </div>    
         </div>          
       </div>
     </div>
