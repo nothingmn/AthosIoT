@@ -21,7 +21,7 @@
       data() {
         return {
           cards: [
-          ]
+          ],
         }
     },
       mounted() {    
@@ -38,9 +38,9 @@
 
             if(msg.action && msg.action === "devices-list") {
                 vm.cards = [];
-
               for(var d in msg.devices) {
-                var device = msg.devices[d];                
+                var device = msg.devices[d];
+                if(device == null) continue;                
                 if(device && device.last && device.last.timeStamp) {
                   device.last.timeStamp = (new Date(device.last.timeStamp));
                 }
@@ -65,16 +65,6 @@
         };
       },   
       methods: {
-        // sendWifiToServer () {
-        //   var wifi = {
-        //     action : "update-wifi",
-        //     ssid : this.wifi.ssid,
-        //     password : this.wifi.password
-        //   }
-        //   Vue.prototype.$socket.send(JSON.stringify(wifi));
-        //   alert("Your wifi settings have been saved.")
-        // }
-        // Make the function wait until the connection is made...
     }
   }
 

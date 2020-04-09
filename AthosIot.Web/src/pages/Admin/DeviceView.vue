@@ -13,11 +13,18 @@
         <button type="submit" class="btn btn-secondary  float-right" @click.prevent="rename(device)">
           Rename
         </button>
-        <button type="submit" class="btn btn-secondary float-right" @click.prevent="ping">
-          Ping
-        </button>        
         <button type="submit" class="btn btn-secondary float-right" @click.prevent="firmware_update(device)">
           Firmware
+        </button>    
+        <button type="submit" class="btn btn-secondary float-right" @click.prevent="delete_device(device)">
+          Delete
+        </button>                   
+        </div>
+      </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <button type="submit" class="btn btn-secondary float-right" @click.prevent="ping">
+          Ping
         </button>        
         <div v-if="device.last.type == 'RELAY'">
             <button type="submit" class="btn btn-secondary  float-right" @click.prevent="all_off(device)">
@@ -25,7 +32,7 @@
             </button>
             <button type="submit" class="btn btn-secondary  float-right" @click.prevent="all_on(device)">
               All On
-            </button>
+            </button>            
         </div>
       </div>
     </div>
@@ -42,20 +49,20 @@
                     </tr>
                     <tr>
                       <th scope="row">Humidity</th>
-                      <td>{{device.last.humidity}}</td>
+                      <td>{{device.last.humidity}}% Relative Humidity</td>
                     </tr>
                     <tr>
                       <th scope="row">Pressure</th>
-                      <td>{{device.last.pressure}}</td>
+                      <td>{{device.last.pressure}} hPa</td>
                     </tr>
                     <tr>
                       <th scope="row">Altitude</th>
-                      <td>{{device.last.altitude}}</td>
+                      <td>{{device.last.altitude}} meters</td>
                     </tr>
                     <tr>
                       <th scope="row">Ping Delay</th>
                       <td>
-                        <div v-if="device.ping">{{device.ping.roundTrip}}</div></td>
+                        <div v-if="device.ping">{{device.ping.roundTrip}} seconds</div></td>
                     </tr>
                     <tr>
                       <th scope="row">Last Updated</th>
@@ -76,7 +83,7 @@
                     <tr>
                       <th scope="row">Ping Delay</th>
                       <td>
-                        <div v-if="device.ping">{{device.ping.roundTrip}}</div></td>
+                        <div v-if="device.ping">{{device.ping.roundTrip}} seconds</div></td>
                     </tr>
                     <tr>
                       <th scope="row">Last Updated</th>
@@ -95,16 +102,16 @@
                     </tr>
                     <tr>
                       <th scope="row">Humidity</th>
-                      <td>{{device.last.humidity}}</td>
+                      <td>{{device.last.humidity}} % Relative Humidity</td>
                     </tr>
                     <tr>
                       <th scope="row">Heat Index</th>
-                      <td>{{device.last.headIndex}}</td>
+                      <td>{{device.last.headIndex}}&deg;C</td>
                     </tr>
                     <tr>
                       <th scope="row">Ping Delay</th>
                       <td>
-                        <div v-if="device.ping">{{device.ping.roundTrip}}</div></td>
+                        <div v-if="device.ping">{{device.ping.roundTrip}} seconds</div></td>
                     </tr>
                     <tr>
                       <th scope="row">Last Updated</th>
@@ -130,7 +137,7 @@
                     <tr>
                       <th scope="row">Ping Delay</th>
                       <td>
-                        <div v-if="device.ping">{{device.ping.roundTrip}}</div></td>
+                        <div v-if="device.ping">{{device.ping.roundTrip}} seconds </div></td>
                     </tr>
                     <tr>
                       <th scope="row">Last Updated</th>
@@ -141,22 +148,34 @@
             </div>               
           </div>          
           <div v-if="device.last.type == 'RELAY'">
-            <ul list-group class="list-group">
-              <li v-for="o in device.relay" class="list-group-item list-group-item-action flex-column align-items-start">
-                <div v-if="o.id">
-                  {{o.id}} : {{o.name}}
-                  <button type="submit" class="btn btn-secondary  float-right" @click="relay_rename(device, o)">
-                    Rename
-                  </button>
-                  <button type="submit" class="btn btn-secondary  float-right" @click.prevent="relay_off(device, o)">
-                    Off
-                  </button>
-                  <button type="submit" class="btn btn-secondary  float-right" @click.prevent="relay_on(device, o)">
-                    On
-                  </button>
-                </div>          
-              </li>
-            </ul>
+            <div class="table-responsive col-md-12">
+              <table class="table table-hover col-md-12">
+                  <tbody>
+                      <tr v-for="o in device.relay"  v-if="o.id" >
+                        <th scope="row">{{o.id}} : {{o.name}}</th>
+                        <td class="float-right">
+                          <button type="submit" class="btn btn-secondary text-xs-right" @click="relay_rename(device, o)">
+                           Rename
+                          </button>
+                          <button type="submit" class="btn btn-secondary" @click.prevent="relay_off(device, o)">
+                            Off
+                          </button>
+                          <button type="submit" class="btn btn-secondary" @click.prevent="relay_on(device, o)">
+                           On
+                          </button>                     
+                        </td>
+                      </tr>
+                    <tr>
+                      <th scope="row">Ping Delay</th>
+                      <td><div v-if="device.ping">{{device.ping.roundTrip}} seconds</div></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Last Updated</th>
+                      <td>{{device.last.timeStamp}}</td>
+                    </tr>
+                  </tbody>
+              </table>
+            </div>
           </div>          
         </div>          
       </div>
@@ -242,6 +261,10 @@ export default {
         reboot() {
           console.log('reboot device:', this.device.deviceid );
           Vue.prototype.$socket.send(JSON.stringify({ action : "reboot-device", deviceid : this.device.deviceid }));
+        },
+        delete_device() {
+          console.log('delete-device:', this.device.deviceid );
+          Vue.prototype.$socket.send(JSON.stringify({ action : "delete-device", deviceid : this.device.deviceid }));
         }
     }
   }

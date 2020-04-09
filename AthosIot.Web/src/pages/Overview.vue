@@ -19,25 +19,55 @@
               </div>
             </card>
         </div>
+      </div>
+      <div class="row">
+       <div class="col-md-8">
+          <LineChartContainer name="chart-js-card" :chart-data="datacollection"></LineChartContainer>          
+        </div>        
       </div>       
+        </div>
     </div>
   </div>
 </template>
 <script>
-  import ChartCard from 'src/components/Cards/ChartCard.vue'
-  import StatsCard from 'src/components/Cards/StatsCard.vue'
-  import LTable from 'src/components/Table.vue'
+  import LineChartContainer from 'src/components/Cards/LineChartContainer.vue'
+  import Vue from 'vue'
+
 
   export default {
     components: {
-      LTable,
-      ChartCard,
-      StatsCard
+      LineChartContainer,
     },
-
+    data () {
+      return {
+        datacollection: null,
+      }
+    },
     created() {
+        var vm = this;    
+        var sock = Vue.prototype.$socket;
+        sock.send(JSON.stringify({ action : "get-devices" }));
+        console.log("get-devices sent");
 
+        sock.onmessage = function(event) {          
+          if(event && event.data) {
+            var msg = JSON.parse(event.data);
 
+            if(msg.action && msg.action === "devices-list") {
+
+              for(var d in msg.devices) {
+                var device = msg.devices[d];                
+                if(device.last.temp) {                  
+                  if(device && device.last && device.last.timeStamp) {
+                    device.last.timeStamp = (new Date(device.last.timeStamp));
+                  }
+                  if(device.last.raw) delete device.last.raw;
+                  if(device.last.since) delete device.last.since;                  
+              }
+            }
+          }
+        }
+      }
     },
     methods : {
       nav(path) {
@@ -46,12 +76,7 @@
       }
       
     },
-    
-    data () {
-      return {
-       
-      }
-    }
+
   }
 </script>
 <style>
