@@ -83,14 +83,15 @@ Slave node sequencing (DONE)
 2. Ensure Wifi is setup (from device config)
    1. If not configured, attempt to connect to RaspberryPi's Hidden Access Point (which is isolated from users home network)
    2. Otherwise, if configured then connect to the wifi access point
-   3. Setup an NTP client, and ensure that the NTP client is up to date (self updates, every XX minutes)
-   4. Ensure MQTT is configured
-5. If not configured, broadcast a UDP packet (255.255.255.255:3000)
+   3. If we are connected to the Athos IoT Hub we will attempt to scrape the gateway HTTP configure endpoint otherwise...
+   4. Setup an NTP client, and ensure that the NTP client is up to date (self updates, every XX minutes)
+   5. Ensure MQTT is configured
+3. If not configured, broadcast a UDP packet (255.255.255.255:3000)
    1. This UDP Package will be picked up by Node-Red and will send a configuration message to the specific device via UDP directly.
    2. The device will receive the UDP package, and store the configuration
-6. If configured then connect to the MQTT server specified
-7. Setup the specific sensor devices and enable independant looping of of gathering of sensor data
-8. Setup subscriptions for relays for MQTT
+4. If configured then connect to the MQTT server specified
+5. Setup the specific sensor devices and enable independant looping of of gathering of sensor data
+6. Setup subscriptions for relays for MQTT
 
 Getting started
 -----------------------
