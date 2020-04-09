@@ -13,6 +13,8 @@
 #define EEPROM_SIZE 1024
 #define EEPROM_TERMINATER 0
 
+#define WIPE false
+
 void wipeEEPROM()
 {
   Log.trace("Wiping EEPROM");
@@ -103,7 +105,7 @@ void writeEEPROMData(StorageValues config) {
 
 StorageValues EEPROM_setup() {
 
-  if(false) {
+  if(WIPE) {
     wipeEEPROM();   
     Log.trace("EEPROM KILLED!"); 
   }

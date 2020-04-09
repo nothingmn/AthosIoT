@@ -50,11 +50,8 @@ void HTTP_ScrapeConfig(void)
     http.begin("http://" + WiFi.gatewayIP().toString() + ":1880/configure?deviceid=" + http_deviceId);	
     int httpCode = http.GET();
     String _json = http.getString();
-    http.end();
 
-    Log.trace("HTTP JSON downloaded.%s.%i", _json.c_str(), _json.length());
-
-    DynamicJsonDocument doc(_json.length());
+    StaticJsonDocument<512> doc;
     deserializeJson(doc, _json);
     const char *world = doc["mqtt"]["server"];
     Log.trace("%s", world);
@@ -72,6 +69,8 @@ void HTTP_ScrapeConfig(void)
 
     Log.trace("Received HTTP Payload:%s, %s", _http_config.mqttServer.c_str(), _http_config.mqttSensorTopic.c_str());
     Log.trace("---------------------------------------------");
+    http.end();
+
     writeEEPROMData(_http_config);
     delay(100);
     Log.trace("HTTP is causing a reset...");
