@@ -5,6 +5,7 @@
   "description": "Vue light bootstrap dashboard",
   "author": "cristijora <joracristi@gmail.com>",
   "scripts": {
+    "prod": "vue-cli-service build --mode prod",
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
     "e2e": "node test/e2e/runner.js",

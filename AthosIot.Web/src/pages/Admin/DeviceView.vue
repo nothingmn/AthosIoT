@@ -43,7 +43,7 @@
           <div v-if="device.last.type == 'DHT11'">
               Temperature: {{device.last.temp}}&deg;C<br/>
               Humidity: {{device.last.humidity}}<br/>
-              Heat Index: {{device.last.pressure}}<br/>
+              Heat Index: {{device.last.headIndex}}<br/>
           </div>          
           <div v-if="device.last.type == 'PIR'">
               Movement: {{device.last_motion.timeStamp}}&deg;C<br/>
