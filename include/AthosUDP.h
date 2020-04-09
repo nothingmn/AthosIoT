@@ -1,25 +1,30 @@
 #ifndef ATH_UDP
 #define ATH_UDP
 
+#include "AthosHelpers.h"
 #include <ArduinoJson.h>
 #include <ArduinoLog.h>
-
-int broadcastPort = 3000;
-int udpListenPort = 3001;
-
-IPAddress broadcastIp(255, 255, 255, 255);
-WiFiUDP broadcastUDP;
-WiFiUDP listenUDP;
+#include <ESP8266WiFi.h>
+#include "Arduino.h"
 
 String udp_deviceId;
 StorageValues _udp_config;
-
 bool UDP_configComplete = false;
+int broadcastPort = 3000;
+
+WiFiUDP broadcastUDP;
+IPAddress broadcastIP(255,255,255,255);
+WiFiUDP listenUDP;
+int udpListenPort = 3001;
+
 void listenForUDPMessages()
 {
     // if there's data available, read a packet
-    char packetBuffer[1500]; //buffer to hold incoming packet
+    char packetBuffer[512]; //buffer to hold incoming packet
+    Log.trace("Listen UDP");
     int packetSize = listenUDP.parsePacket();
+    Log.trace("Parsed UDP");
+
     if (packetSize)
     {
       IPAddress remoteIp = listenUDP.remoteIP();
@@ -27,6 +32,7 @@ void listenForUDPMessages()
 
       // read the packet into packetBufffer
       int len = listenUDP.read(packetBuffer, packetSize);
+      Log.trace("recieved packet from udp, len::%i", len);
       if (len > 0)
       {
         packetBuffer[len] = 0;
@@ -54,10 +60,12 @@ void listenForUDPMessages()
       writeEEPROMData(_udp_config);
       delay(100);
       UDP_configComplete = true;
+      Log.trace("UDP is causing a reset...");
       ESP.reset();
       delay(100);
     } 
   }
+
 
 
 long last_udp_broadcast = 0;
@@ -68,16 +76,15 @@ void publishUDP()
   
   if (diff > 10)
   {
-    Log.trace("Broadcasting myself...");
-    broadcastUDP.beginPacket(broadcastIp, broadcastPort);
 
-    StaticJsonDocument<200> doc;
-    doc["ts"] = ts;
-    doc["deviceid"] = udp_deviceId;
-    String json;
-    serializeJson(doc, json);
-    broadcastUDP.print(json);
+    const char* deviceid = udp_deviceId.c_str();
+    Log.trace("Starting to Broadcasting myself...%s", deviceid);
+    broadcastUDP.beginPacket(broadcastIP, broadcastPort);
+    Log.trace("printing...%s", deviceid);
+    broadcastUDP.print(deviceid);
+    Log.trace("Ending packet...");
     broadcastUDP.endPacket();
+    Log.trace("Broadcasted myself...");
     last_udp_broadcast = ts;    
   }
 }
@@ -89,10 +96,10 @@ StorageValues UDP_Setup(String DeviceId, StorageValues rootConfig)
   if(!_udp_config.mqttServer || !_udp_config.mqttSensorTopic || _udp_config.mqttServer == "null" || _udp_config.mqttServer == "") {
     Log.trace("No MQTT Data on file, UDP broadcast required");
 
-    listenUDP.begin(udpListenPort);
     broadcastUDP.begin(broadcastPort);
+    listenUDP.begin(udpListenPort);
 
-    while(!UDP_configComplete) {
+    while(!UDP_configComplete) {      
       publishUDP();
       listenForUDPMessages();
       delay(1000);

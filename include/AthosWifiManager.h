@@ -23,7 +23,8 @@ bool testWifi(void)
   {
     if (WiFi.status() == WL_CONNECTED)
     {
-      Log.trace("Local IP: %x", WiFi.localIP().toString().c_str());
+            
+      Log.trace("Local IP: %s, RSSI:%i", WiFi.localIP().toString().c_str(), WiFi.RSSI());
       return true;
     }
     delay(500);
@@ -159,7 +160,8 @@ StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
 
     if (testWifi())
     {
-      Log.trace("Succesfully Connected to AP--> %s by device: %s\n", "AthosIoT", _wifiAPName.c_str());
+      Log.trace("Succesfully Connected to AP--> AthosIoT by device: %s, Gateway:%s",  _wifiAPName.c_str(), WiFi.gatewayIP().toString().c_str());
+      
       return _wifi_config;
     }
     else

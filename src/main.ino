@@ -21,6 +21,7 @@
 #include "AthosEEPROM.h"
 #include "AthosWifiManager.h"
 #include "AthosNTP.h"
+#include "AthosHTTP.h"
 #include "AthosUDP.h"
 #include "AthosRelay.h"
 #include "AthosMQTT.h"
@@ -65,9 +66,15 @@ void setup()
   NTP_Setup();
   Log.trace("NTP Done");
 
-  Log.trace("UDP Start");
-  rootConfig = UDP_Setup(DeviceId, rootConfig);
-  Log.trace("UDP Done");
+  if(WiFi.gatewayIP().toString() == "10.3.141.1") {
+    Log.trace("HTTP Start");
+    rootConfig = HTTP_Setup(DeviceId, rootConfig);
+    Log.trace("HTTP Done");
+  } else {
+    Log.trace("UDP Start");
+    rootConfig = UDP_Setup(DeviceId, rootConfig);
+    Log.trace("UDP Done");
+  }
 
   Log.trace("MQTT Start");
   root_mqtt_client = MQTT_Setup(DeviceId, rootConfig);
@@ -115,7 +122,7 @@ void loop()
   LED_Loop();
   WifiManager_Loop();
   NTP_Loop();
-  UDP_Loop();
+  HTTP_Loop();
   MQTT_Loop();
 
 #ifdef ATH_TMP36

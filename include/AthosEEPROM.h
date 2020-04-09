@@ -6,9 +6,6 @@
 #include <ArduinoJson.h>
 #include <ArduinoLog.h>
 
-#ifndef ATH_LOG
-  //#include "AthosLog.h"
-#endif
 #ifndef ATH_HELPERS
   #include "AthosHelpers.h"
 #endif

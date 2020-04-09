@@ -22,6 +22,7 @@ bool ConnectToMqtt()
     //client object makes connection to server
     String clientId = "ATH" + _mqtt_deviceId;
 
+    int count = 0;
     //Authenticating the client object
     while (!mqtt_client.connected())
     {
@@ -45,6 +46,11 @@ bool ConnectToMqtt()
         Log.trace("failed, mqtt state:\"%d\", try again in 5 seconds",mqtt_client.state());
         // Wait 5 seconds before retrying
         delay(5000);
+        count++;
+
+        if(count > 5) {
+          ESP.reset();
+        }
       }
     }
     return true;
