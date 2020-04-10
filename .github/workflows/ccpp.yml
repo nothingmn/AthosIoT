@@ -29,6 +29,11 @@ jobs:
           mv .pio/build/BMP280/firmware.bin out/AthosIoT.BMP280.bin  
           mv .pio/build/PIR/firmware.bin out/AthosIoT.PIR.bin  
           mv .pio/build/DHT11/firmware.bin out/AthosIoT.DHT11.bin  
+          mv .pio/build/ATH_RELAY_MD0/firmware.bin out/AthosIoT.ATH_RELAY_MD0.bin  
+      - uses: actions/upload-artifact@v1
+        with:
+          name: AthosIoT.ATH_RELAY_MD0
+          path: out/AthosIoT.ATH_RELAY_MD0.bin      
       - uses: actions/upload-artifact@v1
         with:
           name: AthosIoT.RELAY
