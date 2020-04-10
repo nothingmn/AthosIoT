@@ -13,17 +13,26 @@
   #include "AthosMQTT.h"
 #endif 
 
-//add or remove and sort items from the array to control the pins as you like.
-uint RELAY_PINS[] {D0};
-//uint RELAY_PINS[] {D0,D1};
-//change this so we can report up to to the server
-String RELAY_Report_PINS = "D0";
-//String RELAY_Report_PINS = "MD0,MD1";
+
+#ifdef ATH_RELAY_MD0
+  uint RELAY_PINS[] {D0,D1};
+  String RELAY_Report_PINS = "MD0,MD1";
+  long duration = 1000;  //if > 0 it will trigger back given the duraiton; emulates a momentary switch
+#else
+  //add or remove and sort items from the array to control the pins as you like.
+  uint RELAY_PINS[] {D0};
+  //uint RELAY_PINS[] {D0,D1};
+  //change this so we can report up to to the server
+  String RELAY_Report_PINS = "D0";
+  //String RELAY_Report_PINS = "MD0,MD1";
+  long duration = 0;  //if > 0 it will trigger back given the duraiton; emulates a momentary switch
+#endif
+
+
 
 #define turn_On 1
 #define turn_Off 0
 
-long duration = 0;  //if > 0 it will trigger back given the duraiton; emulates a momentary switch
 
 PubSubClient _Relay_mqtt_client;
 String _Relay_deviceId;

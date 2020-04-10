@@ -10,6 +10,13 @@
                 "$platformio"
             ],
             "group": "build"
+        },        {
+            "type": "PlatformIO",
+            "task": "Build (ATH_RELAY_MD0)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
         },
         {
             "type": "PlatformIO",
@@ -38,6 +45,14 @@
         {
             "type": "PlatformIO",
             "task": "Build (PIR)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Upload (ATH_RELAY_MD0)",
             "problemMatcher": [
                 "$platformio"
             ],
