@@ -3,6 +3,8 @@
 #ifndef ATH_RELAY_
 #define ATH_RELAY_
 
+#include <AthosHelpers.h>
+#include <AthosNTP.h>
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <ArduinoLog.h>
@@ -13,11 +15,15 @@
 
 //add or remove and sort items from the array to control the pins as you like.
 uint RELAY_PINS[] {D0};
+//uint RELAY_PINS[] {D0,D1};
 //change this so we can report up to to the server
 String RELAY_Report_PINS = "D0";
+//String RELAY_Report_PINS = "MD0,MD1";
 
 #define turn_On 1
 #define turn_Off 0
+
+long duration = 0;  //if > 0 it will trigger back given the duraiton; emulates a momentary switch
 
 PubSubClient _Relay_mqtt_client;
 String _Relay_deviceId;
@@ -34,22 +40,10 @@ void Relay_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootCo
    // Pin for relay module set as output
   for(int x=0;x<sizeof(RELAY_PINS);x++) {
     pinMode(RELAY_PINS[x], OUTPUT);
-    digitalWrite(RELAY_PINS[x], turn_Off);
-  }
-}
-
-
-void RunFun() {
-  for(int x=0;x<=5;x++) {
-    for(int y=0;y<sizeof(RELAY_PINS);y++) {
-      digitalWrite(RELAY_PINS[y], turn_Off);      
-    }
-    delay(100);
-    for(int z=0;z<sizeof(RELAY_PINS);z++){
-      digitalWrite(RELAY_PINS[z], turn_On);      
-      delay(100);
-      digitalWrite(RELAY_PINS[z], turn_Off);      
-      delay(100);
+    digitalWrite(RELAY_PINS[x], turn_On);
+    if(duration>0) {
+      delay(duration);
+      digitalWrite(RELAY_PINS[x], turn_Off);
     }
   }
 }
@@ -76,26 +70,43 @@ bool Relay_MQTT_Received(String topic, String json) {
 
       if(command == "on") {
           digitalWrite(pin, turn_On);      
+          Log.trace("on");
+          if(duration > 0) {
+            delay(duration);
+            digitalWrite(pin, turn_Off);      
+            Log.trace("off");
+          }
           return true;
       } else {
           digitalWrite(pin, turn_Off);      
+          Log.trace("off");
+          if(duration > 0) {
+            delay(duration);
+            digitalWrite(pin, turn_On);      
+            Log.trace("on");
+          }
           return true;
       }
     }
     if(command == "allon") {
       for(int x=0;x<sizeof(RELAY_PINS);x++) {
         digitalWrite(RELAY_PINS[x], turn_On);      
+        if(duration > 0) {
+          delay(duration);
+          digitalWrite(RELAY_PINS[x], turn_Off);      
+        }
       }
+
       return true;
     }
     if(command == "alloff") {
       for(int x=0;x<sizeof(RELAY_PINS);x++) {
         digitalWrite(RELAY_PINS[x], turn_Off);      
+        if(duration > 0) {
+          delay(duration);
+          digitalWrite(RELAY_PINS[x], turn_On);      
+        }
       }
-      return true;
-    }
-    if(command == "fun") {
-      RunFun();
       return true;
     }
   }
@@ -125,7 +136,7 @@ void Relay_Loop()
 {
   long now = NTP_getEpochTime();
   long diff = abs(now - relay_last);  
-  if(diff > relay_max_diff) {
+  if(diff > relay_max_diff || relay_last == 0) {
     relay_last = now;
     RELAY_CheckIn();
   }
