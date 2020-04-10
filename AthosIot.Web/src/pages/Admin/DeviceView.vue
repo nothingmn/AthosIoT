@@ -152,17 +152,24 @@
               <table class="table table-hover col-md-12">
                   <tbody>
                       <tr v-for="o in device.relay"  v-if="o.id" >
-                        <th scope="row">{{o.id}} : {{o.name}}</th>
+                        <th scope="row" class="col-md-4">{{o.id}} : {{o.name}}</th>
                         <td class="float-right">
                           <button type="submit" class="btn btn-secondary text-xs-right" @click="relay_rename(device, o)">
                            Rename
                           </button>
-                          <button type="submit" class="btn btn-secondary" @click.prevent="relay_off(device, o)">
-                            Off
-                          </button>
-                          <button type="submit" class="btn btn-secondary" @click.prevent="relay_on(device, o)">
-                           On
-                          </button>                     
+                          <div v-if="!o.id.startsWith('M')">
+                            <button type="submit" class="btn btn-secondary" @click.prevent="relay_off(device, o)">
+                              Off
+                            </button>
+                            <button type="submit" class="btn btn-secondary" @click.prevent="relay_on(device, o)">
+                              On
+                            </button>        
+                          </div>             
+                          <div v-if="o.id.startsWith('M')">
+                            <button type="submit" class="btn btn-secondary" @click.prevent="relay_off(device, o)">
+                              Toggle
+                            </button>
+                          </div>             
                         </td>
                       </tr>
                     <tr>
