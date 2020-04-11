@@ -1,6 +1,6 @@
 <template>
   <card>
-    <h4 slot="header" class="card-title">{{device.name}} <div class="float-right small">({{device.deviceid}} - {{device.type}} - {{device.version}})</div></h4>    
+    <h3 slot="header" class="card-title">{{device.name}} <div class="float-right small">({{device.deviceid}} - {{device.type}} - {{device.version}})</div></h3>    
     <hr width="80%" />
     <div class="row">
       <div class="col-lg-12">
@@ -26,7 +26,7 @@
         <button type="submit" class="btn btn-secondary float-right" @click.prevent="ping">
           Ping
         </button>        
-        <div v-if="device['RELAY']">
+        <div v-if="device.relay">
             <button type="submit" class="btn btn-secondary  float-right" @click.prevent="all_off(device)">
               All Off
             </button>
@@ -65,7 +65,7 @@
                     </tr>
                     <tr>
                       <th scope="row">Last Updated</th>
-                      <td>{{device.timeStamp}}</td>
+                      <td>{{(new Date(device.timeStamp)).toLocaleString()}}</td>
                     </tr>
                   </tbody>
               </table>
@@ -86,7 +86,7 @@
                     </tr>
                     <tr>
                       <th scope="row">Last Updated</th>
-                      <td>{{device.timeStamp}}</td>
+                      <td>{{(new Date(device.timeStamp)).toLocaleString()}}</td>
                     </tr>
                   </tbody>
               </table>
@@ -114,20 +114,19 @@
                     </tr>
                     <tr>
                       <th scope="row">Last Updated</th>
-                      <td>{{device.timeStamp}}</td>
+                      <td>{{(new Date(device.timeStamp)).toLocaleString()}}</td>
                     </tr>
                   </tbody>
               </table>
             </div>            
           </div>          
           <div v-if="device.pir">
-
             <div class="table-responsive col-md-12">
               <table class="table table-hover">
                   <tbody>
                     <tr>
                       <th scope="row">Last Movement</th>
-                      <td>{{device.pir.movement.timeStamp}}</td>
+                      <td>{{(new Date(device.pir.movement.timeStamp)).toLocaleString()}}</td>
                     </tr>
                     <tr>
                       <th scope="row">State</th>
@@ -140,7 +139,7 @@
                     </tr>
                     <tr>
                       <th scope="row">Last Updated</th>
-                      <td>{{device.timeStamp}}</td>
+                      <td>{{(new Date(device.timeStamp)).toLocaleString()}}</td>
                     </tr>
                   </tbody>
               </table>
@@ -177,7 +176,7 @@
                     </tr>
                     <tr>
                       <th scope="row">Last Updated</th>
-                      <td>{{device.timeStamp}}</td>
+                      <td>{{(new Date(device.timeStamp)).toLocaleString()}}</td>
                     </tr>
                   </tbody>
               </table>
