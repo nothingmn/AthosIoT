@@ -2,9 +2,10 @@
 #ifndef ATH_PIR_
 #define ATH_PIR_
 
-///Make sure you have a 3V PIR Sensor
-///In this sketch, we are using a D0 for the data pin
+///Make sure you have a 3V PIR Sen  sor
+///In this sketch, we are using a D1 for the data pin
 
+#include "Arduino.h"
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 
@@ -13,7 +14,7 @@ String _PIR_deviceId;
 StorageValues _PIR_config;
 int _PIR_loop_delay;
 
-int PIR_inputPin = D0; // choose the input pin (for PIR sensor)
+int PIR_inputPin = D1; // choose the input pin (for PIR sensor)
 int PIR_state = LOW;  // we start, assuming no motion detected
 int PIR_val = 0;      // variable for reading the pin status
 

@@ -112,6 +112,38 @@
             "command": "bash ./build.sh",
             "group": "build",
             "problemMatcher": []
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Upload (RELAY_BMP280)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Build (RELAY_BMP280)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Upload (RELAY_PIR)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Build (RELAY_PIR)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
         }
     ]
 }
