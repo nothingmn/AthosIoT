@@ -29,6 +29,7 @@
 #include "AthosDHT11.h"
 #include "AthosBMP280.h"
 #include "AthosPIR.h"
+#include "AthosMoisture.h"
 
 #include "Arduino.h"
 #include <ArduinoLog.h>
@@ -112,6 +113,11 @@ void setup()
   Log.trace("PIR Done");
 #endif
 
+#ifdef ATH_MOIST
+  Log.trace("MOIST Start");
+  MOIST_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
+  Log.trace("MOIST Done");
+#endif
 
   Log.trace("~~~~~~~~~~SETUP COMPLETED ~~~~~~~~~~Version:%s Build:%s", getVersion().c_str(), getBuild().c_str());
 }
@@ -143,6 +149,11 @@ void loop()
 
 #ifdef ATH_PIR
   PIR_Loop();
+#endif
+
+
+#ifdef ATH_MOIST
+  MOIST_Loop();
 #endif
 
   delay(loop_delay);

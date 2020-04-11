@@ -25,7 +25,8 @@
 			"xlocale": "cpp",
 			"xstring": "cpp",
 			"xutility": "cpp",
-			"chrono": "cpp"
+			"chrono": "cpp",
+			"algorithm": "cpp"
 		}
 	}
 }

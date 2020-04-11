@@ -19,8 +19,8 @@
         <button type="submit" class="btn btn-secondary float-right" @click.prevent="delete_device(device)">
           Delete
         </button>                   
-        </div>
       </div>
+    </div>
     <div class="row">
       <div class="col-lg-12">
         <button type="submit" class="btn btn-secondary float-right" @click.prevent="ping">
@@ -37,151 +37,98 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-12">
-          <div v-if="device.bmp280">
-            <div class="table-responsive col-md-12">
-              <table class="table table-hover">
-                  <tbody>
-                    <tr>
-                      <th scope="row">Temperature</th>
-                      <td>{{device.bmp280.temp}}&deg;C</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Humidity</th>
-                      <td>{{device.bmp280.humidity}}% Relative Humidity</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Pressure</th>
-                      <td>{{device.bmp280.pressure}} hPa</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Altitude</th>
-                      <td>{{device.bmp280.altitude}} meters</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Ping Delay</th>
-                      <td>
-                        <div v-if="device.ping">{{device.ping.roundTrip}} seconds</div></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Last Updated</th>
-                      <td>{{(new Date(device.timeStamp)).toLocaleString()}}</td>
-                    </tr>
-                  </tbody>
-              </table>
-            </div>
-          </div>          
-          <div v-if="device.tmp36">
-            <div class="table-responsive col-md-12">
-              <table class="table table-hover">
-                  <tbody>
-                    <tr>
-                      <th scope="row">Temperature</th>
-                      <td>{{device.tmp36.temp}}&deg;C</td>
-                    </tr>                  
-                    <tr>
-                      <th scope="row">Ping Delay</th>
-                      <td>
-                        <div v-if="device.ping">{{device.ping.roundTrip}} seconds</div></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Last Updated</th>
-                      <td>{{(new Date(device.timeStamp)).toLocaleString()}}</td>
-                    </tr>
-                  </tbody>
-              </table>
-            </div>          </div>          
-          <div v-if="device.dht11">
-            <div class="table-responsive col-md-12">
-              <table class="table table-hover">
-                  <tbody>
-                    <tr>
-                      <th scope="row">Temperature</th>
-                      <td>{{device.dht11.temp}}&deg;C</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Humidity</th>
-                      <td>{{device.dht11.humidity}} % Relative Humidity</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Heat Index</th>
-                      <td>{{device.dht11.headIndex}}&deg;C</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Ping Delay</th>
-                      <td>
-                        <div v-if="device.ping">{{device.ping.roundTrip}} seconds</div></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Last Updated</th>
-                      <td>{{(new Date(device.timeStamp)).toLocaleString()}}</td>
-                    </tr>
-                  </tbody>
-              </table>
-            </div>            
-          </div>          
-          <div v-if="device.pir">
-            <div class="table-responsive col-md-12">
-              <table class="table table-hover">
-                  <tbody>
-                    <tr>
-                      <th scope="row">Last Movement</th>
-                      <td>{{(new Date(device.pir.movement.timeStamp)).toLocaleString()}}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">State</th>
-                      <td>{{device.pir.movement.moved}}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Ping Delay</th>
-                      <td>
-                        <div v-if="device.ping">{{device.ping.roundTrip}} seconds </div></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Last Updated</th>
-                      <td>{{(new Date(device.timeStamp)).toLocaleString()}}</td>
-                    </tr>
-                  </tbody>
-              </table>
-            </div>               
-          </div>          
-          <div v-if="device.relay">
-            <div class="table-responsive col-md-12">
-              <table class="table table-hover col-md-12">
-                  <tbody>
-                      <tr v-for="o in device.relay"  v-if="o.id" >
-                        <th scope="row" class="col-md-4">{{o.id}} : {{o.name}}</th>
-                        <td class="float-right">
-                          <button type="submit" class="btn btn-secondary text-xs-right" @click="relay_rename(device, o)">
-                           Rename
+      <div class="col-lg-12">
+        <div class="table-responsive">
+          <table class="table table-hover">
+              <tbody>
+                <div v-if="device.bmp280">
+                  <tr class="row">
+                    <th scope="row" class="col-lg-4">Temperature</th>
+                    <td class="col-lg-8">{{device.bmp280.temp}}&deg;C</td>
+                  </tr>
+                  <tr class="row">
+                    <th scope="row" class="col-lg-4">Humidity</th>
+                    <td class="col-lg-8">{{device.bmp280.humidity}}% Relative Humidity</td>
+                  </tr>
+                  <tr  class="row">
+                    <th scope="row" class="col-lg-4">Pressure</th>
+                    <td class="col-lg-8">{{device.bmp280.pressure}} hPa</td>
+                  </tr>
+                  <tr  class="row">
+                    <th scope="row" class="col-lg-4">Altitude</th>
+                    <td class="col-lg-8">{{device.bmp280.altitude}} meters</td>
+                  </tr>
+                </div>
+                <div v-if="device.tmp36">
+                  <tr  class="row">
+                    <th scope="row" class="col-lg-4">Temperature</th>
+                    <td class="col-lg-8">{{device.tmp36.temp}}&deg;C</td>
+                  </tr>                  
+                </div>
+                <div v-if="device.dht11">
+                  <tr  class="row">
+                    <th scope="row" class="col-lg-4">Temperature</th>
+                    <td class="col-lg-8">{{device.dht11.temp}}&deg;C</td>
+                  </tr>
+                  <tr  class="row">
+                    <th scope="row" class="col-lg-4">Humidity</th>
+                    <td class="col-lg-8">{{device.dht11.humidity}} % Relative Humidity</td>
+                  </tr>
+                  <tr  class="row">
+                    <th scope="row" class="col-lg-4">Heat Index</th>
+                    <td class="col-lg-8">{{device.dht11.headIndex}}&deg;C</td>
+                  </tr>
+                </div>          
+                <div v-if="device.moisture">
+                  <tr  class="row">
+                    <th scope="row" class="col-lg-4">Moisture Level</th>
+                    <td class="col-lg-8">{{device.moisture.level}}%</td>
+                  </tr>
+                </div>               
+                <div v-if="device.pir">
+                  <tr  class="row">
+                    <th scope="row" class="col-lg-4">Last Movement</th>
+                    <td class="col-lg-8">{{(new Date(device.pir.movement.timeStamp)).toLocaleString()}}</td>
+                  </tr>
+                  <tr  class="row">
+                    <th scope="row" class="col-lg-4">State</th>
+                    <td class="col-lg-8">{{device.pir.movement.moved}}</td>
+                  </tr>
+                </div>               
+                <div v-if="device.relay">
+                    <tr v-for="o in device.relay"  v-if="o.id" >
+                      <th scope="row" class="col-lg-4">{{o.id}} : {{o.name}}</th>
+                      <td class="float-right">
+                        <button type="submit" class="btn btn-secondary text-xs-right" @click="relay_rename(device, o)">
+                        Rename
+                        </button>
+                        <div v-if="!o.id.startsWith('M')">
+                          <button type="submit" class="btn btn-secondary" @click.prevent="relay_off(device, o)">
+                            Off
                           </button>
-                          <div v-if="!o.id.startsWith('M')">
-                            <button type="submit" class="btn btn-secondary" @click.prevent="relay_off(device, o)">
-                              Off
-                            </button>
-                            <button type="submit" class="btn btn-secondary" @click.prevent="relay_on(device, o)">
-                              On
-                            </button>        
-                          </div>             
-                          <div v-if="o.id.startsWith('M')">
-                            <button type="submit" class="btn btn-secondary" @click.prevent="relay_off(device, o)">
-                              Toggle
-                            </button>
-                          </div>             
-                        </td>
-                      </tr>
-                    <tr>
-                      <th scope="row">Ping Delay</th>
-                      <td><div v-if="device.ping">{{device.ping.roundTrip}} seconds</div></td>
+                          <button type="submit" class="btn btn-secondary" @click.prevent="relay_on(device, o)">
+                            On
+                          </button>        
+                        </div>             
+                        <div v-if="o.id.startsWith('M')">
+                          <button type="submit" class="btn btn-secondary" @click.prevent="relay_off(device, o)">
+                            Toggle
+                          </button>
+                        </div>             
+                      </td>
                     </tr>
-                    <tr>
-                      <th scope="row">Last Updated</th>
-                      <td>{{(new Date(device.timeStamp)).toLocaleString()}}</td>
-                    </tr>
-                  </tbody>
-              </table>
-            </div>
-        </div>          
+                </div>
+                <tr  class="row">
+                  <th scope="row" class="col-lg-4">Ping Delay</th>
+                  <td class="col-lg-8"><div v-if="device.ping">{{device.ping.roundTrip}} seconds</div></td>
+                </tr>
+                <tr  class="row">
+                  <th scope="row" class="col-lg-4">Last Updated</th>
+                  <td class="col-lg-8">{{(new Date(device.timeStamp)).toLocaleString()}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
       </div>
     </div>
     <div class="clearfix"></div>
