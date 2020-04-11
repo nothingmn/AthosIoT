@@ -26,7 +26,7 @@
         <button type="submit" class="btn btn-secondary float-right" @click.prevent="ping">
           Ping
         </button>        
-        <div v-if="device.last.type == 'RELAY'">
+        <div v-if="device['RELAY']">
             <button type="submit" class="btn btn-secondary  float-right" @click.prevent="all_off(device)">
               All Off
             </button>
@@ -38,26 +38,25 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <div v-if="device.last">
-          <div v-if="device.last.type == 'BMP280'">
+          <div v-if="device.bmp280">
             <div class="table-responsive col-md-12">
               <table class="table table-hover">
                   <tbody>
                     <tr>
                       <th scope="row">Temperature</th>
-                      <td>{{device.last.temp}}&deg;C</td>
+                      <td>{{device.bmp280.temp}}&deg;C</td>
                     </tr>
                     <tr>
                       <th scope="row">Humidity</th>
-                      <td>{{device.last.humidity}}% Relative Humidity</td>
+                      <td>{{device.bmp280.humidity}}% Relative Humidity</td>
                     </tr>
                     <tr>
                       <th scope="row">Pressure</th>
-                      <td>{{device.last.pressure}} hPa</td>
+                      <td>{{device.bmp280.pressure}} hPa</td>
                     </tr>
                     <tr>
                       <th scope="row">Altitude</th>
-                      <td>{{device.last.altitude}} meters</td>
+                      <td>{{device.bmp280.altitude}} meters</td>
                     </tr>
                     <tr>
                       <th scope="row">Ping Delay</th>
@@ -66,19 +65,19 @@
                     </tr>
                     <tr>
                       <th scope="row">Last Updated</th>
-                      <td>{{device.last.timeStamp}}</td>
+                      <td>{{device.timeStamp}}</td>
                     </tr>
                   </tbody>
               </table>
             </div>
           </div>          
-          <div v-if="device.last.type == 'TMP36'">
+          <div v-if="device.tmp36">
             <div class="table-responsive col-md-12">
               <table class="table table-hover">
                   <tbody>
                     <tr>
                       <th scope="row">Temperature</th>
-                      <td>{{device.last.temp}}&deg;C</td>
+                      <td>{{device.tmp36.temp}}&deg;C</td>
                     </tr>                  
                     <tr>
                       <th scope="row">Ping Delay</th>
@@ -87,26 +86,26 @@
                     </tr>
                     <tr>
                       <th scope="row">Last Updated</th>
-                      <td>{{device.last.timeStamp}}</td>
+                      <td>{{device.timeStamp}}</td>
                     </tr>
                   </tbody>
               </table>
             </div>          </div>          
-          <div v-if="device.last.type == 'DHT11'">
+          <div v-if="device.dht11">
             <div class="table-responsive col-md-12">
               <table class="table table-hover">
                   <tbody>
                     <tr>
                       <th scope="row">Temperature</th>
-                      <td>{{device.last.temp}}&deg;C</td>
+                      <td>{{device.dht11.temp}}&deg;C</td>
                     </tr>
                     <tr>
                       <th scope="row">Humidity</th>
-                      <td>{{device.last.humidity}} % Relative Humidity</td>
+                      <td>{{device.dht11.humidity}} % Relative Humidity</td>
                     </tr>
                     <tr>
                       <th scope="row">Heat Index</th>
-                      <td>{{device.last.headIndex}}&deg;C</td>
+                      <td>{{device.dht11.headIndex}}&deg;C</td>
                     </tr>
                     <tr>
                       <th scope="row">Ping Delay</th>
@@ -115,24 +114,24 @@
                     </tr>
                     <tr>
                       <th scope="row">Last Updated</th>
-                      <td>{{device.last.timeStamp}}</td>
+                      <td>{{device.timeStamp}}</td>
                     </tr>
                   </tbody>
               </table>
             </div>            
           </div>          
-          <div v-if="device.last.type == 'PIR'">
+          <div v-if="device.pir">
 
             <div class="table-responsive col-md-12">
               <table class="table table-hover">
                   <tbody>
                     <tr>
-                      <th scope="row">Movement</th>
-                      <td>{{device.last_motion.timeStamp}}</td>
+                      <th scope="row">Last Movement</th>
+                      <td>{{device.pir.movement.timeStamp}}</td>
                     </tr>
                     <tr>
                       <th scope="row">State</th>
-                      <td>{{device.last_motion.movement}}</td>
+                      <td>{{device.pir.movement.moved}}</td>
                     </tr>
                     <tr>
                       <th scope="row">Ping Delay</th>
@@ -141,13 +140,13 @@
                     </tr>
                     <tr>
                       <th scope="row">Last Updated</th>
-                      <td>{{device.last.timeStamp}}</td>
+                      <td>{{device.timeStamp}}</td>
                     </tr>
                   </tbody>
               </table>
             </div>               
           </div>          
-          <div v-if="device.last.type == 'RELAY'">
+          <div v-if="device.relay">
             <div class="table-responsive col-md-12">
               <table class="table table-hover col-md-12">
                   <tbody>
@@ -178,12 +177,11 @@
                     </tr>
                     <tr>
                       <th scope="row">Last Updated</th>
-                      <td>{{device.last.timeStamp}}</td>
+                      <td>{{device.timeStamp}}</td>
                     </tr>
                   </tbody>
               </table>
             </div>
-          </div>          
         </div>          
       </div>
     </div>
