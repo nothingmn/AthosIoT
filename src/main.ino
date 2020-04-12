@@ -30,6 +30,7 @@
 #include "AthosBMP280.h"
 #include "AthosPIR.h"
 #include "AthosMoisture.h"
+#include "AthosMQ2GasSensor.h"
 
 #include "Arduino.h"
 #include <ArduinoLog.h>
@@ -119,6 +120,12 @@ void setup()
   Log.trace("MOIST Done");
 #endif
 
+#ifdef ATH_MQ2
+  Log.trace("GAS Start");
+  MQ2_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
+  Log.trace("GAS Done");
+#endif
+
   Log.trace("~~~~~~~~~~SETUP COMPLETED ~~~~~~~~~~Version:%s Build:%s", getVersion().c_str(), getBuild().c_str());
 }
 
@@ -151,9 +158,12 @@ void loop()
   PIR_Loop();
 #endif
 
-
 #ifdef ATH_MOIST
   MOIST_Loop();
+#endif
+
+#ifdef ATH_MQ2
+  MQ2_Loop();
 #endif
 
   delay(loop_delay);

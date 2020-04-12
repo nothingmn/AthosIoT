@@ -28,7 +28,8 @@ void MOIST_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootCo
   _MOIST_deviceId = deviceId;
   _MOIST_config = rootConfig;
   _MOIST_loop_delay = loop_delay;
-
+  
+  pinMode(MOIST_inputPin, INPUT);
 }
 
 

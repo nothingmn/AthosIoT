@@ -17,7 +17,7 @@ jobs:
           pip install -U platformio
       - name: Install library dependencies
         run: |
-          platformio lib -g install ArduinoLog NTPClient ArduinoJson PubSubClient "Adafruit Unified Sensor" "Adafruit BME280 Library" "DHT sensor library"
+          platformio lib -g install ArduinoLog NTPClient ArduinoJson PubSubClient "Adafruit Unified Sensor" "Adafruit BME280 Library" "DHT sensor library" "TroykaMQ"
       - name: Build
         run: |
           platformio run
