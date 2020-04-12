@@ -6,9 +6,8 @@
           ({{device.deviceid}} - {{device.type}} - {{device.version}})
       </div>
     </h3>    
-    <hr width="80%" />
     <div class="row">
-      <div class="col-lg-12">
+      <div class="col-sm-12 col-md-12 col-lg-12">
         <button type="submit" class="btn btn-secondary float-right" @click.prevent="wipe">
           Wipe
         </button>
@@ -27,7 +26,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-12">
+      <div class="col-sm-12 col-md-12 col-lg-12">
         <button type="submit" class="btn btn-secondary float-right" @click.prevent="ping">
           Ping
         </button>        
@@ -42,90 +41,90 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-12">
+      <div class="col-sm-12 col-md-12 col-lg-12">
         <div class="table-responsive">
           <table class="table table-hover">
               <tbody>
-                <div v-if="device.bmp280">
+                <div v-if="device.bmp280"  class="col-sm-12">
                   <tr class="row">
-                    <th scope="row" class="col-lg-4">Temperature</th>
-                    <td class="col-lg-8">{{device.bmp280.temp}}&deg;C</td>
+                    <th scope="row" class="col-sm-6 col-md-6 col-lg-6">Temperature</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{device.bmp280.temp}}&deg;C</td>
                   </tr>
                   <tr class="row">
-                    <th scope="row" class="col-lg-4">Humidity</th>
-                    <td class="col-lg-8">{{device.bmp280.humidity}}% Relative Humidity</td>
+                    <th scope="row" class="col-sm-6 col-md-6 col-lg-6">Humidity</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{device.bmp280.humidity}}% Relative Humidity</td>
                   </tr>
                   <tr  class="row">
-                    <th scope="row" class="col-lg-4">Pressure</th>
-                    <td class="col-lg-8">{{device.bmp280.pressure}} hPa</td>
+                    <th scope="row" class="col-sm-6 col-md-6 col-lg-6">Pressure</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{device.bmp280.pressure}} hPa</td>
                   </tr>
                   <tr  class="row">
-                    <th scope="row" class="col-lg-4">Altitude</th>
-                    <td class="col-lg-8">{{device.bmp280.altitude}} meters</td>
+                    <th scope="row" class="col-sm-6 col-md-6 col-lg-6">Altitude</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{device.bmp280.altitude}} meters</td>
                   </tr>
                 </div>
-                <div v-if="device.tmp36">
+                <div v-if="device.tmp36" class="col-sm-12">
                   <tr  class="row">
-                    <th scope="row" class="col-lg-4">Temperature</th>
-                    <td class="col-lg-8">{{device.tmp36.temp}}&deg;C</td>
+                    <th scope="row"class="col-sm-6 col-md-6 col-lg-6">Temperature</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{device.tmp36.temp}}&deg;C</td>
                   </tr>                  
                 </div>
-                <div v-if="device.dht11">
+                <div v-if="device.dht11" class="col-sm-12">
                   <tr  class="row">
-                    <th scope="row" class="col-lg-4">Temperature</th>
-                    <td class="col-lg-8">{{device.dht11.temp}}&deg;C</td>
+                    <th scope="row"class="col-sm-6 col-md-6 col-lg-6">Temperature</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{device.dht11.temp}}&deg;C</td>
                   </tr>
                   <tr  class="row">
-                    <th scope="row" class="col-lg-4">Humidity</th>
-                    <td class="col-lg-8">{{device.dht11.humidity}} % Relative Humidity</td>
+                    <th scope="row"class="col-sm-6 col-md-6 col-lg-6">Humidity</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{device.dht11.humidity}} % Relative Humidity</td>
                   </tr>
                   <tr  class="row">
-                    <th scope="row" class="col-lg-4">Heat Index</th>
-                    <td class="col-lg-8">{{device.dht11.headIndex}}&deg;C</td>
+                    <th scope="row"class="col-sm-6 col-md-6 col-lg-6">Heat Index</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{device.dht11.headIndex}}&deg;C</td>
                   </tr>
                 </div>          
-                <div v-if="device.moisture">
+                <div v-if="device.moisture"  class="col-sm-12">
                   <tr  class="row">
-                    <th scope="row" class="col-lg-4">Moisture Level</th>
-                    <td class="col-lg-8">{{device.moisture.level}}%</td>
+                    <th scope="row"class="col-sm-6 col-md-6 col-lg-6">Moisture Level</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{device.moisture.level}}%</td>
                   </tr>
                 </div>               
-                <div v-if="device.mq2">
+                <div v-if="device.mq2" class="col-sm-12">
                   <tr  class="row">
-                    <th scope="row" class="col-lg-4">Ratio</th>
-                    <td class="col-lg-8">{{device.mq2.ratio}}%</td>
+                    <th scope="row"class="col-sm-6 col-md-6 col-lg-6">Ratio</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{device.mq2.ratio}}%</td>
                   </tr>
                   <tr  class="row">
-                    <th scope="row" class="col-lg-4">LPG</th>
-                    <td class="col-lg-8">{{device.mq2.lpg}} ppm</td>
+                    <th scope="row" class="col-sm-6  col-md-6">LPG</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{device.mq2.lpg}} ppm</td>
                   </tr>
                   <tr  class="row">
-                    <th scope="row" class="col-lg-4">Methane</th>
-                    <td class="col-lg-8">{{device.mq2.methane}} ppm</td>
+                    <th scope="row"class="col-sm-6 col-md-6 col-lg-6">Methane</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{device.mq2.methane}} ppm</td>
                   </tr>
                   <tr  class="row">
-                    <th scope="row" class="col-lg-4">Smoke</th>
-                    <td class="col-lg-8">{{device.mq2.smoke}} ppm</td>
+                    <th scope="row"class="col-sm-6 col-md-6 col-lg-6">Smoke</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{device.mq2.smoke}} ppm</td>
                   </tr>
                   <tr  class="row">
-                    <th scope="row" class="col-lg-4">Hydrogen</th>
-                    <td class="col-lg-8">{{device.mq2.hydrogen}} ppm</td>
-                  </tr>
-                </div>               
-                <div v-if="device.pir">
-                  <tr  class="row">
-                    <th scope="row" class="col-lg-4">Last Movement</th>
-                    <td class="col-lg-8">{{(new Date(device.pir.movement.timeStamp)).toLocaleString()}}</td>
-                  </tr>
-                  <tr  class="row">
-                    <th scope="row" class="col-lg-4">State</th>
-                    <td class="col-lg-8">{{device.pir.movement.moved}}</td>
+                    <th scope="row"class="col-sm-6 col-md-6 col-lg-6">Hydrogen</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{device.mq2.hydrogen}} ppm</td>
                   </tr>
                 </div>               
-                <div v-if="device.relay">
+                <div v-if="device.pir" class="col-sm-12">
+                  <tr  class="row">
+                    <th scope="row"class="col-sm-6 col-md-6 col-lg-6">Last Movement</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{(new Date(device.pir.movement.timeStamp)).toLocaleString()}}</td>
+                  </tr>
+                  <tr  class="row">
+                    <th scope="row" class="col-sm-6">State</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{device.pir.movement.moved}}</td>
+                  </tr>
+                </div>               
+                <div v-if="device.relay" class="col-sm-12">
                     <tr class="row" v-for="o in device.relay"  v-if="o.id" >
-                      <th scope="row" class="col-lg-4">{{o.id}} : {{o.name}}</th>
-                      <td class="float-right col-lg-8">
+                      <th scope="row"class="col-sm-6 col-md-6 col-lg-6">{{o.id}} : {{o.name}}</th>
+                      <td class="float-right col-sm-8 col-md-6">
                         <button type="submit" class="btn btn-secondary text-xs-right" @click="relay_rename(device, o)">
                         Rename
                         </button>
@@ -145,14 +144,16 @@
                       </td>
                     </tr>
                 </div>
-                <tr  class="row">
-                  <th scope="row" class="col-lg-4">Ping Delay</th>
-                  <td class="col-lg-8"><div v-if="device.ping">{{device.ping.roundTrip}} seconds</div></td>
-                </tr>
-                <tr  class="row">
-                  <th scope="row" class="col-lg-4">Last Updated</th>
-                  <td class="col-lg-8">{{(new Date(device.timeStamp)).toLocaleString()}}</td>
-                </tr>
+                <div v-if="device.relay" class="col-sm-12">
+                  <tr  class="row">
+                    <th scope="row" class="col-sm-6">Ping Delay</th>
+                    <td class="col-sm-6"><div v-if="device.ping">{{device.ping.roundTrip}} seconds</div></td>
+                  </tr>
+                  <tr  class="row">
+                    <th scope="row" class="col-sm-6 col-md-6 col-lg-6">Last Updated</th>
+                    <td class="col-sm-6 col-md-6 col-lg-6">{{(new Date(device.timeStamp)).toLocaleString()}}</td>
+                  </tr>
+                </div>
               </tbody>
             </table>
           </div>
@@ -196,11 +197,11 @@ export default {
           tip +=                                       "Device Id:                   " + device.deviceid + "\n";
           if(device.system) {
             if(device.system.chipId) tip +=            "Chip Id:                      " + device.system.chipId + "\n";
-            if(device.system.cpuFreqMHz) tip +=        "CPU Freq MHz:           " + device.system.cpuFreqMHz + "\n";
+            if(device.system.cpuFreqMHz) tip +=        "CPU Freq MHz:           " + device.system.cpuFreqMHz + "Mhz\n";
             if(device.system.flashChipVendorId) tip += "Flash Chip Vendor Id: " + device.system.flashChipVendorId + "\n";
             if(device.system.freeSketchSpace) tip +=   "Free Sketch Space:     " + device.system.freeSketchSpace + "\n";
             if(device.system.sketchMD5) tip +=         "Sketch MD5:               " + device.system.sketchMD5 + "\n";
-            if(device.system.vcc) tip +=               "Vcc:                             " + device.system.vcc + "\n";
+            if(device.system.vcc) tip +=               "Vcc:                             " + device.system.vcc + "mV\n";
             if(device.system.localIP) tip +=           "Local IP:                     " + device.system.localIP + "\n";
             if(device.system.macAddress) tip +=        "Mac Address:             " + device.system.macAddress + "\n";
             if(device.system.gatewayIP) tip +=         "Gateway IP:               " + device.system.gatewayIP + "\n";
