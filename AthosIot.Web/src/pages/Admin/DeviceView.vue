@@ -144,7 +144,7 @@
                       </td>
                     </tr>
                 </div>
-                <div v-if="device.relay" class="col-sm-12">
+                <div v-if="device.ping" class="col-sm-12">
                   <tr  class="row">
                     <th scope="row" class="col-sm-6">Ping Delay</th>
                     <td class="col-sm-6"><div v-if="device.ping">{{device.ping.roundTrip}} seconds</div></td>
@@ -196,22 +196,24 @@ export default {
           tip +=                                       "Version:                     " + device.version + "\n";
           tip +=                                       "Device Id:                   " + device.deviceid + "\n";
           if(device.system) {
+            if(device.system.localIP) tip +=           "Local IP:                     " + device.system.localIP + "\n";
+            if(device.system.macAddress) tip +=        "Mac Address:             " + device.system.macAddress + "\n";
+            if(device.system.gatewayIP) tip +=         "Gateway IP:               " + device.system.gatewayIP + "\n";
+            if(device.system.SSID) tip +=              "SSID:                           " + device.system.SSID + "\n";
+            if(device.system.rssi) tip +=              "RSSI:                          " + device.system.rssi + "dB\n";
+            if(device.system.SSID) tip +=              "---------------------------------------------------------------------------\n";
             if(device.system.chipId) tip +=            "Chip Id:                      " + device.system.chipId + "\n";
             if(device.system.cpuFreqMHz) tip +=        "CPU Freq MHz:           " + device.system.cpuFreqMHz + "Mhz\n";
             if(device.system.flashChipVendorId) tip += "Flash Chip Vendor Id: " + device.system.flashChipVendorId + "\n";
             if(device.system.freeSketchSpace) tip +=   "Free Sketch Space:     " + device.system.freeSketchSpace + "\n";
             if(device.system.sketchMD5) tip +=         "Sketch MD5:               " + device.system.sketchMD5 + "\n";
             if(device.system.vcc) tip +=               "Vcc:                             " + device.system.vcc + "mV\n";
-            if(device.system.localIP) tip +=           "Local IP:                     " + device.system.localIP + "\n";
-            if(device.system.macAddress) tip +=        "Mac Address:             " + device.system.macAddress + "\n";
-            if(device.system.gatewayIP) tip +=         "Gateway IP:               " + device.system.gatewayIP + "\n";
-            if(device.system.SSID) tip +=              "SSID:                           " + device.system.SSID + "\n";
-            if(device.system.coreVersion) tip +=       "Core Version:             " + device.system.coreVersion + "\n";
-            if(device.system.sdkVersion) tip +=        "SDK Version:              " + device.system.sdkVersion + "\n";
-            if(device.system.rssi) tip +=              "RSSI:                          " + device.system.rssi + "dB\n";
+            if(device.system.coreVersion) tip +=       "Core Version:              " + device.system.coreVersion + "\n";
+            if(device.system.sdkVersion) tip +=        "SDK Version:               " + device.system.sdkVersion + "\n";
             if(device.system.rssi_strength) {
-              if(device.system.rssi_strength.title) tip += "\nThis node's Signal Stregth is " + device.system.rssi_strength.title + "\n";
-              if(device.system.rssi_strength.desc) tip +=  "\n" + device.system.rssi_strength.desc + "\n";
+              if(device.system.rssi_strength) tip +=              "---------------------------------------------------------------------------\n";
+              if(device.system.rssi_strength.title) tip += "This node's Signal Stregth is " + device.system.rssi_strength.title + "\n";
+              if(device.system.rssi_strength.desc) tip +=  device.system.rssi_strength.desc + "\n";
             }
 
           }
