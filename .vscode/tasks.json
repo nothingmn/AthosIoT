@@ -208,6 +208,23 @@
                 "$platformio"
             ],
             "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Build (RELAY_MQ2)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Upload (RELAY_MQ2)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
         }
+        
     ]
 }
