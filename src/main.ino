@@ -23,6 +23,7 @@
 #include "AthosNTP.h"
 #include "AthosHTTP.h"
 #include "AthosUDP.h"
+#include "DeviceData.h"
 #include "AthosRelay.h"
 #include "AthosMQTT.h"
 #include "AthosTMP36.h"
@@ -83,6 +84,10 @@ void setup()
   delay(1000);
   Log.trace("MQTT Done");
 
+  Log.trace("DeviceData Start");
+  DeviceData_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
+  Log.trace("DeviceData Done");
+
 #ifdef ATH_TMP36
   Log.trace("TMP Start");
   TMP_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
@@ -137,6 +142,7 @@ void loop()
   NTP_Loop();
   HTTP_Loop();
   MQTT_Loop();
+  DeviceData_Loop();
 
 #ifdef ATH_TMP36
   TMP_Loop();
