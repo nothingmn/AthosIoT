@@ -1,6 +1,11 @@
 <template>
   <card>
-    <h3 slot="header" class="card-title">{{device.name}} <div class="float-right small">({{device.deviceid}} - {{device.type}} - {{device.version}})</div></h3>    
+    <h3 slot="header" class="card-title">
+      {{device.name}} 
+      <div class="float-right small" :title="tooltip(device)">
+          ({{device.deviceid}} - {{device.type}} - {{device.version}})
+      </div>
+    </h3>    
     <hr width="80%" />
     <div class="row">
       <div class="col-lg-12">
@@ -118,9 +123,9 @@
                   </tr>
                 </div>               
                 <div v-if="device.relay">
-                    <tr v-for="o in device.relay"  v-if="o.id" >
+                    <tr class="row" v-for="o in device.relay"  v-if="o.id" >
                       <th scope="row" class="col-lg-4">{{o.id}} : {{o.name}}</th>
-                      <td class="float-right">
+                      <td class="float-right col-lg-8">
                         <button type="submit" class="btn btn-secondary text-xs-right" @click="relay_rename(device, o)">
                         Rename
                         </button>
@@ -180,9 +185,38 @@ export default {
       return {
       }
     },
+    computed : {
+    },
       mounted() {    
       },   
       methods: {
+        tooltip(device) {
+          var tip =                                    "Name:                        " + device.name + "\n";
+          tip +=                                       "Version:                     " + device.version + "\n";
+          tip +=                                       "Device Id:                   " + device.deviceid + "\n";
+          if(device.system) {
+            if(device.system.chipId) tip +=            "Chip Id:                      " + device.system.chipId + "\n";
+            if(device.system.cpuFreqMHz) tip +=        "CPU Freq MHz:           " + device.system.cpuFreqMHz + "\n";
+            if(device.system.flashChipVendorId) tip += "Flash Chip Vendor Id: " + device.system.flashChipVendorId + "\n";
+            if(device.system.freeSketchSpace) tip +=   "Free Sketch Space:     " + device.system.freeSketchSpace + "\n";
+            if(device.system.sketchMD5) tip +=         "Sketch MD5:               " + device.system.sketchMD5 + "\n";
+            if(device.system.vcc) tip +=               "Vcc:                             " + device.system.vcc + "\n";
+            if(device.system.localIP) tip +=           "Local IP:                     " + device.system.localIP + "\n";
+            if(device.system.macAddress) tip +=        "Mac Address:             " + device.system.macAddress + "\n";
+            if(device.system.gatewayIP) tip +=         "Gateway IP:               " + device.system.gatewayIP + "\n";
+            if(device.system.SSID) tip +=              "SSID:                           " + device.system.SSID + "\n";
+            if(device.system.coreVersion) tip +=       "Core Version:             " + device.system.coreVersion + "\n";
+            if(device.system.sdkVersion) tip +=        "SDK Version:              " + device.system.sdkVersion + "\n";
+            if(device.system.rssi) tip +=              "RSSI:                          " + device.system.rssi + "dB\n";
+            if(device.system.rssi_strength) {
+              if(device.system.rssi_strength.title) tip += "\nThis node's Signal Stregth is " + device.system.rssi_strength.title + "\n";
+              if(device.system.rssi_strength.desc) tip +=  "\n" + device.system.rssi_strength.desc + "\n";
+            }
+
+          }
+          console.log(tip);          
+          return tip;
+        },
         all_on(device) {
           console.log('all_on:',  device.deviceid);
           Vue.prototype.$socket.send(JSON.stringify({ action : "all-on", deviceid : device.deviceid }));
