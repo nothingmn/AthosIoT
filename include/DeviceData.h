@@ -1,7 +1,7 @@
 //DeviceData.h
 
-#ifndef ATH_BMP280_
-#define ATH_BMP280_
+#ifndef ATH_DEVICEDATA_
+#define ATH_DEVICEDATA_
 
 #include "AthosHelpers.h"
 #include "AthosNTP.h"

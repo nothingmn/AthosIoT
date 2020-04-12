@@ -48,7 +48,7 @@ void HTTP_ScrapeConfig(void)
 
     HTTPClient http;
     http.begin("http://" + WiFi.gatewayIP().toString() + ":1880/configure?deviceid=" + http_deviceId);	
-    int httpCode = http.GET();
+    http.GET();
     String _json = http.getString();
 
     StaticJsonDocument<512> doc;
