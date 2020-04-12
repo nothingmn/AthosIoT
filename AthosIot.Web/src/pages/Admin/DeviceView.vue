@@ -85,6 +85,28 @@
                     <td class="col-lg-8">{{device.moisture.level}}%</td>
                   </tr>
                 </div>               
+                <div v-if="device.mq2">
+                  <tr  class="row">
+                    <th scope="row" class="col-lg-4">Ratio</th>
+                    <td class="col-lg-8">{{device.mq2.ratio}}%</td>
+                  </tr>
+                  <tr  class="row">
+                    <th scope="row" class="col-lg-4">LPG</th>
+                    <td class="col-lg-8">{{device.mq2.lpg}} ppm</td>
+                  </tr>
+                  <tr  class="row">
+                    <th scope="row" class="col-lg-4">Methane</th>
+                    <td class="col-lg-8">{{device.mq2.methane}} ppm</td>
+                  </tr>
+                  <tr  class="row">
+                    <th scope="row" class="col-lg-4">Smoke</th>
+                    <td class="col-lg-8">{{device.mq2.smoke}} ppm</td>
+                  </tr>
+                  <tr  class="row">
+                    <th scope="row" class="col-lg-4">Hydrogen</th>
+                    <td class="col-lg-8">{{device.mq2.hydrogen}} ppm</td>
+                  </tr>
+                </div>               
                 <div v-if="device.pir">
                   <tr  class="row">
                     <th scope="row" class="col-lg-4">Last Movement</th>
