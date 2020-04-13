@@ -149,11 +149,13 @@
                     <th scope="row" class="col-sm-6">Ping Delay</th>
                     <td class="col-sm-6"><div v-if="device.ping">{{device.ping.roundTrip}} seconds</div></td>
                   </tr>
+                </div>
+                <div class="col-sm-12">
                   <tr  class="row">
                     <th scope="row" class="col-sm-6 col-md-6 col-lg-6">Last Updated</th>
                     <td class="col-sm-6 col-md-6 col-lg-6">{{(new Date(device.timeStamp)).toLocaleString()}}</td>
                   </tr>
-                </div>
+                  </div>
               </tbody>
             </table>
           </div>
