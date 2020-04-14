@@ -5,8 +5,10 @@
 
 This document is intended to outline the various software and hardware components of the AthosIoT system.  We will start with an overview of the architecture and then dive into the major components and their details one by one.
 
-**Source Control Details**
+**Build Status**    
+[![Main Build](https://github.com/nothingmn/AthosIoT/workflows/Main%20Build/badge.svg)](https://github.com/nothingmn/AthosIoT/actions)    
 
+**Source Control Details**    
 1. [Code Of Conduct]("https://github.com/nothingmn/AthosIoT/blob/master/CODE_OF_CONDUCT.md")  
 1. [Contributing](https://github.com/nothingmn/AthosIoT/blob/master/CONTRIBUTING.md)  
 1. [License](https://github.com/nothingmn/AthosIoT/blob/master/LICENSE)  
