@@ -1,11 +1,11 @@
-//DeviceData.h
+//AthosDeviceData.h
 
 #ifndef ATH_DEVICEDATA_
 #define ATH_DEVICEDATA_
 
 #include "AthosHelpers.h"
 #include "AthosNTP.h"
-#include <ESP.h>
+//#include <ESP.h>
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <ESP8266WiFi.h>

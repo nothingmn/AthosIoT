@@ -17,7 +17,7 @@
 #include "AthosNTP.h"
 #include "AthosHTTP.h"
 #include "AthosUDP.h"
-#include "DeviceData.h"
+#include "AthosDeviceData.h"
 #include "AthosRelay.h"
 #include "AthosMQTT.h"
 #include "AthosTMP36.h"
