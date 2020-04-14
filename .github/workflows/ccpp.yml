@@ -52,7 +52,7 @@ jobs:
       - uses: actions/upload-artifact@v1
         with:
           name: AthosIoT.RELAY_BMP280_firmware
-          path: out/AthosIoT.RELAY_BMP280_firmware.bin.bin      
+          path: out/AthosIoT.RELAY_BMP280_firmware.bin
       - uses: actions/upload-artifact@v1
         with:
           name: AthosIoT.MQ2_firmware
