@@ -126,16 +126,56 @@ On windows we recommend the [Win 32 Disk Imager Tool](https://sourceforge.net/pr
 ####		File locations:  
 To be thurough we felt it necessary to document all of the important file locations on the SD Card image, they are as follows:    
 #####			Ssh-keys for github (AthosIoT.Web)  
-Feel free to generate your own SSH key pair by using the ssh-keygen utility.  If you want to download the most recent versions of AthosIoT.Web project you will need to do this.  This should generate your keys located at /home/pi/.ssh/*    
+Feel free to generate your own SSH key pair by using the ssh-keygen utility.  If you want to download the most recent versions of AthosIoT.Web project you will need to do this.  This should generate your keys located at 
+
+*/home/pi/.ssh/**    
+
 #####			Authorized keys file  
+If you need to ssh into the RPi, feel free to add your details to the /home/pi/.ssh/authorized_keys file.  This will help automate your logins.  
+
 The default username and password for the Raspberry Pi image have been left the same since the original Raspbian OS, which are as follows:    
     
 *Username: pi*     
 *Password: raspbian*    
-
+     
 #####			Athos.service file  
+The systemctl .service file, which is the service that controls the http web sever which serves up the AthosIoT.Web single page application can be found here:    
+    
+*/lib/systemd/system/athos.service*    
+
+Stop, start, etc this service by using the following commands:    
+    
+*> sudo systemctl start athos.service*    
+*> sudo systemctl stop athos.service*    
+*> sudo systemctl enable athos.service*    
+*> sudo systemctl disable athos.service*    
+    
+And if you make changes to the athos.service file itself, be sure to reload the daemon:    
+    
+*> sudo systemctl daemon-reload*        
+    
 #####			Node-Red settings, temp device storage and global context files  
+Node-Red has been installed in the user pi's home directory at    
+    
+*/home/pi/.node-red/*    
+    
+The primary flows file is:
+
+*/home/pi/.node-red/flows_AthosIotHub.json*    
+
+Any and all changes in the Node-Red UI will change this file.  Second to that, Node-Red will store global.set/global.get data in the following file:    
+    
+*/home/pi/.node-red/context/global/global.json*    
+    
+If you are concerned about backing up any changes, these two files are critical.
+
 #####			Node-red service file  
+As mentioned above, the primary flows file is:
+
+*/home/pi/.node-red/flows_AthosIotHub.json*    
+and    
+*/home/pi/.node-red/context/global/global.json*    
+    
 #####			RaspAP config file  
 #####			MQTT Configuration  
   
