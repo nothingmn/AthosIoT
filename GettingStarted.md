@@ -274,18 +274,20 @@ As mentioned above, we have not changed (enabled) the security options of MQTT. 
 
 The following are the list of the standard topics which AthosIoT Solution uses:    
      
-1. iot/raw/sensors/+     
+1. **iot/raw/sensors/+**     
    1. Purpose: Nodes send data in CSV format to these queues.  The Hub will then process these incoming messages, and then transmit the JSON formatted messages to:  iot/sensors/+     
-2. iot/raw/ping/+     
+2. **iot/raw/ping/+**     
    1. Purpose:  Node send raw ping response data in CSV format to these queues.  The hub will then process these incoming messages, and then transmit the JSON formatted messages to iot/ping/+
-3. iot/sensors/+    
+3. **iot/sensors/+**    
    1. Purpose:  To receive the properly JSON formatted messages for sensor data.    
-4. iot/ping/+    
+4. **iot/ping/+**    
    1. Purpose:    To receive the properly JSON formatted messages for ping response data.    
-5. athos/error/+    
+5. **athos/error/+**    
    1. Purpose: For the Hub to transmit any internal error messages    
-6. iot/relays/+
+6. **iot/relays/+**
    1. Purpose: To send messages to the Nodes for things like node commands or to control relays on the Nodes.
+7. **ui**
+   1. Purpose: The send/receive queue to send/receive data for the UI websocket
 
 ###	RaspAP  
 ####		Why are we using it, what function does it perform?  
@@ -304,8 +306,18 @@ Our changes to the default install are as follows:
 5.3. We set the "Country Code" to Canada.  It is recommended that you do change this value to your country.    
     
 ###	AthosIoT.Web  
+This is found on port 80 of the Hub.  This is the main page to manage the node Wifi settings, and to rename the Nodes and Node-Relays.  It also allows you to perform actions on all the nodes, such as Update Firmware (OTA), Delete, Ping, Reset, Wipe, All On, All Off and individual Relay On/Off.    
 ####		WebSocket, and tie in with node-red  
+The UI is tied back to the Hubs Node-Red instance via a single websocket ("ui").  The UI tab in the Hub Node-Red demonstrates the (mess) that allows for all bi-directinal communication.    
 ####		An overview of the user interface  
+Main UI Components include:    
+1. Configure Node Wifi    
+   1. Purpose: To set the Node Wifi Settings    
+2. Manage Devices    
+   1. Purpose: To manage the devices, and command/control    
+3. Manage firmware    
+   1. Purpose: To delete and upload new .bin firmware files for OTA.    
+   2. Use the "Firmware" button on the "Manage Devies" UI to push a build directly to the Node.    
 ###	Enclosures  
 ####		Raspberry PI  
 ####		NodeMCU  
