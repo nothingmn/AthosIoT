@@ -39,7 +39,6 @@ This document is intended to outline the various software and hardware component
 3.1.		[Why Node-Red vs build your own](#why-node-red-vs-build-your-own)  
 3.1.1.           [Basic flows](#basic-flows)  
 3.2.		[How to add backup to your instance](#how-to-add-backup-to-your-instance)  
-3.2.1.			[Recommend a cron + shell script](#recommend-a-cron-shell-script)  
 3.3.		[How to change the username/password](#how-to-change-the-usernamepassword)  
 3.4.		[Adding your own flows](#adding-your-own-flows)  
 3.4.1.			[Your own Node-Red instance, and MQTT](#your-own-node-red-instance-and-mqtt)  
@@ -167,34 +166,143 @@ Any and all changes in the Node-Red UI will change this file.  Second to that, N
     
 */home/pi/.node-red/context/global/global.json*    
     
-If you are concerned about backing up any changes, these two files are critical.
-
+If you are concerned about backing up any changes, these two files are critical.  The global.json file will be the file which your node and relay names are stored, along with the WiFi AP you configure in the UI.    
 #####			Node-red service file  
-As mentioned above, the primary flows file is:
+Similar to the athos.service file documented above, the node-red service file can be found here:    
 
-*/home/pi/.node-red/flows_AthosIotHub.json*    
-and    
-*/home/pi/.node-red/context/global/global.json*    
+*/lib/systemd/system/nodered.service*    
+     
+It has been left unchanged since the default installation of the product itself.
     
+Node-Red also comes with a settings.js file, which is located here:
+    
+*/home/pi/.node-red/settings.js*
+    
+The only changes we made to this file was the enable CORS in order to allow for our UI and Node-Red (WebSocket) to be on different ports on the same host.  A different port is still considered a Cross Origin Request.  The second change as made to secure the UI admin page (and not the API).
+    
+If you wanted to change the node-red with a username/password, the instructions are in the file itself and are well documented online.   
+    
+The currently configured username and password are as follows:
+    
+*Username: admin*     
+*Password: 88888888*    
+         
 #####			RaspAP config file  
+Please consider the [project page for RaspAP project](https://raspap.com/) and [GitHub](https://github.com/billz/raspap-webgui) for more details.
+
 #####			MQTT Configuration  
-  
+We have installed MQTT, with an out of the box configuration and have NOT enabled a username/password.  It is hosted on the default port of 1883, and does NOT have TLS or any other security implemented.
+     
+Please consider NOT ever exposing this instance of MQTT outside of your protected network.  It was only meant for internal AthosIoT Hub usage.
+    
 ###	Node-Red  
+As we mentioned above Node-Red is the brains behind the AthosIoT Hub.  It does the majority of the traffic routing (messages on MQTT), data transformations (devices send in CSV format, node-red converts that to JSON), and handles all the UI needs.
+    
+As it stands, there is very LITTLE use for YOU to change the Node-Red flows at all.  Ideally you should create/run your own instance of Node-Red and MQTT on your on infrastructure (RPi, or Cloud, whatever).  This will allow you to keep the Hub software up to date without worrying about your specific changes.
+     
 ####		Why Node-Red vs build your own  
+We chose Node-Red as the main software behind the hub mostly because of its ease of use.  Very little programming experience is required, and JavaScript (Function nodes within Node-Red) is one of the more easier scripting languages to learn.  There are an infinte amount of JavaScript resources online for even the beginner to pick up quickly.
+     
+We also liked the fact that it is all visual.  That is, there is no command line needed to make changes to you configuration.  Its as easy click, drag, and some small editing in a UI.  
+    
+Finally, the community around NodeJS and Node-Red (and MQTT for that matter) is HUGE.  Many, many big companies have adopted this stack for many IoT solutions (IBM to name one).  So you will find a plethora of resources online, not limited to but including the [Node-Red Flows Library](https://flows.nodered.org/).  No need to learn python, C, C++, and some custom software framework just to get some data flowing!
+    
 #####           Basic flows  
+As mentioned above, we have three main Tabs within Node-Red.    
+     
+The "System" tab is for all system level processing.
+    
+The "UI" tab (yes it is a mess) is for all UI processing.
+    
+The "Backup" tab is for lifting critical files off of the device and into MQTT.
+
+    
 ####		How to add backup to your instance  
-#####			Recommend a cron + shell script  
-####		How to change the username/password  
+Ideally you will want to backup all your custom data off of the Hub.  We have setup 3 Backup routines which you can subscribe to (on your own instance) and save the data to any place you like.
+
+Here is the list of topics you can subscribe to:
+*athos/backup/node-red/global*    
+*athos/backup/node-red/flows*    
+*athos/backup/node-red/settings*    
+    
+Currently we have them set to perform those backups once a day at 12:00, every day of the week.
+
+If you feel we missed any critical files, let us know.
+        
 ####		Adding your own flows  
+Like we have said previously, be sure to NOT change the Hub Node-Red instance in any way.  In the future we will provide facilities which will automatically update the configuration and it will MOST LIKEY kill any changes you have made.    
 ####			Your own Node-Red instance, and MQTT  
+Own your own Node-Red instance and MQTT.  This is our recommendation.
 ####			Useful flows  
+Two important flows you should add to your OWN instance include:    
+    
+1. **Sensor Data**    
+    **MQTT INPUT node**, from AthosIoT Broker    
+    **Topic:** iot/sensors/+    
+    **QoS:** 2    
+    **Output:** A parsed JSON Buffer    
+    **Connected to:** anything you like!    
+    **Purpose:** To replicate all sensor data from Athos Hub into your own environment    
+    
+2. **Relays**    
+    **MQTT Input node**, from your OWN Broker    
+    **Topic:** iot/relays/+    
+    **QoS:** 2    
+    **Output:** String    
+    **Connected to:** MQTT OUTPUT NODE    
+    **Purpose:** To relay messages from your own instance to Athos Hub instance.  This will allow you to  command/control Athos nodes via your own broker
+    
+    **MQTT Output node**, TO Athos Broker    
+    **Topic:** Leave empty        
+    **QoS:** Leave Empty    
+    **Connected to:** the MQTT Input Node for Relays    
+    **Purpose:** The second have of the Relay messaging for Broker to Broker.    
+    
 ###	MQTT  
 ####		Why are we using it, what function does it perform?  
+MQTT leverages the open MQTT broker, [Mosquitto](https://mosquitto.org/).      
+As per their project page:    
+> The MQTT protocol provides a lightweight method of carrying out messaging using a 
+> publish/subscribe model. This makes it suitable for Internet of Things messaging 
+> such as with low power sensors or mobile devices such as phones, embedded computers 
+> or microcontrollers.
+    
 ####		How to change the username/password  
+As mentioned above, we have not changed (enabled) the security options of MQTT.  If you would like to do so, please consult the documentation provided by the project itself.  Also consider all Node-Red flows, including the configuration which is automatically send to the clients as per the setup/configuration process.  Setting credentials on the Hub MQTT server have NOT been tested and should be used with caution.
+
 ####		List of topics, what they are for  
+
+The following are the list of the standard topics which AthosIoT Solution uses:    
+     
+1. iot/raw/sensors/+     
+   1. Purpose: Nodes send data in CSV format to these queues.  The Hub will then process these incoming messages, and then transmit the JSON formatted messages to:  iot/sensors/+     
+2. iot/raw/ping/+     
+   1. Purpose:  Node send raw ping response data in CSV format to these queues.  The hub will then process these incoming messages, and then transmit the JSON formatted messages to iot/ping/+
+3. iot/sensors/+    
+   1. Purpose:  To receive the properly JSON formatted messages for sensor data.    
+4. iot/ping/+    
+   1. Purpose:    To receive the properly JSON formatted messages for ping response data.    
+5. athos/error/+    
+   1. Purpose: For the Hub to transmit any internal error messages    
+6. iot/relays/+
+   1. Purpose: To send messages to the Nodes for things like node commands or to control relays on the Nodes.
+
 ###	RaspAP  
 ####		Why are we using it, what function does it perform?  
+RasAP is used as a temporary Access Point that the Nodes use during initial setup and configuration steps.  Under normal circumstances there should be NO clients active on the Hotspot.  It is reserved only for Athos Nodes to use as a temporary measure to get access to the Node-Red for configuration during the setup process.    
+
 ####		How to change the username/password  
+     
+Our changes to the default install are as follows:    
+1. Changed the default hosting port to port 81    
+2. Username was left unchanged and is "admin"    
+3. Password was left unchanged and is "secret"    
+4. It would be in your best interest to change both of these.    
+5. We created a Hotspot, "AthosIoT".  
+5.1. The password for this AP is "88888888" (eight - eights)    
+5.2. We enabled the "Hide SSID in broadcast" option.    
+5.3. We set the "Country Code" to Canada.  It is recommended that you do change this value to your country.    
+    
 ###	AthosIoT.Web  
 ####		WebSocket, and tie in with node-red  
 ####		An overview of the user interface  
