@@ -7,7 +7,8 @@ Build Status
 
 Objective
 ---------
-Leveraging ESP8266 and Node-Red on a RasperryPi to build a sensor and relay network. 
+Leveraging ESP8266 (NodeMcu, Wemos D1 Mini, etc.) and Node-Red on a RasperryPi to build a sensor and relay network. 
+
 
 Core goals
 ----------
@@ -77,35 +78,5 @@ Possible Major Features
 23. Better web API and portal
 24. Alerting (SMS, Telegram, PushBullet)
 
-Slave node sequencing (DONE)
---------------------
-1. Read EEPROM for device configuration
-2. Ensure Wifi is setup (from device config)
-   1. If not configured, attempt to connect to RaspberryPi's Hidden Access Point (which is isolated from users home network)
-   2. Otherwise, if configured then connect to the wifi access point
-   3. If we are connected to the Athos IoT Hub we will attempt to scrape the gateway HTTP configure endpoint otherwise...
-   4. Setup an NTP client, and ensure that the NTP client is up to date (self updates, every XX minutes)
-   5. Ensure MQTT is configured
-3. If not configured, broadcast a UDP packet (255.255.255.255:3000)
-   1. This UDP Package will be picked up by Node-Red and will send a configuration message to the specific device via UDP directly.
-   2. The device will receive the UDP package, and store the configuration
-4. If configured then connect to the MQTT server specified
-5. Setup the specific sensor devices and enable independant looping of of gathering of sensor data
-6. Setup subscriptions for relays for MQTT
 
-Getting started
------------------------
-1. For the rasperrypi machine, download our Pi4/16GB SD Card Image here
-2. Use a tool similar to win32diskimager to write the image to your 16GB card
-3. Boot. 
-
-
-*Install VSCode and PlatformIO*
-
-1. Install Visual Studio Code from here: https://code.visualstudio.com/Download
-2. Install PlatformIO from within Visual Studio Code, be patient, it takes a while https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide
-3. Open the file "Athos.code-workspace"
-4. Plug in your NodeMCU (ESP8266 device) into your machine
-5. You should be able to hit Control-Shift-B and choose which node-type to build and/or upload
-
-Once you have the raspberrypi machine online browse to the admin page at http://raspberrypi, or use the IP address as per your route. At a minimum update the "Configure Node Wifi" page with the desired Wifi AP.  Next, the ESP8266 nodes should automatically discover and connect once they are powered up; and once they do the "Managed Devices" screen should start to pupulate.
+Refer to the [GettingStarted](GettingStarted.md) documentation.
