@@ -5,6 +5,7 @@
   #include "AthosRelay.h"
 #endif
 
+#include "AthosEEPROM.h"
 #include <PubSubClient.h>
 #include <ArduinoLog.h>
 #include <ESP8266httpUpdate.h>
@@ -49,6 +50,7 @@ bool ConnectToMqtt()
         count++;
 
         if(count > 5) {
+          wipeEEPROM();
           ESP.reset();
         }
       }
