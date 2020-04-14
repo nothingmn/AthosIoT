@@ -80,4 +80,4 @@ Possible Major Features
 24. Alerting (SMS, Telegram, PushBullet)
 
 
-Refer to the [GettingStarted](GettingStarted.md) documentation.
+More details can be found in our Technial Brief [Getting Started](GettingStarted.md) documentation.
