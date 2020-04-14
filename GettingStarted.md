@@ -1,3 +1,4 @@
+![AthosIot](https://raw.githubusercontent.com/nothingmn/AthosIoT.Web/master/public/img/icons/msapplication-icon-144x144.png)
 # AthosIoT – Technical Brief
 
 ## Document Overview
@@ -374,6 +375,7 @@ You should be able to hit Control-Shift-B and choose which node-type to build an
 ### Build.sh  
 #####    General design  
 #####    What is it used for?  
-
-
+    
+    
+Back to [Documentaiton Home](readme.md).    
 	

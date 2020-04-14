@@ -1,3 +1,4 @@
+![AthosIot](https://raw.githubusercontent.com/nothingmn/AthosIoT.Web/master/public/img/icons/msapplication-icon-144x144.png)
 AthosIoT
 =========
 
