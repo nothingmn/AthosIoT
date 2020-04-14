@@ -66,7 +66,7 @@ This document is intended to outline the various software and hardware component
 8.1.	[How to trigger the OTA update](#how-to-trigger-the-ota-update)
 8.2		[Web Server](#web-server)
 
-9. [AthosIoT Nodes](#athosiot-nodes)
+1. [AthosIoT Nodes](#athosiot-nodes)
 9.1.    [General design](#general-design)
 9.2.        [Boot process](#boot-process)
 9.3.        [Getting VSCode setup correctly](#getting-vscode-setup-correctly)
