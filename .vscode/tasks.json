@@ -224,6 +224,22 @@
                 "$platformio"
             ],
             "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Build (STUB)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Upload (STUB)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
         }
         
     ]
