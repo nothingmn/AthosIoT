@@ -33,6 +33,7 @@
 #include "AthosMQ6GasSensor.h"
 #include "AthosMQ5GasSensor.h"
 #include "AthosMQ4GasSensor.h"
+#include "AthosMQ3GasSensor.h"
 #include "Arduino.h"
 #include <ArduinoLog.h>
 #include <ESP8266WiFi.h>
@@ -175,6 +176,12 @@ void setup()
   Log.trace("MQ4 GAS Done");
 #endif
 
+#ifdef ATH_MQ3
+  Log.trace("MQ3 GAS Start");
+  MQ3_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
+  Log.trace("MQ3 GAS Done");
+#endif
+
 
 
 
@@ -245,6 +252,10 @@ void loop()
 
 #ifdef ATH_MQ4
   MQ4_Loop();
+#endif
+
+#ifdef ATH_MQ3
+  MQ3_Loop();
 #endif
 
   delay(loop_delay);

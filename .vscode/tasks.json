@@ -352,6 +352,22 @@
                 "$platformio"
             ],
             "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Build (MQ3)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Upload (MQ3)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
         }
         
     ]
