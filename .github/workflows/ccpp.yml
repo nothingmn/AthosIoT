@@ -41,6 +41,11 @@ jobs:
           mv .pio/build/MQ135/firmware.bin out/AthosIoT.MQ135_firmware.bin  
           mv .pio/build/MQ9/firmware.bin out/AthosIoT.MQ9_firmware.bin  
           mv .pio/build/MQ8/firmware.bin out/AthosIoT.MQ8_firmware.bin  
+          mv .pio/build/MQ7/firmware.bin out/AthosIoT.MQ7_firmware.bin  
+      - uses: actions/upload-artifact@v1
+        with:
+          name: AthosIoT.MQ7_firmware
+          path: out/AthosIoT.MQ7_firmware.bin
       - uses: actions/upload-artifact@v1
         with:
           name: AthosIoT.MQ8_firmware

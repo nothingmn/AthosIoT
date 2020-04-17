@@ -29,6 +29,7 @@
 #include "AthosMQ135GasSensor.h"
 #include "AthosMQ9GasSensor.h"
 #include "AthosMQ8GasSensor.h"
+#include "AthosMQ7GasSensor.h"
 #include "Arduino.h"
 #include <ArduinoLog.h>
 #include <ESP8266WiFi.h>
@@ -141,11 +142,16 @@ void setup()
   Log.trace("MQ9 GAS Done");
 #endif
 
-
 #ifdef ATH_MQ8
   Log.trace("MQ8 GAS Start");
   MQ8_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
   Log.trace("MQ8 GAS Done");
+#endif
+
+#ifdef ATH_MQ7
+  Log.trace("MQ7 GAS Start");
+  MQ7_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
+  Log.trace("MQ7 GAS Done");
 #endif
 
 
@@ -200,6 +206,10 @@ void loop()
 
 #ifdef ATH_MQ8
   MQ8_Loop();
+#endif
+
+#ifdef ATH_MQ7
+  MQ7_Loop();
 #endif
 
   delay(loop_delay);
