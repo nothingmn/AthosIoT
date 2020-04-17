@@ -1,15 +1,15 @@
 MQ Series of Sensors
 ----
 
-MQ-2 - Methane, Butane, LPG, Smoke    
-MQ-3 - Alcohol, Ethanol, Smoke    
-MQ-4 - Methane, CNG Gas    
-MQ-5 - Natural gas, LPG    
-MQ-6 - LPG, butane    
-MQ-7 - Carbon Monoxide    
-MQ-8 - Hydrogen Gas    
-MQ-9 - Carbon Monoxide, flammable gasses    
-MQ135 - Air Quality   (CO2) 
+MQ-2 - Methane, Butane, LPG, Smoke    **- Fully Supported**    
+MQ-3 - Alcohol, Ethanol, Smoke    **- Alcohol supported, NOT Ethanol nor Smoke**    
+MQ-4 - Methane, CNG Gas    **- CNG Not supported, Methane is supported**    
+MQ-5 - Natural gas, LPG    **- Fully Supported**    
+MQ-6 - LPG, butane    **- LPG Supported, NOT Butane**    
+MQ-7 - Carbon Monoxide    **- Fully Supported**    
+MQ-8 - Hydrogen Gas    **- Fully Supported**    
+MQ-9 - Carbon Monoxide, flammable gasses    **- Fully Supported**    
+MQ135 - Air Quality   (CO2) **- Fully Supported**    
 
 All are typically 4 pin, with this setup:    
 
