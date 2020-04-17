@@ -9,7 +9,7 @@ MQ-6 - LPG, butane
 MQ-7 - Carbon Monoxide    
 MQ-8 - Hydrogen Gas    
 MQ-9 - Carbon Monoxide, flammable gasses    
-MQ135 - Air Quality    
+MQ135 - Air Quality   (CO2) 
 
 All are typically 4 pin, with this setup:    
 

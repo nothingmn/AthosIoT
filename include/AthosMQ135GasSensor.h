@@ -1,7 +1,7 @@
 #ifdef ATH_MQ135
 #ifndef ATH_MQ135_
 #define ATH_MQ135_
-
+//MQ135 - Air Quality   (CO2) 
 ///Make sure you have a 3V MQ135 Sensor
 //MQ135   -> ESP8266
 //A0    ->  A0

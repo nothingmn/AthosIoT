@@ -27,7 +27,7 @@
 #include "AthosMoisture.h"
 #include "AthosMQ2GasSensor.h"
 #include "AthosMQ135GasSensor.h"
-
+#include "AthosMQ9GasSensor.h"
 #include "Arduino.h"
 #include <ArduinoLog.h>
 #include <ESP8266WiFi.h>
@@ -134,6 +134,13 @@ void setup()
 #endif
 
 
+#ifdef ATH_MQ9
+  Log.trace("MQ9 GAS Start");
+  MQ9_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
+  Log.trace("MQ9 GAS Done");
+#endif
+
+
   Log.trace("~~~~~~~~~~SETUP COMPLETED ~~~~~~~~~~Version:%s Build:%s", getVersion().c_str(), getBuild().c_str());
 }
 
@@ -177,6 +184,11 @@ void loop()
 
 #ifdef ATH_MQ135
   MQ135_Loop();
+#endif
+
+
+#ifdef ATH_MQ9
+  MQ9_Loop();
 #endif
 
   delay(loop_delay);
