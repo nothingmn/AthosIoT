@@ -3,7 +3,11 @@
 #define ATH_MQ2_
 
 ///Make sure you have a 3V MQ2 Sensor
-///In this sketch, we are using a A0 to measure the resistance over the MQ2 sensor
+//MQ2   -> ESP8266
+//A0    ->  A0
+//D1    ->  NOT USED
+//GRND  ->  GRND
+//VCC   ->  VCC
 
 #include "Arduino.h"
 #include <ArduinoJson.h>
@@ -36,11 +40,8 @@ void MQ2_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConf
   _MQ2_config = rootConfig;
   _MQ2_loop_delay = loop_delay;
   
-   mq2.calibrate();
-
-   while(!mq2.isCalibrated()) {
-     delay(100);
-   }
+  mq2.heaterPwrHigh();
+  WarmingUpLed();
 }
 
 
@@ -75,69 +76,71 @@ float MQ2_HYDROGEN_LAST_REPORTED = 0;
 
 void MQ2_Loop()
 {
-    //test out your sensor, get an idea of your min and max ranges by testing in and out of water (not fizzy water)
-    //int value = analogRead(MQ2_inputPin);
-    // float smoothed = MQ2_AnalogSmooth.smooth(value * 1.0);    
-    // Serial.printf("Value:%i, Smoothed:%f", value, smoothed);
 
-    //720 to 1024 is the range i found for my sensor
-    //as usual we are going to do a moving average of our readings over 100 readings
-
-    float ratio = MQ2_Ratio_AnalogSmooth.smooth(mq2.readRatio());
-    float lpg = MQ2_LPG_AnalogSmooth.smooth(mq2.readLPG());
-    float methane = MQ2_Methane_AnalogSmooth.smooth(mq2.readMethane());
-    float smoke = MQ2_Smoke_AnalogSmooth.smooth(mq2.readSmoke());
-    float hydrogen = MQ2_Hydrogen_AnalogSmooth.smooth(mq2.readHydrogen());
-
-    bool reported = false;
-    float diff = abs(ratio - MQ2_RATIO_LAST_REPORTED);
-    if(diff > MQ2_RATIO_TOLERANCE) {
-      //report
-      sendMQ2ToMQTT(ratio, lpg, methane, smoke, hydrogen);
-      MQ2_RATIO_LAST_REPORTED = ratio;
-      reported = true;
+    if (!mq2.isCalibrated() && mq2.heatingCompleted()) {
+      mq2.calibrate();
+      WarmedUpLed();      
     }
 
-    if(!reported) {    
-      diff = abs(lpg - MQ2_LPG_LAST_REPORTED);
-      if(diff > MQ2_LPG_TOLERANCE) {
-        //report
-        sendMQ2ToMQTT(ratio, lpg, methane, smoke, hydrogen);
-        MQ2_LPG_LAST_REPORTED = lpg;
-        reported = true;
-      }
-    }
+    if (mq2.isCalibrated() && mq2.heatingCompleted()) {
 
-    if(!reported) {    
-      diff = abs(methane - MQ2_METHANE_LAST_REPORTED);
-      if(diff > MQ2_METHANE_TOLERANCE) {
-        //report
-        sendMQ2ToMQTT(ratio, lpg, methane, smoke, hydrogen);
-        MQ2_METHANE_LAST_REPORTED = methane;
-        reported = true;
-      }
-    }
+      float ratio = MQ2_Ratio_AnalogSmooth.smooth(mq2.readRatio());
+      float lpg = MQ2_LPG_AnalogSmooth.smooth(mq2.readLPG());
+      float methane = MQ2_Methane_AnalogSmooth.smooth(mq2.readMethane());
+      float smoke = MQ2_Smoke_AnalogSmooth.smooth(mq2.readSmoke());
+      float hydrogen = MQ2_Hydrogen_AnalogSmooth.smooth(mq2.readHydrogen());
 
-    if(!reported) {    
-      diff = abs(smoke - MQ2_SMOKE_LAST_REPORTED);
-      if(diff > MQ2_SMOKE_TOLERANCE) {
+      bool reported = false;
+      float diff = abs(ratio - MQ2_RATIO_LAST_REPORTED);
+      if(diff > MQ2_RATIO_TOLERANCE) {
         //report
         sendMQ2ToMQTT(ratio, lpg, methane, smoke, hydrogen);
-        MQ2_SMOKE_LAST_REPORTED = smoke;
+        MQ2_RATIO_LAST_REPORTED = ratio;
         reported = true;
       }
-    }    
 
-    
-    if(!reported) {    
-      diff = abs(hydrogen - MQ2_HYDROGEN_LAST_REPORTED);
-      if(diff > MQ2_HYDROGEN_TOLERANCE) {
-        //report
-        sendMQ2ToMQTT(ratio, lpg, methane, smoke, hydrogen);
-        MQ2_HYDROGEN_LAST_REPORTED = hydrogen;
-        reported = true;
+      if(!reported) {    
+        diff = abs(lpg - MQ2_LPG_LAST_REPORTED);
+        if(diff > MQ2_LPG_TOLERANCE) {
+          //report
+          sendMQ2ToMQTT(ratio, lpg, methane, smoke, hydrogen);
+          MQ2_LPG_LAST_REPORTED = lpg;
+          reported = true;
+        }
       }
-    }    
+
+      if(!reported) {    
+        diff = abs(methane - MQ2_METHANE_LAST_REPORTED);
+        if(diff > MQ2_METHANE_TOLERANCE) {
+          //report
+          sendMQ2ToMQTT(ratio, lpg, methane, smoke, hydrogen);
+          MQ2_METHANE_LAST_REPORTED = methane;
+          reported = true;
+        }
+      }
+
+      if(!reported) {    
+        diff = abs(smoke - MQ2_SMOKE_LAST_REPORTED);
+        if(diff > MQ2_SMOKE_TOLERANCE) {
+          //report
+          sendMQ2ToMQTT(ratio, lpg, methane, smoke, hydrogen);
+          MQ2_SMOKE_LAST_REPORTED = smoke;
+          reported = true;
+        }
+      }    
+
+      
+      if(!reported) {    
+        diff = abs(hydrogen - MQ2_HYDROGEN_LAST_REPORTED);
+        if(diff > MQ2_HYDROGEN_TOLERANCE) {
+          //report
+          sendMQ2ToMQTT(ratio, lpg, methane, smoke, hydrogen);
+          MQ2_HYDROGEN_LAST_REPORTED = hydrogen;
+          reported = true;
+        }
+      }    
+  }
+
 }
 
 #endif

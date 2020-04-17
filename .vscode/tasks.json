@@ -240,6 +240,22 @@
                 "$platformio"
             ],
             "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Build (MQ135)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Upload (MQ135)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
         }
         
     ]

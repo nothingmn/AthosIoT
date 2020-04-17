@@ -26,6 +26,7 @@
 #include "AthosPIR.h"
 #include "AthosMoisture.h"
 #include "AthosMQ2GasSensor.h"
+#include "AthosMQ135GasSensor.h"
 
 #include "Arduino.h"
 #include <ArduinoLog.h>
@@ -120,10 +121,18 @@ void setup()
 #endif
 
 #ifdef ATH_MQ2
-  Log.trace("GAS Start");
+  Log.trace("MQ2 GAS Start");
   MQ2_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
-  Log.trace("GAS Done");
+  Log.trace("MQ2 GAS Done");
 #endif
+
+
+#ifdef ATH_MQ135
+  Log.trace("MQ135 GAS Start");
+  MQ135_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
+  Log.trace("MQ135 GAS Done");
+#endif
+
 
   Log.trace("~~~~~~~~~~SETUP COMPLETED ~~~~~~~~~~Version:%s Build:%s", getVersion().c_str(), getBuild().c_str());
 }
@@ -164,6 +173,10 @@ void loop()
 
 #ifdef ATH_MQ2
   MQ2_Loop();
+#endif
+
+#ifdef ATH_MQ135
+  MQ135_Loop();
 #endif
 
   delay(loop_delay);
