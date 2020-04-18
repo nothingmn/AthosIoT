@@ -384,7 +384,24 @@
                 "$platformio"
             ],
             "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Build (DHT22)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Upload (DHT22)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
         }
+        
         
     ]
 }

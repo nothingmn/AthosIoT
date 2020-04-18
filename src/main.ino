@@ -22,6 +22,7 @@
 #include "AthosMQTT.h"
 #include "AthosTMP36.h"
 #include "AthosDHT11.h"
+#include "AthosDHT22.h"
 #include "AthosBMP280.h"
 #include "AthosPIR.h"
 #include "AthosMoisture.h"
@@ -99,6 +100,12 @@ void setup()
   Log.trace("DHT11 Start");
   DHT11_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
   Log.trace("DHT11 Done");
+#endif
+
+#ifdef ATH_DHT22
+  Log.trace("DHT22 Start");
+  DHT22_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
+  Log.trace("DHT22 Done");
 #endif
 
 #ifdef ATH_BMP280
@@ -204,6 +211,10 @@ void loop()
 
 #ifdef ATH_DHT11
   DHT11_Loop();
+#endif
+
+#ifdef ATH_DHT22
+  DHT22_Loop();
 #endif
 
 #ifdef ATH_BMP280
