@@ -95,6 +95,11 @@ void WarmedUpLed() {
   LED_Blink(3, 1000);
 }
 
+void WaitingOnSensorLed() {
+  LED_Blink(5, 2000);
+}
+
+
 void BlinkLed(int blinkCount, int blinkDelay)
 {
   LED_Blink(blinkCount, blinkDelay);

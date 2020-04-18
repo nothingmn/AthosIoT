@@ -45,15 +45,6 @@ void DHT22_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootCo
 
   dht22.begin();
 
-  Log.trace("Waiting for the DHT22 sensor to come online");
-  bool ready = false;
-  while (!ready)
-  {
-    float temperature = dht22.readTemperature();
-    ready = !isnan(temperature);
-    delay(100);
-  }
-  Log.trace("DHT22 sensor is online, proceeding.");
 }
 
 void DHT22_sendReadingToMQTT(float temp, float humidity, float heatIndex)
@@ -115,9 +106,24 @@ void checkAndReportReadings()
     DHT22_sendReadingToMQTT(temperature, humidity, heatIndex);
   }
 }
+bool DHT22_ready = false;
 
 void DHT22_Loop()
 {
+  
+  while (!DHT22_ready)
+  {
+    Log.trace("Waiting for the DHT22 sensor to come online");
+    float temperature = dht22.readTemperature();
+    DHT22_ready = !isnan(temperature);
+    Log.trace("Current reading:[%F]", temperature);
+    if(DHT22_ready) {
+      Log.trace("DHT22 sensor is online, proceeding: %F", temperature);
+    } else {
+      WaitingOnSensorLed();
+      delay(100);
+    }
+  }
   checkAndReportReadings();
 }
 
