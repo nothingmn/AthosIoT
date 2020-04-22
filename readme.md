@@ -82,7 +82,7 @@ Possible Major Features
 
 Technical Deep Dive
 ------------
-More details can be found in our Technial Brief [Getting Started](GettingStarted.md) documentation.
+More details can be found in our deep dive [Technical Brief](GettingStarted.md) documentation.
 
 Screen Shots
 ------------
