@@ -364,15 +364,11 @@ The majority of those code based was testing with both [NodeMcu v3](https://www.
 
 * Source: https://en.wikipedia.org/wiki/ESP8266
 #####                NodeMCU  
-
 ![NodeMcu v3](assets/nodemcu3.jpg)
 NodeMcu v3
 #####                Wemos D1  
-
 ![Wemos D1 Mini](assets/d1_mini_v3.1.0_1_16x16.jpg)
-NodeMcu v3
-
-####            Parts List of Sensors / Actuator  
+####            Parts List of Sensors / Actuators
 Here is the list of each sensor which was tested:
 1. BMP280
     1. [Data Sheet](https://ae-bst.resource.bosch.com/media/_tech/media/datasheets/BST-BMP280-DS001.pdf)
