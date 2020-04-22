@@ -379,30 +379,30 @@ Here is the list of each sensor which was tested:
     1. ![BMP280](assets/BMP280-Module-Image.png)
     1. Connection:
          >**BMP280   -> ESP8266**    
-         >VCC  -> 3V
-         >GRND -> G
-         >SCL  -> D1
-         >SDA  -> D2 
+         >VCC  -> 3V    
+         >GRND -> G    
+         >SCL  -> D1    
+         >SDA  -> D2     
 
 2. **DHT11**
-    1. [Data Sheet](http://robocraft.ru/files/datasheet/DHT11.pdf)
-    1. Measures: Temperature, Humidity
-    1. ![DHT11](assets/dht11.jpg)
-    1. Connection:
-         >**DHT11   -> ESP8266**    
-         >VCC     -> 3V
-         >GRND    -> G
-         >SIGNAL  -> D4
+    1. [Data Sheet](http://robocraft.ru/files/datasheet/DHT11.pdf)    
+    1. Measures: Temperature, Humidity    
+    1. ![DHT11](assets/dht11.jpg)    
+    1. Connection:    
+         >**DHT11   -> ESP8266**            
+         >VCC     -> 3V    
+         >GRND    -> G    
+         >SIGNAL  -> D4    
 
 3. **DHT22**
     1. [Data Sheet](https://www.sparkfun.com/datasheets/Sensors/Temperature/DHT22.pdf)
     1. Measures: Temperature, Humidity
     1. ![DHT22](assets/dht22.jpg)
     1. Connection:
-         >**DHT22   -> ESP8266**    
-         >VCC     -> 3V
-         >GRND    -> G
-         >SIGNAL  -> D4
+         >**DHT22   -> ESP8266**        
+         >VCC     -> 3V    
+         >GRND    -> G    
+         >SIGNAL  -> D4    
 
 4. **LED (internal)**
     1. Allows you to control the onboard LED in a standard fashion.
@@ -415,47 +415,47 @@ Here is the list of each sensor which was tested:
     4. Notes: Ensure you are working with either a 5v or 3v sensor with your device. The NodeMcu has pins for either.
     5. ![PIR](assets/pir.jpg)
     6. Connection:
-         >**PIR   -> ESP8266**    
-         >VCC     -> 3V  or 5v (Depending on your model)
-         >GRND    -> G
-         >SIGNAL  -> D4
+         >**PIR   -> ESP8266**        
+         >VCC     -> 3V  or 5v (Depending on your model)        
+         >GRND    -> G        
+         >SIGNAL  -> D4        
 
 7.  **Relay**
     1. Depending on which relay you choose.
     2. Controls: Relays
     3. ![Relay](assets/relay.jpg)
     4. Connection:
-         >**Relay   -> ESP8266**    
-         >VCC     -> 3V
-         >GRND    -> G
-         >SIGNAL  -> D0, D1, etc.  Your choice.
+         >**Relay   -> ESP8266**        
+         >VCC     -> 3V        
+         >GRND    -> G        
+         >SIGNAL  -> D0, D1, etc.  Your choice.        
     5. Notes: In order to correctly propagate the Pin setup you are using to the UI, we have the following setup in the code:
 
 
-Setup a momentary switch, with a press-hold delay of 1 second.  That is, when you trigger this button it will emulate a momentary switch, and "hold" the switch down for 1 second.  Useful for things like garage door openers.  In this case, we have two momentary switchs using D1 and D1, and the "RELAY_Report_PINS" variable will be send to our UI and will be used to render the specific UI for momentary switch.
+Setup a momentary switch, with a press-hold delay of 1 second.  That is, when you trigger this button it will emulate a momentary switch, and "hold" the switch down for 1 second.  Useful for things like garage door openers.  In this case, we have two momentary switchs using D1 and D1, and the "RELAY_Report_PINS" variable will be send to our UI and will be used to render the specific UI for momentary switch.    
 
-   > uint RELAY_PINS[] {D0,D1};
-   > String RELAY_Report_PINS = "MD0,MD1";
-   > long duration = 1000;
+   > uint RELAY_PINS[] {D0,D1};    
+   > String RELAY_Report_PINS = "MD0,MD1";    
+   > long duration = 1000;    
 
 
 
 **and**
 
-In this case, we have a single relay switch which will have a button for on and off.  The RELAY_Report_PINS variable is used to indicate the fact that it is a simple switch.  Useful for toggle type switching.
-   > uint RELAY_PINS[] {D0};
-   > String RELAY_Report_PINS = "D0";
-   > long duration = 0;  //if > 0 
+In this case, we have a single relay switch which will have a button for on and off.  The RELAY_Report_PINS variable is used to indicate the fact that it is a simple switch.  Useful for toggle type switching.    
+   > uint RELAY_PINS[] {D0};    
+   > String RELAY_Report_PINS = "D0";    
+   > long duration = 0;  //if > 0     
 
 8.  **TMP36**
     1. [Data Sheet](https://www.analog.com/media/en/technical-documentation/data-sheets/TMP35_36_37.pdf)
     2. Measures: Temperature
     3. ![Relay](assets/tmp36.jpg)
-    4. Connection:
-         >**TMP36   -> ESP8266**    
-         >VCC     -> 3V
-         >GRND    -> G
-         >SIGNAL  -> A0
+    4. Connection:    
+         >**TMP36   -> ESP8266**        
+         >VCC     -> 3V    
+         >GRND    -> G    
+         >SIGNAL  -> A0    
 
 
 Keep in mind, it is important to always have the data sheets handy for each sensor and module.  For example, one temperature sensor might have a tolerance of 1C change, where another 0.1C change, and most of the time it is important to be able to change the smallest amount of tolerable change.
@@ -466,31 +466,44 @@ Each build of the AthosIoT system comes baked in with a few commands which can b
 * Reset
   * [1] "ESP.reset() is a hard reset and can leave some of the registers in the old state which can lead to problems, its more or less like the reset button on the PC.". 
   * This is typically done by sending the following command via the Relay topic for the node:
-    * >{ command : "reset" }
+```json
+{ command : "reset" }
+```
 * Reboot
   * [1] "ESP.restart() tells the SDK to reboot, so its a more clean reboot."
   * This is typically done by sending the following command via the Relay topic for the node:
-    * >{ command : "reboot" }
+```json
+{ command : "reboot" }
+```
 * Wipe
   * Wipe will completely clear out the EEPROM and call the ESP.reset() command as described above.
   * This is typically done by sending the following command via the Relay topic for the node:
-    * >{ command : "wipe" }
+```json
+{ command : "wipe" }
+```
 * Ping
   * Ping will actually respond back on the configured "Ping" topic with some basic timing.  Essentially this is a mechanism which the end user can verify if the node is still responding.
   * This is typically done by sending the following command via the Relay topic for the node:
-    * >{ command : "ping", ts : XXXX }
+```json
+{ command : "ping", ts : XXXX }
+```
     * Where XXXX is the timestamp of the PING even from the server.
 * Upgrade
   * This will trigger the Over The Air (OTA) update process. Typically the "bin" file, firmeware will sit on the AthosIoT Hub and the message will contain the web server url for the bin file.
   * This is typically done by sending the following command via the Relay topic for the node:
-    * >{ command : "upgrade", host : "XXXX", port : YYYY, path : "ZZZZ" }
+```json
+{ command : "upgrade", host : "XXXX", port : YYYY, path : "ZZZZ" }
+```
     * Where XXXX is the host machine (IP or DNS), HTTP
     * YYYY is the port on the host machine
     * ZZZZ is the path from the root of the host machine of the .bin file
 * Reconfigure
   * This allows for over the air update of the node configuration.  It force an update of any internal settings which have been supplied and then perform restart of the node.
   * This is typically done by sending the following command via the Relay topic for the node:
-    * >{ command : "reconfigure", "wifi" : { ssid : "YourSSID", password : "Your AP Password"}, mqtt : { "server" : "mqtt server host ip or name", "port" : mqttPort, "username" : "mqtt server user name", "password" : "mqtt password", "relay" : "relay topic", "ping" : "ping topic", "sensor" : "sensor topic"} }
+```json
+{ command : "reconfigure", "wifi" : { ssid : "YourSSID", password : "Your AP Password"}, mqtt : { "server" : "mqtt server host ip or name", "port" : mqttPort, "username" : "mqtt server user name", "password" : "mqtt password", "relay" : "relay topic", "ping" : "ping topic", "sensor" : "sensor topic"} }
+```
+
 
 [1] https://circuits4you.com/2017/12/31/software-reset-esp8266/
 
