@@ -80,4 +80,10 @@ Possible Major Features
 24. Alerting (SMS, Telegram, PushBullet)
 
 
+Technical Deep Dive
+------------
 More details can be found in our Technial Brief [Getting Started](GettingStarted.md) documentation.
+
+Screen Shots
+------------
+Screen Shots can be found in our [Screen Shots](ScreenShots.md) documentation.
