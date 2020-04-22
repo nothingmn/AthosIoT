@@ -1,6 +1,10 @@
 ![AthosIot](https://raw.githubusercontent.com/nothingmn/AthosIoT.Web/master/public/img/icons/msapplication-icon-144x144.png)
 # AthosIoT – Screen Shots
 
+The following screen shots are in desktop/full width view.  Each UI will adapt to a table and phone view accordingly.
+    
+    
+    
 ![Manage Node Wifi](assets/ss-manage-wifi.jpg)
 Provies the administrator with the ability to easily change the default Wifi Settings for the System.  Once changed, you will need to Wipe each node you would like to use the new settings.
     
