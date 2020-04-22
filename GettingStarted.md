@@ -78,19 +78,8 @@ This document is intended to outline the various software and hardware component
 9.5.2.                [NodeMCU](#nodemcu-1)  
 9.5.3.                [Wemos D1](#wemos-d1)  
 9.6.            [Parts List of Sensors / Actuator](#parts-list-of-sensors-actuator)  
-9.6.1.                [How to connect each device](#how-to-connect-each-device)  
-9.6.2.                [OTA process](#ota-process-1)  
 9.7.    	[Global Actions](#global-actions)  
 9.7.1.	    	[Reset, Wipe, Ping, etc](#reset-wipe-ping-etc)  
-9.7.2.	    [Relays, pin mappings and the UI](#relays-pin-mappings-and-the-ui)  
-
-8. [GitHub Actions](#github-actions)  
-8.1 [How to change the build](#how-to-change-the-build)  
-  
-9. [Build.sh](#buildsh)  
-9.1.    [General design](#general-design-1)  
-9.2.    [What is it used for?](#what-is-it-used-for)  
-  
 ----  
   
 ## General Architecture  
@@ -240,35 +229,35 @@ Own your own Node-Red instance and MQTT.  This is our recommendation.
 Two important flows you should add to your OWN instance include:    
     
 1. **Sensor Data**    
-    **MQTT INPUT node**, from AthosIoT Broker    
-    **Topic:** iot/sensors/+    
-    **QoS:** 2    
-    **Output:** A parsed JSON Buffer    
-    **Connected to:** anything you like!    
-    **Purpose:** To replicate all sensor data from Athos Hub into your own environment    
+   * **MQTT INPUT node**, from AthosIoT Broker    
+   * **Topic:** iot/sensors/+    
+   * **QoS:** 2    
+   * **Output:** A parsed JSON Buffer    
+   * **Connected to:** anything you like!    
+   * **Purpose:** To replicate all sensor data from Athos Hub into your own environment    
     
 2. **Relays**    
-    **MQTT Input node**, from your OWN Broker    
-    **Topic:** iot/relays/+    
-    **QoS:** 2    
-    **Output:** String    
-    **Connected to:** MQTT OUTPUT NODE    
-    **Purpose:** To relay messages from your own instance to Athos Hub instance.  This will allow you to  command/control Athos nodes via your own broker
+   * **MQTT Input node**, from your OWN Broker    
+   * **Topic:** iot/relays/+    
+   * **QoS:** 2    
+   * **Output:** String    
+   * **Connected to:** MQTT OUTPUT NODE    
+   * **Purpose:** To relay messages from your own instance to Athos Hub instance.  This will allow you to  command/control Athos nodes via your own broker
     
-    **MQTT Output node**, TO Athos Broker    
-    **Topic:** Leave empty        
-    **QoS:** Leave Empty    
-    **Connected to:** the MQTT Input Node for Relays    
-    **Purpose:** The second have of the Relay messaging for Broker to Broker.    
+   and
+    
+   * **MQTT Output node**, TO Athos Broker    
+   * **Topic:** Leave empty        
+   * **QoS:** Leave Empty    
+   * **Connected to:** the MQTT Input Node for Relays    
+   * **Purpose:** The second have of the Relay messaging for Broker to Broker.    
     
 ###	MQTT  
 ####		Why are we using it, what function does it perform?  
 MQTT leverages the open MQTT broker, [Mosquitto](https://mosquitto.org/).      
 As per their project page:    
-> The MQTT protocol provides a lightweight method of carrying out messaging using a 
-> publish/subscribe model. This makes it suitable for Internet of Things messaging 
-> such as with low power sensors or mobile devices such as phones, embedded computers 
-> or microcontrollers.
+> The MQTT protocol provides a lightweight method of carrying out messaging using a publish/subscribe model. This makes it suitable for Internet of Things messaging such as with low power sensors or mobile devices such as phones, embedded computers or microcontrollers.
+> https://mosquitto.org/
     
 ####		How to change the username/password  
 As mentioned above, we have not changed (enabled) the security options of MQTT.  If you would like to do so, please consult the documentation provided by the project itself.  Also consider all Node-Red flows, including the configuration which is automatically send to the clients as per the setup/configuration process.  Setting credentials on the Hub MQTT server have NOT been tested and should be used with caution.
@@ -324,13 +313,12 @@ Main UI Components include:
 ###	Enclosures  
 ####		Raspberry PI  
 ####		NodeMCU  
-###	OTA process  
+###	OTA process 
+Currently we only support the basic HTTP method for OTA updates.  They are triggered by leveraging the Relay MQTT topic for the node.... 
 ####		How to trigger the OTA update  
-####		Web Server  
+The easiest way would be to use the UI.  AthosIoTHub has the ability to manage all your firmeware, upload and delete but to also remote deploy firware to each node in your network.  
+
 ### AthosIoT Nodes  
-
-
-
 ####    General design  
 ####        Boot process  
 The following is a general flow for the initial boot and setup/configuration steps the Nodes take.    
@@ -363,20 +351,150 @@ Once you have the raspberrypi machine online browse to the admin page at http://
 You should be able to hit Control-Shift-B and choose which node-type to build and/or upload.
 
 ####        Hardware  
+The majority of those code based was testing with both [NodeMcu v3](https://www.nodemcu.com/index_en.html#fr_54747361d775ef1a3600000f), and the [Wemos D1 Mini](https://www.wemos.cc/en/latest/).  You should feel comfortable with either depending on your needs.    
+    
+[See Wikipedia for the plethora of other boards which are available](https://en.wikipedia.org/wiki/ESP8266#Other_boards)
+
 #####            ESP8266 and Variants  
+
+> The ESP8266 is a low-cost Wi-Fi microchip, with a full TCP/IP stack and microcontroller capability, produced by Espressif Systems in Shanghai, China.    
+> The chip first came to the attention of Western makers in August 2014 with the ESP-01 module, made by a third-party manufacturer Ai-Thinker. This small module allows microcontrollers to connect to a Wi-Fi network and make simple TCP/IP connections using Hayes-style commands. However, at first there was almost no English-language documentation on the chip and the commands it accepted. The very low price and the fact that there were very few external components on the module, which suggested that it could eventually be very inexpensive in volume, attracted many hackers to explore the module, the chip, and the software on it, as well as to translate the Chinese documentation.    
+> The ESP8285 is an ESP8266 with 1 MiB of built-in flash, allowing the building of single-chip devices capable of connecting to Wi-Fi.     
+> The successor to these microcontroller chips is the ESP32, released in 2016.     
+
+* Source: https://en.wikipedia.org/wiki/ESP8266
 #####                NodeMCU  
+
+![NodeMcu v3](assets/nodemcu3.jpg)
+NodeMcu v3
 #####                Wemos D1  
+
+![Wemos D1 Mini](assets/d1_mini_v3.1.0_1_16x16.jpg)
+NodeMcu v3
+
 ####            Parts List of Sensors / Actuator  
-#####                How to connect each device  
-#####                OTA process	  
+Here is the list of each sensor which was tested:
+1. BMP280
+    1. [Data Sheet](https://ae-bst.resource.bosch.com/media/_tech/media/datasheets/BST-BMP280-DS001.pdf)
+    1. Measures: Temperature, Humidity, Atmospheric Pressure, Altitude
+    1. ![BMP280](assets/BMP280-Module-Image.png)
+    1. Connection:
+         >**BMP280   -> ESP8266**    
+         >VCC  -> 3V
+         >GRND -> G
+         >SCL  -> D1
+         >SDA  -> D2 
+
+2. DHT11
+    1. [Data Sheet](http://robocraft.ru/files/datasheet/DHT11.pdf)
+    1. Measures: Temperature, Humidity
+    1. ![DHT11](assets/dht11.jpg)
+    1. Connection:
+         >**DHT11   -> ESP8266**    
+         >VCC     -> 3V
+         >GRND    -> G
+         >SIGNAL  -> D4
+
+3. DHT22
+    1. [Data Sheet](https://www.sparkfun.com/datasheets/Sensors/Temperature/DHT22.pdf)
+    1. Measures: Temperature, Humidity
+    1. ![DHT22](assets/dht22.jpg)
+    1. Connection:
+         >**DHT22   -> ESP8266**    
+         >VCC     -> 3V
+         >GRND    -> G
+         >SIGNAL  -> D4
+
+4. LED (internal)
+    1. Allows you to control the onboard LED in a standard fashion.
+5. MQ2, MQ3, MQ4, MQ5, MQ6, MQ7, MQ8, MQ9, MQ135
+    1. Notes: [Here](include/MQSensors.readme.md)
+6.  PIR (Passive infrared motion sensor aka Pyroelectric aka IR Motion)
+    1. [AdaFruit](https://cdn-learn.adafruit.com/downloads/pdf/pir-passive-infrared-proximity-motion-sensor.pdf)
+    2. [Data Sheet]()
+    3. Measures: Movement
+    4. Notes: Ensure you are working with either a 5v or 3v sensor with your device. The NodeMcu has pins for either.
+    5. ![PIR](assets/pir.jpg)
+    6. Connection:
+         >**PIR   -> ESP8266**    
+         >VCC     -> 3V  or 5v (Depending on your model)
+         >GRND    -> G
+         >SIGNAL  -> D4
+
+7.  Relay
+    1. Depending on which relay you choose.
+    2. Controls: Relays
+    3. ![Relay](assets/relay.jpg)
+    4. Connection:
+         >**Relay   -> ESP8266**    
+         >VCC     -> 3V
+         >GRND    -> G
+         >SIGNAL  -> D0, D1, etc.  Your choice.
+    5. Notes: In order to correctly propagate the Pin setup you are using to the UI, we have the following setup in the code:
+
+
+Setup a momentary switch, with a press-hold delay of 1 second.  That is, when you trigger this button it will emulate a momentary switch, and "hold" the switch down for 1 second.  Useful for things like garage door openers.  In this case, we have two momentary switchs using D1 and D1, and the "RELAY_Report_PINS" variable will be send to our UI and will be used to render the specific UI for momentary switch.
+
+   > uint RELAY_PINS[] {D0,D1};
+   > String RELAY_Report_PINS = "MD0,MD1";
+   > long duration = 1000;
+
+
+
+**and**
+
+In this case, we have a single relay switch which will have a button for on and off.  The RELAY_Report_PINS variable is used to indicate the fact that it is a simple switch.  Useful for toggle type switching.
+   > uint RELAY_PINS[] {D0};
+   > String RELAY_Report_PINS = "D0";
+   > long duration = 0;  //if > 0 
+
+8.  TMP36
+    1. [Data Sheet](https://www.analog.com/media/en/technical-documentation/data-sheets/TMP35_36_37.pdf)
+    2. Measures: Temperature
+    3. ![Relay](assets/tmp36.jpg)
+    4. Connection:
+         >**TMP36   -> ESP8266**    
+         >VCC     -> 3V
+         >GRND    -> G
+         >SIGNAL  -> A0
+
+
+Keep in mind, it is important to always have the data sheets handy for each sensor and module.  For example, one temperature sensor might have a tolerance of 1C change, where another 0.1C change, and most of the time it is important to be able to change the smallest amount of tolerable change.
+
 ####    	Global Actions  
+Each build of the AthosIoT system comes baked in with a few commands which can be sent via the "Relay" topic for the node. Regardless if the board actually is of "Relay" type, it will still accept and respond accordingly to these commands.  These commands are outlined below.
 #####	    	Reset, Wipe, Ping, etc  
-####	    Relays, pin mappings and the UI  
-### GitHub Actions  
-#### How to change the build  
-### Build.sh  
-#####    General design  
-#####    What is it used for?  
+* Reset
+  * [1] "ESP.reset() is a hard reset and can leave some of the registers in the old state which can lead to problems, its more or less like the reset button on the PC.". 
+  * This is typically done by sending the following command via the Relay topic for the node:
+    * >{ command : "reset" }
+* Reboot
+  * [1] "ESP.restart() tells the SDK to reboot, so its a more clean reboot."
+  * This is typically done by sending the following command via the Relay topic for the node:
+    * >{ command : "reboot" }
+* Wipe
+  * Wipe will completely clear out the EEPROM and call the ESP.reset() command as described above.
+  * This is typically done by sending the following command via the Relay topic for the node:
+    * >{ command : "wipe" }
+* Ping
+  * Ping will actually respond back on the configured "Ping" topic with some basic timing.  Essentially this is a mechanism which the end user can verify if the node is still responding.
+  * This is typically done by sending the following command via the Relay topic for the node:
+    * >{ command : "ping", ts : XXXX }
+    * Where XXXX is the timestamp of the PING even from the server.
+* Upgrade
+  * This will trigger the Over The Air (OTA) update process. Typically the "bin" file, firmeware will sit on the AthosIoT Hub and the message will contain the web server url for the bin file.
+  * This is typically done by sending the following command via the Relay topic for the node:
+    * >{ command : "upgrade", host : "XXXX", port : YYYY, path : "ZZZZ" }
+    * Where XXXX is the host machine (IP or DNS), HTTP
+    * YYYY is the port on the host machine
+    * ZZZZ is the path from the root of the host machine of the .bin file
+* Reconfigure
+  * This allows for over the air update of the node configuration.  It force an update of any internal settings which have been supplied and then perform restart of the node.
+  * This is typically done by sending the following command via the Relay topic for the node:
+    * >{ command : "reconfigure", "wifi" : { ssid : "YourSSID", password : "Your AP Password"}, mqtt : { "server" : "mqtt server host ip or name", "port" : mqttPort, "username" : "mqtt server user name", "password" : "mqtt password", "relay" : "relay topic", "ping" : "ping topic", "sensor" : "sensor topic"} }
+
+[1] https://circuits4you.com/2017/12/31/software-reset-esp8266/
+
     
     
 Back to [Documentaiton Home](readme.md).    

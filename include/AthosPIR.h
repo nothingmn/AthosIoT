@@ -2,7 +2,7 @@
 #ifndef ATH_PIR_
 #define ATH_PIR_
 
-///Make sure you have a 3V PIR Sen  sor
+///Make sure you have a 3V or 5V PIR Sensor
 ///In this sketch, we are using a D1 for the data pin
 
 #include "Arduino.h"
