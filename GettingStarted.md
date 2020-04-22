@@ -368,13 +368,12 @@ The majority of those code based was testing with both [NodeMcu v3](https://www.
 
 * Source: https://en.wikipedia.org/wiki/ESP8266
 #####                NodeMCU  
-![NodeMcu v3](assets/nodemcu3.jpg)
-NodeMcu v3
+**![NodeMcu v3](assets/nodemcu3.jpg)**
 #####                Wemos D1  
-![Wemos D1 Mini](assets/d1_mini_v3.1.0_1_16x16.jpg)
+**![Wemos D1 Mini](assets/d1_mini_v3.1.0_1_16x16.jpg)**
 ####            Parts List of Sensors / Actuators
 Here is the list of each sensor which was tested:
-1. BMP280
+1. **BMP280**
     1. [Data Sheet](https://ae-bst.resource.bosch.com/media/_tech/media/datasheets/BST-BMP280-DS001.pdf)
     1. Measures: Temperature, Humidity, Atmospheric Pressure, Altitude
     1. ![BMP280](assets/BMP280-Module-Image.png)
@@ -385,7 +384,7 @@ Here is the list of each sensor which was tested:
          >SCL  -> D1
          >SDA  -> D2 
 
-2. DHT11
+2. **DHT11**
     1. [Data Sheet](http://robocraft.ru/files/datasheet/DHT11.pdf)
     1. Measures: Temperature, Humidity
     1. ![DHT11](assets/dht11.jpg)
@@ -395,7 +394,7 @@ Here is the list of each sensor which was tested:
          >GRND    -> G
          >SIGNAL  -> D4
 
-3. DHT22
+3. **DHT22**
     1. [Data Sheet](https://www.sparkfun.com/datasheets/Sensors/Temperature/DHT22.pdf)
     1. Measures: Temperature, Humidity
     1. ![DHT22](assets/dht22.jpg)
@@ -405,11 +404,11 @@ Here is the list of each sensor which was tested:
          >GRND    -> G
          >SIGNAL  -> D4
 
-4. LED (internal)
+4. **LED (internal)**
     1. Allows you to control the onboard LED in a standard fashion.
-5. MQ2, MQ3, MQ4, MQ5, MQ6, MQ7, MQ8, MQ9, MQ135
+5. **MQ2, MQ3, MQ4, MQ5, MQ6, MQ7, MQ8, MQ9, MQ135**
     1. Notes: [Here](include/MQSensors.readme.md)
-6.  PIR (Passive infrared motion sensor aka Pyroelectric aka IR Motion)
+6.  **PIR (Passive infrared motion sensor aka Pyroelectric aka IR Motion)**
     1. [AdaFruit](https://cdn-learn.adafruit.com/downloads/pdf/pir-passive-infrared-proximity-motion-sensor.pdf)
     2. [Data Sheet]()
     3. Measures: Movement
@@ -421,7 +420,7 @@ Here is the list of each sensor which was tested:
          >GRND    -> G
          >SIGNAL  -> D4
 
-7.  Relay
+7.  **Relay**
     1. Depending on which relay you choose.
     2. Controls: Relays
     3. ![Relay](assets/relay.jpg)
@@ -448,7 +447,7 @@ In this case, we have a single relay switch which will have a button for on and 
    > String RELAY_Report_PINS = "D0";
    > long duration = 0;  //if > 0 
 
-8.  TMP36
+8.  **TMP36**
     1. [Data Sheet](https://www.analog.com/media/en/technical-documentation/data-sheets/TMP35_36_37.pdf)
     2. Measures: Temperature
     3. ![Relay](assets/tmp36.jpg)
