@@ -305,11 +305,15 @@ The UI is tied back to the Hubs Node-Red instance via a single websocket ("ui").
 Main UI Components include:    
 1. Configure Node Wifi    
    1. Purpose: To set the Node Wifi Settings    
+   2. [Screen Shots](ScreenShots.md)
 2. Manage Devices    
    1. Purpose: To manage the devices, and command/control    
+   2. [Screen Shots](ScreenShots.md)
 3. Manage firmware    
    1. Purpose: To delete and upload new .bin firmware files for OTA.    
    2. Use the "Firmware" button on the "Manage Devies" UI to push a build directly to the Node.    
+   2. [Screen Shots](ScreenShots.md)
+
 ###	Enclosures  
 ####		Raspberry PI  
 ####		NodeMCU  
