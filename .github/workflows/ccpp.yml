@@ -48,6 +48,11 @@ jobs:
           mv .pio/build/MQ4/firmware.bin out/AthosIoT.MQ4_firmware.bin  
           mv .pio/build/MQ3/firmware.bin out/AthosIoT.MQ3_firmware.bin  
           mv .pio/build/BMP280_MQ2/firmware.bin out/AthosIoT.BMP280_MQ2_firmware.bin  
+          mv .pio/build/BUTTON/firmware.bin out/AthosIoT.BUTTON_firmware.bin  
+      - uses: actions/upload-artifact@v1
+        with:
+          name: AthosIoT.BUTTON_firmware
+          path: out/AthosIoT.BUTTON_firmware.bin
       - uses: actions/upload-artifact@v1
         with:
           name: AthosIoT.BMP280_MQ2_firmware

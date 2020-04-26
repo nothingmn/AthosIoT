@@ -25,6 +25,7 @@
 #include "AthosDHT22.h"
 #include "AthosBMP280.h"
 #include "AthosPIR.h"
+#include "AthosButton.h"
 #include "AthosMoisture.h"
 #include "AthosMQ2GasSensor.h"
 #include "AthosMQ135GasSensor.h"
@@ -127,6 +128,12 @@ void setup()
   Log.trace("PIR Done");
 #endif
 
+#ifdef ATH_BUTTON
+  Log.trace("Button Start");
+  BUTTON_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
+  Log.trace("Button Done");
+#endif
+
 #ifdef ATH_MOIST
   Log.trace("MOIST Start");
   MOIST_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
@@ -227,6 +234,10 @@ void loop()
 
 #ifdef ATH_PIR
   PIR_Loop();
+#endif
+
+#ifdef ATH_BUTTON
+  BUTTON_Loop();
 #endif
 
 #ifdef ATH_MOIST

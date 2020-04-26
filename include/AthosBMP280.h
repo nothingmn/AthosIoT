@@ -26,10 +26,6 @@
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 
-//Try to avoid having anything in global scope
-
-//max time between mandatory reporting
-int _BMP280_loop_delay = 1000;
 
 Adafruit_BME280 bme; // I2C
 uint8_t i2cAddress = 0x76;
@@ -37,6 +33,7 @@ uint8_t i2cAddress = 0x76;
 PubSubClient _BMP280_mqtt_client;
 String _BMP280_deviceId;
 StorageValues _BMP280_config;
+int _BMP280_loop_delay = 1000;
 
 AnalogSmooth BMP_AnalogSmooth_temp = AnalogSmooth(100);
 AnalogSmooth BMP_AnalogSmooth_humid = AnalogSmooth(100);

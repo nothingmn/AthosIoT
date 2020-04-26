@@ -400,6 +400,22 @@
                 "$platformio"
             ],
             "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Build (BUTTON)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Upload (BUTTON)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
         }
         
         
