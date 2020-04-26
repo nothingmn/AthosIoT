@@ -28,6 +28,7 @@
   long duration = 0;  //if > 0 it will trigger back given the duraiton; emulates a momentary switch
 #endif
 
+int RELAY_COUNT = sizeof( RELAY_PINS ) / sizeof( RELAY_PINS[0] );
 
 
 #define turn_On 1
@@ -47,7 +48,7 @@ void Relay_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootCo
   _Relay_loop_delay = loop_delay;
 
    // Pin for relay module set as output
-  for(int x=0;x<sizeof(RELAY_PINS);x++) {
+  for(int x=0;x<RELAY_COUNT;x++) {
     pinMode(RELAY_PINS[x], OUTPUT);
     digitalWrite(RELAY_PINS[x], turn_On);
     if(duration>0) {
