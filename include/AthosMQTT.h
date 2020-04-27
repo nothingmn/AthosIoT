@@ -5,6 +5,7 @@
   #include "AthosRelay.h"
 #endif
 
+#include "AthosNTP.h"
 #include "AthosEEPROM.h"
 #include <PubSubClient.h>
 #include <ArduinoLog.h>
