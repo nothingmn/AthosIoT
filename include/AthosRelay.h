@@ -57,6 +57,7 @@ void Relay_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootCo
     }
   }
 }
+
 bool Relay_MQTT_Received(String topic, String json) {
   
   if(topic.endsWith("/" + _Relay_deviceId)) {
@@ -72,7 +73,7 @@ bool Relay_MQTT_Received(String topic, String json) {
       int vpin = readDoc["pin"].as<int>();
       int pin = RELAY_PINS[0];
 
-      Log.trace("Relay_MQTT_Received:\npin:%i\npin:%i\ncommand:%s", vpin, pin, command.c_str());
+      Log.trace("Relay_MQTT_Received:\npin index:%i\npin:%i\ncommand:%s", vpin, pin, command.c_str());
 
       if(vpin <= sizeof(RELAY_PINS)) {
         pin = RELAY_PINS[vpin];

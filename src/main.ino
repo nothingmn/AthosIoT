@@ -36,6 +36,7 @@
 #include "AthosMQ5GasSensor.h"
 #include "AthosMQ4GasSensor.h"
 #include "AthosMQ3GasSensor.h"
+#include "AthosNeoPixel.h"
 #include "Arduino.h"
 #include <ArduinoLog.h>
 #include <ESP8266WiFi.h>
@@ -196,8 +197,11 @@ void setup()
   Log.trace("MQ3 GAS Done");
 #endif
 
-
-
+#ifdef ATH_NEOPIXEL
+  Log.trace("NeoPixel Start");
+  NeoPixel_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
+  Log.trace("NeoPixel Done");
+#endif
 
   Log.trace("~~~~~~~~~~SETUP COMPLETED ~~~~~~~~~~Version:%s Build:%s", getVersion().c_str(), getBuild().c_str());
 }
@@ -279,6 +283,12 @@ void loop()
 #ifdef ATH_MQ3
   MQ3_Loop();
 #endif
+
+
+#ifdef ATH_NEOPIXEL
+  NeoPixel_Loop();
+#endif
+
 
   delay(loop_delay);
 }

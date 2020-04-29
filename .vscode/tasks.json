@@ -416,6 +416,22 @@
                 "$platformio"
             ],
             "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Build (NEOPIXEL)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Upload (NEOPIXEL)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
         }
         
         

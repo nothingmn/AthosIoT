@@ -4,6 +4,9 @@
 #ifdef ATH_RELAY
   #include "AthosRelay.h"
 #endif
+#ifdef ATH_NEOPIXEL
+  #include "AthosNeoPixel.h"
+#endif
 
 #include "AthosNTP.h"
 #include "AthosEEPROM.h"
@@ -104,6 +107,9 @@ void MQTT_Callback(char *topic, byte *payload, unsigned int length)
 
 #ifdef ATH_RELAY
   handled = Relay_MQTT_Received(strTopic, json);
+#endif
+#ifdef ATH_NEOPIXEL
+  handled = NeoPixel_MQTT_Received(strTopic, json);
 #endif
 
   if (!handled)
