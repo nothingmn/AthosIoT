@@ -65,7 +65,7 @@ bool NeoPixel_MQTT_Received(String topic, String json) {
         PixelEffect_on(strip);
         Log.trace("PixelEffect_on done");
         return true;
-    }else if(command == "alloff") {
+    } else if(command == "alloff") {
         Log.trace("alloff");
         PixelEffect_off(strip);
         Log.trace("PixelEffect_off done");
@@ -77,7 +77,12 @@ bool NeoPixel_MQTT_Received(String topic, String json) {
         PixelEffect_dim(strip, level);        
         Log.trace("PixelEffect_dim");
         return true;
-    }else if(command == "rainbowFade2White") {
+    } else if(command == "random") {
+        Log.trace("random");
+        PixelEffect_random(strip);
+        Log.trace("random done");
+        return true;
+     } else if(command == "rainbowFade2White") {
         Log.trace("rainbowFade2White");
         int wait = readDoc["wait"].as<int>();
         Log.trace("wait %i", wait);
@@ -100,7 +105,7 @@ bool NeoPixel_MQTT_Received(String topic, String json) {
         Log.trace("w %i", w);
         int wait = readDoc["wait"].as<int>();
         Log.trace("wait %i", wait);
-          PixelEffect_fillColor(strip, r, g, b, w, wait);
+        PixelEffect_fillColor(strip, r, g, b, w, wait);
         Log.trace("PixelEffect_fillColor done");
         return true;
       }  else if(command == "pulseWhite") {
@@ -133,7 +138,9 @@ bool NeoPixel_MQTT_Received(String topic, String json) {
         Log.trace("rainbow");
         int wait = readDoc["wait"].as<int>();
         Log.trace("wait %i", wait);
-        PixelEffect_rainbow(strip, wait);
+        int rainbowLoops = readDoc["rainbowLoops"].as<int>();
+        Log.trace("rainbowLoops %i", rainbowLoops);
+        PixelEffect_rainbow(strip, rainbowLoops, wait);
         Log.trace("PixelEffect_rainbow done");
         return true;
       }   else if(command == "whiteOverRainbow") {

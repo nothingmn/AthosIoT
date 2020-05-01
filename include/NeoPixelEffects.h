@@ -4,6 +4,7 @@
 #include "Arduino.h";
 #include <Adafruit_NeoPixel.h>
 
+
 void PixelEffect_on(Adafruit_NeoPixel &strip){
     for(int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
       strip.setPixelColor(i, 255,255,255,255);
@@ -23,27 +24,30 @@ void PixelEffect_dim(Adafruit_NeoPixel &strip, uint8_t b){
 }
 
 // Rainbow cycle along whole strip. Pass delay time (in ms) between frames.
-void PixelEffect_rainbow(Adafruit_NeoPixel &strip, int wait) {
-  // Hue of first pixel runs 5 complete loops through the color wheel.
-  // Color wheel has a range of 65536 but it's OK if we roll over, so
-  // just count from 0 to 5*65536. Adding 256 to firstPixelHue each time
-  // means we'll make 5*65536/256 = 1280 passes through this outer loop:
-  for(long firstPixelHue = 0; firstPixelHue < 5*65536; firstPixelHue += 256) {
-    for(int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
-      // Offset pixel hue by an amount to make one full revolution of the
-      // color wheel (range of 65536) along the length of the strip
-      // (strip.numPixels() steps):
-      int pixelHue = firstPixelHue + (i * 65536L / strip.numPixels());
-      // strip.ColorHSV() can take 1 or 3 arguments: a hue (0 to 65535) or
-      // optionally add saturation and value (brightness) (each 0 to 255).
-      // Here we're using just the single-argument hue variant. The result
-      // is passed through strip.gamma32() to provide 'truer' colors
-      // before assigning to each pixel:
-      strip.setPixelColor(i, strip.gamma32(strip.ColorHSV(pixelHue)));
+void PixelEffect_rainbow(Adafruit_NeoPixel &strip, int rainbowLoops, int wait) {
+
+    for(int x = 0; x < rainbowLoops; x++) {
+        // Hue of first pixel runs 5 complete loops through the color wheel.
+        // Color wheel has a range of 65536 but it's OK if we roll over, so
+        // just count from 0 to 5*65536. Adding 256 to firstPixelHue each time
+        // means we'll make 5*65536/256 = 1280 passes through this outer loop:
+        for(long firstPixelHue = 0; firstPixelHue < 5*65536; firstPixelHue += 256) {
+            for(int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
+            // Offset pixel hue by an amount to make one full revolution of the
+            // color wheel (range of 65536) along the length of the strip
+            // (strip.numPixels() steps):
+            int pixelHue = firstPixelHue + (i * 65536L / strip.numPixels());
+            // strip.ColorHSV() can take 1 or 3 arguments: a hue (0 to 65535) or
+            // optionally add saturation and value (brightness) (each 0 to 255).
+            // Here we're using just the single-argument hue variant. The result
+            // is passed through strip.gamma32() to provide 'truer' colors
+            // before assigning to each pixel:
+            strip.setPixelColor(i, strip.gamma32(strip.ColorHSV(pixelHue)));
+            }
+            strip.show(); // Update strip with new contents
+            delay(wait);  // Pause for a moment
+        }
     }
-    strip.show(); // Update strip with new contents
-    delay(wait);  // Pause for a moment
-  }
 }
 
 
@@ -95,9 +99,11 @@ void PixelEffect_rainbowFade2White(Adafruit_NeoPixel &strip, int wait, int rainb
       strip.show();
     }
   }
-
+ 
   delay(500); // Pause 1/2 second
+  PixelEffect_on(strip);
 }
+
 void PixelEffect_pulseColor(Adafruit_NeoPixel &strip, uint32_t r, uint32_t g, uint32_t b, uint8_t wait, uint8_t pulses) {
     for(int p = 0;p<pulses;p++) {
         for(int j=0; j<256; j++) { // Ramp up from 0 to 255
@@ -206,5 +212,25 @@ void PixelEffect_colorWipe(Adafruit_NeoPixel &strip, uint32_t color, int wait) {
 void PixelEffect_fillColor(Adafruit_NeoPixel &strip, uint32_t r, uint32_t g, uint32_t b, uint32_t w, int wait) {
     PixelEffect_colorWipe(strip, strip.Color(r, g, b, w), wait);
 }
+
+uint32_t PixelEffect_NextRandomColor() {
+    return random(0, 255);
+}
+
+uint32_t PixelEffect_NextRandomPixel(Adafruit_NeoPixel &strip) {
+    return random(0, strip.numPixels());
+}
+
+
+void PixelEffect_random(Adafruit_NeoPixel &strip){
+    int iterations = random(5, 10);
+    for(int x = 0; x < iterations; x++) {
+        PixelEffect_dim(strip, random(100, 255));
+        PixelEffect_fillColor(strip, PixelEffect_NextRandomColor(), PixelEffect_NextRandomColor(), PixelEffect_NextRandomColor(), 0, random(10, 50));
+        delay(50);
+    }
+}
+
+
 
 #endif
