@@ -3,19 +3,22 @@
 #ifndef ATH_NEOPIXEL_
 #define ATH_NEOPIXEL_
 
-#include <AthosHelpers.h>
-#include <PubSubClient.h>
-#include <ArduinoLog.h>
+#include "NeoPixelEffects.h"
 
 #ifdef ATH_MQTT
   #include "AthosMQTT.h"
 #endif 
 
+#include <AthosHelpers.h>
+#include <PubSubClient.h>
+#include <ArduinoLog.h>
 #include <Adafruit_NeoPixel.h>
-int PixelPin = D0;
-int PixelCount = 18;
+
+
+int PixelPin = D2;
+int PixelCount = 24;
 // Declare our NeoPixel strip object:
-Adafruit_NeoPixel strip(PixelCount, PixelPin, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip(PixelCount, PixelPin, NEO_RGBW + NEO_KHZ800);
 // Argument 1 = Number of pixels in NeoPixel strip
 // Argument 2 = Arduino pin number (most are valid)
 // Argument 3 = Pixel type flags, add together as needed:
@@ -44,51 +47,107 @@ void NeoPixel_Setup(PubSubClient mqtt_client, String deviceId, StorageValues roo
 }
 
 
-// Rainbow cycle along whole strip. Pass delay time (in ms) between frames.
-void Pixel_rainbow(int wait) {
-  // Hue of first pixel runs 5 complete loops through the color wheel.
-  // Color wheel has a range of 65536 but it's OK if we roll over, so
-  // just count from 0 to 5*65536. Adding 256 to firstPixelHue each time
-  // means we'll make 5*65536/256 = 1280 passes through this outer loop:
-  for(long firstPixelHue = 0; firstPixelHue < 5*65536; firstPixelHue += 256) {
-    for(int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
-      // Offset pixel hue by an amount to make one full revolution of the
-      // color wheel (range of 65536) along the length of the strip
-      // (strip.numPixels() steps):
-      int pixelHue = firstPixelHue + (i * 65536L / strip.numPixels());
-      // strip.ColorHSV() can take 1 or 3 arguments: a hue (0 to 65535) or
-      // optionally add saturation and value (brightness) (each 0 to 255).
-      // Here we're using just the single-argument hue variant. The result
-      // is passed through strip.gamma32() to provide 'truer' colors
-      // before assigning to each pixel:
-      strip.setPixelColor(i, strip.gamma32(strip.ColorHSV(pixelHue)));
-    }
-    strip.show(); // Update strip with new contents
-    delay(wait);  // Pause for a moment
-  }
-}
-
 
 bool NeoPixel_MQTT_Received(String topic, String json) {
-  
-  if(topic.endsWith("/" + _NeoPixel_deviceId)) {
-
-    Log.trace("NeoPixel_MQTT_Received  \nTopic:%s\nPayload:%s", topic.c_str(), json.c_str());
     
-    //matched to the current device.  now do something with the JSON payload;
-    StaticJsonDocument<255> readDoc;
-    deserializeJson(readDoc, json);
-    String command = readDoc["command"].as<String>();
+    if(topic.endsWith("/" + _NeoPixel_deviceId)) {
 
-    if(command == "on" || command == "off" || command == "allon" || command == "alloff") {
+      Log.trace("NeoPixel_MQTT_Received  \nTopic:%s\nPayload:%s", topic.c_str(), json.c_str());
+      
+      //matched to the current device.  now do something with the JSON payload;
+      StaticJsonDocument<255> readDoc;
+      deserializeJson(readDoc, json);
+      String command = readDoc["command"].as<String>();
       int pin = readDoc["pin"].as<int>();
-      Log.trace("NeoPixel_MQTT COMMAND STARTING:\npin:%i\ncommand:%s", pin, command.c_str());
-      Pixel_rainbow(10);
-      Log.trace("NeoPixel_MQTT COMMAND COMPLETED:\npin:%i\ncommand:%s", pin, command.c_str());
-      return true;
+
+    if(command == "allon") {
+        Log.trace("allon");
+        PixelEffect_on(strip);
+        Log.trace("PixelEffect_on done");
+        return true;
+    }else if(command == "alloff") {
+        Log.trace("alloff");
+        PixelEffect_off(strip);
+        Log.trace("PixelEffect_off done");
+        return true;
+    } else if (command == "dim") {
+        Log.trace("dim");
+        int level = readDoc["level"].as<int>();
+        Log.trace("level %i", level);
+        PixelEffect_dim(strip, level);        
+        Log.trace("PixelEffect_dim");
+        return true;
+    }else if(command == "rainbowFade2White") {
+        Log.trace("rainbowFade2White");
+        int wait = readDoc["wait"].as<int>();
+        Log.trace("wait %i", wait);
+        int rainbowLoops = readDoc["rainbowLoops"].as<int>();
+        Log.trace("rainbowLoops %i", rainbowLoops);
+        int whiteLoops = readDoc["whiteLoops"].as<int>();
+        Log.trace("whiteLoops %i", whiteLoops);
+        PixelEffect_rainbowFade2White(strip, wait, rainbowLoops, whiteLoops);
+        Log.trace("PixelEffect_rainbowFade2White done");
+        return true;
+      } else if(command == "color") {
+        Log.trace("color");
+        uint32_t r = readDoc["r"].as<uint32_t>();
+        Log.trace("r %i", r);
+        uint32_t g = readDoc["g"].as<uint32_t>();
+        Log.trace("g %i", g);
+        uint32_t b = readDoc["b"].as<uint32_t>();
+        Log.trace("b %i", b);
+        uint32_t w = readDoc["w"].as<uint32_t>();
+        Log.trace("w %i", w);
+        int wait = readDoc["wait"].as<int>();
+        Log.trace("wait %i", wait);
+          PixelEffect_fillColor(strip, r, g, b, w, wait);
+        Log.trace("PixelEffect_fillColor done");
+        return true;
+      }  else if(command == "pulseWhite") {
+        Log.trace("pulseWhite");
+        int wait = readDoc["wait"].as<int>();
+        Log.trace("wait %i", wait);
+        int pulses = readDoc["pulses"].as<int>();
+        Log.trace("pulses %i", pulses);
+        PixelEffect_pulseWhite(strip, wait, pulses);
+        Log.trace("PixelEffect_pulseWhite done");
+        return true;
+      } else if(command == "pulseWhiteWithColor") {
+        Log.trace("pulseWhiteWithColor");
+
+        uint32_t r = readDoc["r"].as<uint32_t>();
+        Log.trace("r %i", r);
+        uint32_t g = readDoc["g"].as<uint32_t>();
+        Log.trace("g %i", g);
+        uint32_t b = readDoc["b"].as<uint32_t>();
+        Log.trace("b %i", b);
+
+        int wait = readDoc["wait"].as<int>();        
+        Log.trace("wait %i", wait);
+        int pulses = readDoc["pulses"].as<int>();
+        Log.trace("pulses %i", pulses);
+        PixelEffect_pulseWhiteWithColor(strip, r, g, b, wait, pulses);
+        Log.trace("PixelEffect_pulseWhiteWithColor done");
+        return true;
+      }   else if(command == "rainbow") {
+        Log.trace("rainbow");
+        int wait = readDoc["wait"].as<int>();
+        Log.trace("wait %i", wait);
+        PixelEffect_rainbow(strip, wait);
+        Log.trace("PixelEffect_rainbow done");
+        return true;
+      }   else if(command == "whiteOverRainbow") {
+        Log.trace("whiteOverRainbow");
+        int whiteSpeed = readDoc["whiteSpeed"].as<int>();
+        Log.trace("whiteSpeed %i", whiteSpeed);
+        int whiteLength = readDoc["whiteLength"].as<int>();
+        Log.trace("wawhiteLengthit %i", whiteLength);
+        PixelEffect_whiteOverRainbow(strip, whiteSpeed, whiteLength);
+        Log.trace("PixelEffect_whiteOverRainbow done");
+        return true;
+      }  
+    return false;
     }
-  }
-  return false;
 }
 
 void NeoPixel_CheckIn()
