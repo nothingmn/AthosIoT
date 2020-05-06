@@ -106,15 +106,19 @@ void MQTT_Callback(char *topic, byte *payload, unsigned int length)
   bool handled = false;
 
 #ifdef ATH_RELAY
+  Log.trace("sending to relay");
   handled = Relay_MQTT_Received(strTopic, json);
+  Log.trace("returned from relay");
 #endif
 #ifdef ATH_NEOPIXEL
+  Log.trace("sending to neopixel");
   handled = NeoPixel_MQTT_Received(strTopic, json);
+  Log.trace("returned from neopixel");
 #endif
 
   if (!handled)
   {
-    Log.trace("mqtt payload not handled by the Relay node, inspecting for system commands");
+    Log.trace("mqtt payload not handled by relay or neopixel, inspecting for system commands");
     StaticJsonDocument<256> readDoc;
 
     deserializeJson(readDoc, json);

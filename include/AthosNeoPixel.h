@@ -3,22 +3,24 @@
 #ifndef ATH_NEOPIXEL_
 #define ATH_NEOPIXEL_
 
-#include "NeoPixelEffects.h"
-
 #ifdef ATH_MQTT
   #include "AthosMQTT.h"
 #endif 
-
+//#include "HashMap.h"
 #include <AthosHelpers.h>
+#include <Arduino.h>
 #include <PubSubClient.h>
 #include <ArduinoLog.h>
-#include <Adafruit_NeoPixel.h>
+#include <WS2812FX.h>
+#include <HashMap.h>
 
-
+CreateHashMap(fxMappings, String, int, 55);
 int PixelPin = D2;
 int PixelCount = 24;
+
+
 // Declare our NeoPixel strip object:
-Adafruit_NeoPixel strip(PixelCount, PixelPin, NEO_RGBW + NEO_KHZ800);
+WS2812FX ws2812fx = WS2812FX(PixelCount, PixelPin, NEO_RGBW + NEO_KHZ800);
 // Argument 1 = Number of pixels in NeoPixel strip
 // Argument 2 = Arduino pin number (most are valid)
 // Argument 3 = Pixel type flags, add together as needed:
@@ -41,15 +43,90 @@ void NeoPixel_Setup(PubSubClient mqtt_client, String deviceId, StorageValues roo
   _NeoPixel_config = rootConfig;
   _NeoPixel_loop_delay = loop_delay;
 
-  strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
-  strip.show();            // Turn OFF all pixels ASAP
-  strip.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
+  fxMappings["FX_MODE_STATIC"] = FX_MODE_STATIC;
+  fxMappings["FX_MODE_BLINK"] =FX_MODE_BLINK;
+  fxMappings["FX_MODE_BREATH"] =FX_MODE_BREATH;
+  fxMappings["FX_MODE_COLOR_WIPE"] =FX_MODE_COLOR_WIPE;
+  fxMappings["FX_MODE_COLOR_WIPE_INV"] =FX_MODE_COLOR_WIPE_INV;
+  fxMappings["FX_MODE_COLOR_WIPE_REV"] =FX_MODE_COLOR_WIPE_REV;
+  fxMappings["FX_MODE_COLOR_WIPE_REV_INV"] =FX_MODE_COLOR_WIPE_REV_INV;
+  fxMappings["FX_MODE_COLOR_WIPE_RANDOM"] =FX_MODE_COLOR_WIPE_RANDOM;
+  fxMappings["FX_MODE_RANDOM_COLOR"] =FX_MODE_RANDOM_COLOR;
+  fxMappings["FX_MODE_SINGLE_DYNAMIC"] =FX_MODE_SINGLE_DYNAMIC;
+  fxMappings["FX_MODE_MULTI_DYNAMIC"] =FX_MODE_MULTI_DYNAMIC;
+  fxMappings["FX_MODE_RAINBOW"] =FX_MODE_RAINBOW;
+  fxMappings["FX_MODE_RAINBOW_CYCLE"] =FX_MODE_RAINBOW_CYCLE;
+  fxMappings["FX_MODE_SCAN"] =FX_MODE_SCAN;
+  fxMappings["FX_MODE_DUAL_SCAN"] =FX_MODE_DUAL_SCAN;
+  fxMappings["FX_MODE_FADE"] =FX_MODE_FADE;
+  fxMappings["FX_MODE_THEATER_CHASE"] =FX_MODE_THEATER_CHASE;
+  fxMappings["FX_MODE_THEATER_CHASE_RAINBOW"] =FX_MODE_THEATER_CHASE_RAINBOW;
+  fxMappings["FX_MODE_RUNNING_LIGHTS"] =FX_MODE_RUNNING_LIGHTS;
+  fxMappings["FX_MODE_TWINKLE"] =FX_MODE_TWINKLE;
+  fxMappings["FX_MODE_TWINKLE_RANDOM"] =FX_MODE_TWINKLE_RANDOM;
+  fxMappings["FX_MODE_TWINKLE_FADE"] =FX_MODE_TWINKLE_FADE;
+  fxMappings["FX_MODE_TWINKLE_FADE_RANDOM"] =FX_MODE_TWINKLE_FADE_RANDOM;
+  fxMappings["FX_MODE_SPARKLE"] =FX_MODE_SPARKLE;
+  fxMappings["FX_MODE_FLASH_SPARKLE"] =FX_MODE_FLASH_SPARKLE;
+  fxMappings["FX_MODE_HYPER_SPARKLE"] =FX_MODE_HYPER_SPARKLE;
+  fxMappings["FX_MODE_STROBE"] =FX_MODE_STROBE;
+  fxMappings["FX_MODE_STROBE_RAINBOW"] =FX_MODE_STROBE_RAINBOW;
+  fxMappings["FX_MODE_MULTI_STROBE"] =FX_MODE_MULTI_STROBE;
+  fxMappings["FX_MODE_BLINK_RAINBOW"] =FX_MODE_BLINK_RAINBOW;
+  fxMappings["FX_MODE_CHASE_WHITE"] =FX_MODE_CHASE_WHITE;
+  fxMappings["FX_MODE_CHASE_COLOR"] =FX_MODE_CHASE_COLOR;
+  fxMappings["FX_MODE_CHASE_RANDOM"] =FX_MODE_CHASE_RANDOM;
+  fxMappings["FX_MODE_CHASE_RAINBOW"] =FX_MODE_CHASE_RAINBOW;
+  fxMappings["FX_MODE_CHASE_FLASH"] =FX_MODE_CHASE_FLASH;
+  fxMappings["FX_MODE_CHASE_FLASH_RANDOM"] =FX_MODE_CHASE_FLASH_RANDOM;
+  fxMappings["FX_MODE_CHASE_RAINBOW_WHITE"] =FX_MODE_CHASE_RAINBOW_WHITE;
+  fxMappings["FX_MODE_CHASE_BLACKOUT"] =FX_MODE_CHASE_BLACKOUT;
+  fxMappings["FX_MODE_CHASE_BLACKOUT_RAINBOW"] =FX_MODE_CHASE_BLACKOUT_RAINBOW;
+  fxMappings["FX_MODE_COLOR_SWEEP_RANDOM"] =FX_MODE_COLOR_SWEEP_RANDOM;
+  fxMappings["FX_MODE_RUNNING_COLOR"] =FX_MODE_RUNNING_COLOR;
+  fxMappings["FX_MODE_RUNNING_RED_BLUE"] =FX_MODE_RUNNING_RED_BLUE;
+  fxMappings["FX_MODE_RUNNING_RANDOM"] =FX_MODE_RUNNING_RANDOM;
+  fxMappings["FX_MODE_LARSON_SCANNER"] =FX_MODE_LARSON_SCANNER;
+  fxMappings["FX_MODE_COMET"] =FX_MODE_COMET;
+  fxMappings["FX_MODE_FIREWORKS"] =FX_MODE_FIREWORKS;
+  fxMappings["FX_MODE_FIREWORKS_RANDOM"] =FX_MODE_FIREWORKS_RANDOM;
+  fxMappings["FX_MODE_MERRY_CHRISTMAS"] =FX_MODE_MERRY_CHRISTMAS;
+  fxMappings["FX_MODE_HALLOWEEN"] =FX_MODE_HALLOWEEN;
+  fxMappings["FX_MODE_FIRE_FLICKER"] =FX_MODE_FIRE_FLICKER;
+  fxMappings["FX_MODE_FIRE_FLICKER_SOFT"] =FX_MODE_FIRE_FLICKER_SOFT;
+  fxMappings["FX_MODE_FIRE_FLICKER_INTENSE"] =FX_MODE_FIRE_FLICKER_INTENSE;
+  fxMappings["FX_MODE_CIRCUS_COMBUSTUS"] =FX_MODE_CIRCUS_COMBUSTUS;
+  fxMappings["FX_MODE_BICOLOR_CHASE"] =FX_MODE_BICOLOR_CHASE;
+  fxMappings["FX_MODE_TRICOLOR_CHASE"] =FX_MODE_TRICOLOR_CHASE;
+  fxMappings["FX_MODE_ICU"] =FX_MODE_ICU;
+
+
+  ws2812fx.init();
+  ws2812fx.setBrightness(255);
+  ws2812fx.setSpeed(200);
+  ws2812fx.setMode(FX_MODE_RAINBOW_CYCLE);
+  ws2812fx.start();
 }
 
+String getValue(String data, char separator, int index)
+{
+    int found = 0;
+    int strIndex[] = { 0, -1 };
+    int maxIndex = data.length() - 1;
 
+    for (int i = 0; i <= maxIndex && found <= index; i++) {
+        if (data.charAt(i) == separator || i == maxIndex) {
+            found++;
+            strIndex[0] = strIndex[1] + 1;
+            strIndex[1] = (i == maxIndex) ? i+1 : i;
+        }
+    }
+    return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
+}
 
 bool NeoPixel_MQTT_Received(String topic, String json) {
-    
+
+      
     if(topic.endsWith("/" + _NeoPixel_deviceId)) {
 
       Log.trace("NeoPixel_MQTT_Received  \nTopic:%s\nPayload:%s", topic.c_str(), json.c_str());
@@ -58,103 +135,71 @@ bool NeoPixel_MQTT_Received(String topic, String json) {
       StaticJsonDocument<255> readDoc;
       deserializeJson(readDoc, json);
       String command = readDoc["command"].as<String>();
-      int pin = readDoc["pin"].as<int>();
+      String fx = readDoc["fx"].as<String>();
 
-    if(command == "allon") {
-        Log.trace("allon");
-        PixelEffect_on(strip);
-        Log.trace("PixelEffect_on done");
-        return true;
-    } else if(command == "alloff") {
-        Log.trace("alloff");
-        PixelEffect_off(strip);
-        Log.trace("PixelEffect_off done");
-        return true;
-    } else if (command == "dim") {
-        Log.trace("dim");
-        int level = readDoc["level"].as<int>();
-        Log.trace("level %i", level);
-        PixelEffect_dim(strip, level);        
-        Log.trace("PixelEffect_dim");
-        return true;
-    } else if(command == "random") {
-        Log.trace("random");
-        PixelEffect_random(strip);
-        Log.trace("random done");
-        return true;
-     } else if(command == "rainbowFade2White") {
-        Log.trace("rainbowFade2White");
-        int wait = readDoc["wait"].as<int>();
-        Log.trace("wait %i", wait);
-        int rainbowLoops = readDoc["rainbowLoops"].as<int>();
-        Log.trace("rainbowLoops %i", rainbowLoops);
-        int whiteLoops = readDoc["whiteLoops"].as<int>();
-        Log.trace("whiteLoops %i", whiteLoops);
-        PixelEffect_rainbowFade2White(strip, wait, rainbowLoops, whiteLoops);
-        Log.trace("PixelEffect_rainbowFade2White done");
-        return true;
-      } else if(command == "color") {
-        Log.trace("color");
-        uint32_t r = readDoc["r"].as<uint32_t>();
-        Log.trace("r %i", r);
-        uint32_t g = readDoc["g"].as<uint32_t>();
-        Log.trace("g %i", g);
-        uint32_t b = readDoc["b"].as<uint32_t>();
-        Log.trace("b %i", b);
-        uint32_t w = readDoc["w"].as<uint32_t>();
-        Log.trace("w %i", w);
-        int wait = readDoc["wait"].as<int>();
-        Log.trace("wait %i", wait);
-        PixelEffect_fillColor(strip, r, g, b, w, wait);
-        Log.trace("PixelEffect_fillColor done");
-        return true;
-      }  else if(command == "pulseWhite") {
-        Log.trace("pulseWhite");
-        int wait = readDoc["wait"].as<int>();
-        Log.trace("wait %i", wait);
-        int pulses = readDoc["pulses"].as<int>();
-        Log.trace("pulses %i", pulses);
-        PixelEffect_pulseWhite(strip, wait, pulses);
-        Log.trace("PixelEffect_pulseWhite done");
-        return true;
-      } else if(command == "pulseWhiteWithColor") {
-        Log.trace("pulseWhiteWithColor");
 
-        uint32_t r = readDoc["r"].as<uint32_t>();
-        Log.trace("r %i", r);
-        uint32_t g = readDoc["g"].as<uint32_t>();
-        Log.trace("g %i", g);
-        uint32_t b = readDoc["b"].as<uint32_t>();
-        Log.trace("b %i", b);
+      if(command == "allon") {
+          Log.trace("allon");
+          ws2812fx.setBrightness(255);
+          ws2812fx.setSpeed(100);
+          ws2812fx.setMode(FX_MODE_STATIC);
+          ws2812fx.start();
+          Log.trace("allon done");
+          return true;
+      } else if(command == "alloff") {
+          Log.trace("alloff");
+          ws2812fx.setBrightness(0);
+          ws2812fx.strip_off();
+          ws2812fx.start();
+          Log.trace("alloff done");
+          return true;
+      } else if(command == "fx") {
 
-        int wait = readDoc["wait"].as<int>();        
-        Log.trace("wait %i", wait);
-        int pulses = readDoc["pulses"].as<int>();
-        Log.trace("pulses %i", pulses);
-        PixelEffect_pulseWhiteWithColor(strip, r, g, b, wait, pulses);
-        Log.trace("PixelEffect_pulseWhiteWithColor done");
-        return true;
-      }   else if(command == "rainbow") {
-        Log.trace("rainbow");
-        int wait = readDoc["wait"].as<int>();
-        Log.trace("wait %i", wait);
-        int rainbowLoops = readDoc["rainbowLoops"].as<int>();
-        Log.trace("rainbowLoops %i", rainbowLoops);
-        PixelEffect_rainbow(strip, rainbowLoops, wait);
-        Log.trace("PixelEffect_rainbow done");
-        return true;
-      }   else if(command == "whiteOverRainbow") {
-        Log.trace("whiteOverRainbow");
-        int whiteSpeed = readDoc["whiteSpeed"].as<int>();
-        Log.trace("whiteSpeed %i", whiteSpeed);
-        int whiteLength = readDoc["whiteLength"].as<int>();
-        Log.trace("wawhiteLengthit %i", whiteLength);
-        PixelEffect_whiteOverRainbow(strip, whiteSpeed, whiteLength);
-        Log.trace("PixelEffect_whiteOverRainbow done");
-        return true;
-      }  
-    return false;
+          // {
+          //   "command": "fx",
+          //   "fx": "FX_MODE_MERRY_CHRISTMAS",
+          //   "o" : "255,255,255,255"  //r,g,b,w
+          //   "s" : 5000
+          //   "l" : 255
+          //}
+
+          int level = readDoc["l"].as<int>();
+          int speed = readDoc["s"].as<int>();
+          String options = readDoc["o"].as<String>();
+
+          String red = "0";
+          String green = "0";
+          String blue = "0";
+          String white = "0";
+
+          if(options != "") {
+            red = getValue(options, ',', 0);
+            green = getValue(options, ',', 1);
+            blue = getValue(options, ',', 2);
+            white = getValue(options, ',', 3);
+          }
+
+          int r = red.toInt();
+          int g = green.toInt();
+          int b = blue.toInt();
+          int w = white.toInt();
+
+          if(level == 0) level = 255;
+          if(speed == 0) speed = 1000;
+          Log.trace("red:%i,green:%i,blue:%i,white:%i,level:%i,speed:%i,", r, g, b, w, level, speed);
+          
+
+          int mode = fxMappings[fx];
+          Log.trace("fx mode enabled start:%i", mode);
+          ws2812fx.setSpeed(speed);
+          ws2812fx.setColor(g,r,b,w);
+          ws2812fx.setBrightness(level);
+          ws2812fx.setMode(mode);          
+          ws2812fx.start();
+          return true;    
+      }
     }
+  return false;
 }
 
 void NeoPixel_CheckIn()
@@ -176,9 +221,10 @@ void NeoPixel_CheckIn()
 }
 
 long NeoPixel_last = 0;
-long NeoPixel_max_diff = 60;
+long NeoPixel_max_diff = 60 * 60;
 void NeoPixel_Loop()
 {
+  ws2812fx.service();
   long now = NTP_getEpochTime();
   long diff = abs(now - NeoPixel_last);  
   if(diff > NeoPixel_max_diff || NeoPixel_last == 0) {

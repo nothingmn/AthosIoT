@@ -10,10 +10,13 @@
 
 //https://www.instructables.com/id/Arduino-Button-with-no-resistor/
 
-const uint BUTTON_PINS[] {D0,D1,D2};
-String BUTTON_Report_PINS[] {"D0","D1","D2"};
-int BUTTON_States[sizeof(BUTTON_PINS)];
+//PS - I should have said don't use digital pin 0, 1 or 13. Any other pin will do.
+//Do not use D3, D7, D10
+
+const uint BUTTON_PINS[] {D2};
+String BUTTON_Report_PINS[] {"D2"};
 int BUTTON_COUNT = sizeof( BUTTON_PINS ) / sizeof( BUTTON_PINS[0] );
+int BUTTON_States[sizeof( BUTTON_PINS ) / sizeof( BUTTON_PINS[0] )];
 
 PubSubClient _BUTTON_mqtt_client;
 String _BUTTON_deviceId;
@@ -31,7 +34,8 @@ void BUTTON_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootC
    for(int x=0;x<BUTTON_COUNT;x++) {
       Log.trace("Setting up pin:%i (%i), %s", BUTTON_PINS[x], x,BUTTON_Report_PINS[x].c_str());
       pinMode(BUTTON_PINS[x], INPUT);
-      BUTTON_States[x] = LOW;
+      digitalWrite(BUTTON_PINS[x], HIGH);
+      BUTTON_States[x] = HIGH;
    }
 }
 
@@ -39,7 +43,7 @@ void SendButtonStatesToMqtt() {
   long ts = NTP_getEpochTime();
   String value = "";
    for(int x=0;x<BUTTON_COUNT;x++) {
-      value += BUTTON_Report_PINS[x] + ":" + BUTTON_States[x] + ",";
+      value += BUTTON_Report_PINS[x] + ":" + BUTTON_States[x] + ","; 
    }
   String csv = String("BUT," + getVersion() + "," + ts + "," + value + _BUTTON_deviceId);
   const char* payload = csv.c_str();
@@ -58,11 +62,16 @@ void ReadButtonStates() {
    for(int x=0;x<BUTTON_COUNT;x++) {  
       int buttonValue = digitalRead(BUTTON_PINS[x]);
       int last = BUTTON_States[x];
+      //then if the button is push-to-make, a digitalRead from that pin will return 
+      //LOW when the button is pressed, 
+      //HIGH when it is not pressed. 
+      //If the pushbutton is press-to-break, this will be reversed.
+      Log.trace("button=%i, last=%i", x, last);
       if(last != buttonValue) {
          if (buttonValue == LOW){
-            Log.trace("button UP:%s", BUTTON_Report_PINS[x].c_str());
-         } else {
             Log.trace("button pressed DOWN:%s", BUTTON_Report_PINS[x].c_str());
+         } else {
+            Log.trace("button UP:%s", BUTTON_Report_PINS[x].c_str());
          }
          BUTTON_States[x] = buttonValue;
          send = true;
