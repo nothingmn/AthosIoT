@@ -13,17 +13,19 @@
   #include "AthosMQTT.h"
 #endif 
 
+//keep in mind that GPIO4 or GPIO5 do not produce a high on reset or startup
+// GPIO4 == D2, GPIO5 == D1
 
 #ifdef ATH_RELAY_MD0
-  uint RELAY_PINS[] {D0,D1};
-  String RELAY_Report_PINS = "MD0,MD1";
+  uint RELAY_PINS[] {D1,D2};
+  String RELAY_Report_PINS = "MD1,MD2";
   long duration = 1000;  //if > 0 it will trigger back given the duraiton; emulates a momentary switch
 #else
   //add or remove and sort items from the array to control the pins as you like.
-  uint RELAY_PINS[] {D0};
+  uint RELAY_PINS[] {D2};
   //uint RELAY_PINS[] {D0,D1};
   //change this so we can report up to to the server
-  String RELAY_Report_PINS = "D0";
+  String RELAY_Report_PINS = "D2";
   //String RELAY_Report_PINS = "MD0,MD1";
   long duration = 0;  //if > 0 it will trigger back given the duraiton; emulates a momentary switch
 #endif
@@ -50,11 +52,6 @@ void Relay_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootCo
    // Pin for relay module set as output
   for(int x=0;x<RELAY_COUNT;x++) {
     pinMode(RELAY_PINS[x], OUTPUT);
-    digitalWrite(RELAY_PINS[x], turn_On);
-    if(duration>0) {
-      delay(duration);
-      //digitalWrite(RELAY_PINS[x], turn_Off);
-    }
   }
 }
 

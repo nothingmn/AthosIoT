@@ -124,6 +124,7 @@ String getValue(String data, char separator, int index)
     return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
+int NeoPixel_Last_Brightness = 255;
 bool NeoPixel_MQTT_Received(String topic, String json) {
 
       
@@ -140,14 +141,13 @@ bool NeoPixel_MQTT_Received(String topic, String json) {
 
       if(command == "allon") {
           Log.trace("allon");
-          ws2812fx.setBrightness(255);
-          ws2812fx.setSpeed(100);
-          ws2812fx.setMode(FX_MODE_STATIC);
+          ws2812fx.setBrightness(NeoPixel_Last_Brightness);
           ws2812fx.start();
           Log.trace("allon done");
           return true;
       } else if(command == "alloff") {
           Log.trace("alloff");
+          NeoPixel_Last_Brightness = ws2812fx.getBrightness();
           ws2812fx.stop();
           ws2812fx.setBrightness(0);
           Log.trace("alloff done");
