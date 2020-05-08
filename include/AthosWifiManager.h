@@ -14,6 +14,9 @@ ESP8266WebServer WIFI_server(80);
 String WIFI_st;
 int WIFI_statusCode;
 
+String WIFI_HubSSID = "AthosIoT";
+String WIFI_HubPassword = "88888888";
+
 //-------- Fuctions used for WiFi credentials saving and connecting to it which you do not need to change
 bool testWifi(void)
 {
@@ -83,6 +86,7 @@ void createWebServer()
     }
     WIFI_server.sendHeader("Access-Control-Allow-Origin", "*");
     WIFI_server.send(WIFI_statusCode, "application/json", WIFI_content);
+
     if (reboot)
     {
       Log.trace("Restarting device so the new settings can take place");
@@ -156,7 +160,7 @@ StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
     //no configured wifi, or the configured wifi connection failed
     //can we connect to the Athos Hub hidden wifi?
     Log.trace("Attempting to connect to the AthosIoT Hub...");
-    WiFi.begin("AthosIoT", "88888888");
+    WiFi.begin(WIFI_HubSSID, WIFI_HubPassword);
 
     if (testWifi())
     {
@@ -174,12 +178,21 @@ StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
   }
 
   Log.trace("Waiting for devices on AP--> %s", _wifiAPName.c_str());
-
+  long WIFI_Max_Duration = 300000;  //5 minutes
+  long WIFI_Start = 0;
   while ((WiFi.status() != WL_CONNECTED))
   {
     delay(100);
+    
+    //only wait WIFI_Max_Duration if if we dont have a connection yet, reboot the device and try again
+    long current = millis();
+    if(WIFI_Start == 0) WIFI_Start = current;
+    if(current > WIFI_Max_Duration) ESP.restart();
+p
     WIFI_server.handleClient();
+
   }
+
   WifiSetupCompleteLed();
   return _wifi_config;
 }
@@ -202,15 +215,9 @@ void EnsureWifiConnected()
   }
 }
 
-long WIFI_Max_Duration = 300000;  //5 minutes
-long WIFI_Start = 0;
 
 void WifiManager_Loop()
 {
-  long current = millis();
-  if(WIFI_Start == 0) WIFI_Start = current;
-  if(current > WIFI_Max_Duration) ESP.restart();
-
   //we should have never gotten past setup so we assume Wifi is already configured and ready
   EnsureWifiConnected();
 }

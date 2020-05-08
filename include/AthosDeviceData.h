@@ -23,6 +23,8 @@ AnalogSmooth RSSI_AnalogSmooth = AnalogSmooth(100);
 float RSSI_LAST = 0;
 float RSSI_TOLERANCE = 2;
 
+bool DD_FirstBoot = true;
+
 void DeviceData_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
 {
     _devicedata_mqtt_client = mqtt_client;
@@ -31,6 +33,26 @@ void DeviceData_Setup(PubSubClient mqtt_client, String deviceId, StorageValues r
 }
 void sendDeviceDataToMQTT(float rssi)
 {
+    if(DD_FirstBoot) {
+        DD_FirstBoot = false;
+        long ts = NTP_getEpochTime();
+        String csv = String(
+            "UP," +
+            getVersion() + "," +
+            ts);
+
+        const char *payload = csv.c_str();
+        const char *topic = _devicedata_config.mqttSensorTopic.c_str();
+        Log.trace("UP: Topic:%s\nPayload:%s\nLength:%i\n", topic, payload, csv.length());
+
+        if (!_devicedata_mqtt_client.publish(topic, payload))
+        {
+            Log.trace("UP Data to MQTT Failed. Packet > 128?");
+        }
+        MQTTTransmitLed();
+        delay(500);
+    }
+
     long ts = NTP_getEpochTime();
     String csv = String(
         "DDD," +
@@ -63,6 +85,7 @@ void sendDeviceDataToMQTT(float rssi)
         WiFi.macAddress() + "," +
         WiFi.gatewayIP().toString() + "," +
         WiFi.SSID());
+
 
     const char *payload2 = csv2.c_str();
     const char *topic2 = _devicedata_config.mqttSensorTopic.c_str();
