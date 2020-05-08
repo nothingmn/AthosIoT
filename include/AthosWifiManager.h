@@ -188,7 +188,7 @@ StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
     long current = millis();
     if(WIFI_Start == 0) WIFI_Start = current;
     if(current > WIFI_Max_Duration) ESP.restart();
-p
+
     WIFI_server.handleClient();
 
   }
