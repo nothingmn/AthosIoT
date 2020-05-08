@@ -201,8 +201,16 @@ void EnsureWifiConnected()
     Log.trace("Connected to the WiFi network");
   }
 }
+
+long WIFI_Max_Duration = 300000;  //5 minutes
+long WIFI_Start = 0;
+
 void WifiManager_Loop()
 {
+  long current = millis();
+  if(WIFI_Start == 0) WIFI_Start = current;
+  if(current > WIFI_Max_Duration) ESP.restart();
+
   //we should have never gotten past setup so we assume Wifi is already configured and ready
   EnsureWifiConnected();
 }

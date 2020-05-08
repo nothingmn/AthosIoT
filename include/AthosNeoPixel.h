@@ -149,7 +149,8 @@ bool NeoPixel_MQTT_Received(String topic, String json) {
       } else if(command == "alloff") {
           Log.trace("alloff");
           ws2812fx.setBrightness(0);
-          ws2812fx.strip_off();
+          ws2812fx.setSpeed(0);
+          ws2812fx.setMode(FX_MODE_STATIC);
           ws2812fx.start();
           Log.trace("alloff done");
           return true;

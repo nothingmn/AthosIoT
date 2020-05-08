@@ -53,7 +53,7 @@ void Relay_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootCo
     digitalWrite(RELAY_PINS[x], turn_On);
     if(duration>0) {
       delay(duration);
-      digitalWrite(RELAY_PINS[x], turn_Off);
+      //digitalWrite(RELAY_PINS[x], turn_Off);
     }
   }
 }

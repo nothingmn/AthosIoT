@@ -10,7 +10,8 @@
                 "$platformio"
             ],
             "group": "build"
-        },        {
+        },        
+        {
             "type": "PlatformIO",
             "task": "Build (ATH_RELAY_MD0)",
             "problemMatcher": [
