@@ -17,7 +17,7 @@ jobs:
           pip install -U platformio
       - name: Install library dependencies
         run: |
-          platformio lib -g install ArduinoLog NTPClient ArduinoJson PubSubClient "Adafruit Unified Sensor" "Adafruit BME280 Library" "DHT sensor library" "TroykaMQ" "Adafruit NeoPixel" "WS2812FX"
+          platformio lib -g install ArduinoLog NTPClient ArduinoJson PubSubClient "Adafruit Unified Sensor" "Adafruit BME280 Library" "DHT sensor library" "TroykaMQ" "Adafruit NeoPixel" "WS2812FX" "IRremoteESP8266"
       - name: Build
         run: |
           platformio run
@@ -50,6 +50,11 @@ jobs:
           mv .pio/build/BMP280_MQ2/firmware.bin out/AthosIoT.BMP280_MQ2_firmware.bin  
           mv .pio/build/BUTTON/firmware.bin out/AthosIoT.BUTTON_firmware.bin  
           mv .pio/build/NEOPIXEL/firmware.bin out/AthosIoT.NEOPIXEL_firmware.bin  
+          mv .pio/build/IRRECEIVER/firmware.bin out/AthosIoT.IRRECEIVER_firmware.bin  
+      - uses: actions/upload-artifact@v1
+        with:
+          name: AthosIoT.IRRECEIVER_firmware
+          path: out/AthosIoT.IRRECEIVER_firmware.bin
       - uses: actions/upload-artifact@v1
         with:
           name: AthosIoT.NEOPIXEL_firmware

@@ -433,6 +433,22 @@
                 "$platformio"
             ],
             "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Build (IRRECEIVER)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Upload (IRRECEIVER)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
         }
         
         
