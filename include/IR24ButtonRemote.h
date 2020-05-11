@@ -39,10 +39,10 @@ unsigned long _hash(const char *str)
     return hash;
 }
 
-int IR24_Parse(String hex)
+int IR24_Parse(String _hex)
 {
 
-    long hash = _hash(hex.c_str());
+    long hash = _hash(_hex.c_str());
     int command = IR_COMMAND_UNKNOWN;
     switch (hash)
     {
@@ -119,7 +119,7 @@ int IR24_Parse(String hex)
         command = IR_COMMAND_SMOOTH;
         break;
     default:
-        Log.trace("IR24BUTTONREMOTE : IR HEX not found:hex=" + hex + ":hash=" + hash);
+        Log.trace("IR24BUTTONREMOTE : IR HEX not found:hex=%s:hash=%i", _hex, hash);
         break;
     }
     return command;

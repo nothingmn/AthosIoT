@@ -156,9 +156,9 @@ void Control(int mode, int speed, int r, int g, int b, int w, int level)
   ws2812fx.setMode(mode);
   ws2812fx.start();
 }
-void NeoPixel_IR_Received(String hex)
+void NeoPixel_IR_Received(String _hex)
 {
-  int command = IR24_Parse(hex);
+  int command = IR24_Parse(_hex);
   int level = ws2812fx.getBrightness();
   int mode = ws2812fx.getMode();
 
@@ -251,7 +251,7 @@ void NeoPixel_IR_Received(String hex)
   // case IR_COMMAND_UNKNOWN:
   //   break;
   default:
-    Log.trace("IR not found:hex=" + hex);
+    Log.trace("IR not found:hex=%s", _hex);
     break;
   }
 }

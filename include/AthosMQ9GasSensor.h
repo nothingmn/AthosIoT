@@ -77,8 +77,7 @@ void MQ9_Loop()
 
     if (!MQ9.isCalibrated() && MQ9.atHeatCycleEnd()) {
       MQ9.calibrate();
-      Log.trace("Ro = ");
-      Log.trace(MQ9.getRo());
+      Log.trace("Ro = %f", MQ9.getRo());
       MQ9.cycleHeat();
       WarmedUpLed();      
     }

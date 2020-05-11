@@ -74,8 +74,7 @@ void MQ3_Loop()
 
     if (!MQ3.isCalibrated() && MQ3.heatingCompleted()) {
       MQ3.calibrate();
-      Log.trace("Ro = ");
-      Log.trace(MQ3.getRo());
+      Log.trace("Ro = %f", MQ3.getRo());
       WarmedUpLed();      
     }
 

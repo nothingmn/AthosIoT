@@ -74,8 +74,7 @@ void MQ5_Loop()
 
     if (!MQ5.isCalibrated() && MQ5.heatingCompleted()) {
       MQ5.calibrate();
-      Log.trace("Ro = ");
-      Log.trace(MQ5.getRo());
+      Log.trace("Ro = %f", MQ5.getRo());
       WarmedUpLed();      
     }
 
