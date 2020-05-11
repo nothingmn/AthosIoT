@@ -251,7 +251,7 @@ void NeoPixel_IR_Received(String _hex)
   // case IR_COMMAND_UNKNOWN:
   //   break;
   default:
-    Log.trace("IR not found:hex=%s", _hex);
+    Log.trace("IR not found:hex=%s", _hex.c_str());
     break;
   }
 }

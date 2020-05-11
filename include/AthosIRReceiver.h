@@ -56,8 +56,6 @@ void IRRECEIVER_Loop()
     String hex = uint64ToString(IRRECEIVER_results.value, HEX);
     int compare = strncmp(hex.c_str(), IRRECEIVER_IgnoreHex, strlen(IRRECEIVER_IgnoreHex));
     if(compare != 0) {
-      Log.trace("IR received data..." + hex);
-      
       #ifdef ATH_RELAY
         Relay_IR_Received(hex);
       #endif

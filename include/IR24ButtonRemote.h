@@ -119,7 +119,7 @@ int IR24_Parse(String _hex)
         command = IR_COMMAND_SMOOTH;
         break;
     default:
-        Log.trace("IR24BUTTONREMOTE : IR HEX not found:hex=%s:hash=%i", _hex, hash);
+        Log.trace("IR24BUTTONREMOTE : IR HEX not found:hex=%s:hash=%i", _hex.c_str(), hash);
         break;
     }
     return command;
