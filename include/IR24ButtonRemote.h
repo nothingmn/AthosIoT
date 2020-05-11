@@ -1,6 +1,8 @@
 #ifndef IR24BUTTONREMOTE
 #define IR24BUTTONREMOTE
 
+#include <ArduinoLog.h>
+
 const int IR_COMMAND_ON = 0;
 const int IR_COMMAND_OFF = 1;
 const int IR_COMMAND_BRIUP = 2;
@@ -117,7 +119,7 @@ int IR24_Parse(String hex)
         command = IR_COMMAND_SMOOTH;
         break;
     default:
-        Serial.println("IR not found:hex=" + hex + ":hash=" + hash);
+        Log.trace("IR24BUTTONREMOTE : IR HEX not found:hex=" + hex + ":hash=" + hash);
         break;
     }
     return command;

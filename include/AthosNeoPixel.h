@@ -251,7 +251,7 @@ void NeoPixel_IR_Received(String hex)
   // case IR_COMMAND_UNKNOWN:
   //   break;
   default:
-    Serial.println("IR not found:hex=" + hex);
+    Log.trace("IR not found:hex=" + hex);
     break;
   }
 }
@@ -340,7 +340,6 @@ void NeoPixel_CheckIn()
   String csv = String("NeoPixel," + getVersion() + "," + ts + "," + PixelPin + "," + PixelCount + "," + _NeoPixel_deviceId);
   const char *payload = csv.c_str();
   const char *topic = _NeoPixel_config.mqttSensorTopic.c_str();
-  Serial.printf("Topic:%s\nPayload:%s\nLength:%i\n", topic, payload, csv.length());
   Log.trace("Topic:%s\nPayload:%s\nLength:%i\n", topic, payload, csv.length());
 
   if (!_NeoPixel_mqtt_client.publish(topic, payload))

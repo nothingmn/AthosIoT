@@ -74,8 +74,8 @@ void MQ6_Loop()
 
     if (!MQ6.isCalibrated() && MQ6.heatingCompleted()) {
       MQ6.calibrate();
-      Serial.print("Ro = ");
-      Serial.println(MQ6.getRo());
+      Log.trace("Ro = ");
+      Log.trace(MQ6.getRo());
       WarmedUpLed();      
     }
 

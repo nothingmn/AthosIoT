@@ -61,7 +61,7 @@ void MOIST_Loop()
     //test out your sensor, get an idea of your min and max ranges by testing in and out of water (not fizzy water)
     //int value = analogRead(MOIST_inputPin);
     // float smoothed = MOIST_AnalogSmooth.smooth(value * 1.0);    
-    // Serial.printf("Value:%i, Smoothed:%f", value, smoothed);
+    // Log.trace("Value:%i, Smoothed:%f", value, smoothed);
 
     //720 to 1024 is the range i found for my sensor
     //as usual we are going to do a moving average of our readings over 100 readings

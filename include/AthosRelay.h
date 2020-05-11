@@ -138,7 +138,6 @@ void RELAY_CheckIn()
   String csv = String("RELAY," + getVersion() + "," + ts + "," + RELAY_Report_PINS + "," +  _Relay_deviceId);
   const char* payload = csv.c_str();
   const char* topic = _Relay_config.mqttSensorTopic.c_str();
-  Serial.printf("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());
   Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());
 
   if (!_Relay_mqtt_client.publish(topic, payload))

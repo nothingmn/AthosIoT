@@ -71,8 +71,8 @@ void MQ7_Loop()
 
     if (!MQ7.isCalibrated() && MQ7.atHeatCycleEnd()) {
       MQ7.calibrate();
-      Serial.print("Ro = ");
-      Serial.println(MQ7.getRo());
+      Log.trace("Ro = ");
+      Log.trace(MQ7.getRo());
       MQ7.cycleHeat();
       WarmedUpLed();      
     }
