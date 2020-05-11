@@ -36,6 +36,7 @@
 #include "AthosMQ5GasSensor.h"
 #include "AthosMQ4GasSensor.h"
 #include "AthosMQ3GasSensor.h"
+#include "AthosIRReceiver.h"
 #include "AthosNeoPixel.h"
 #include "Arduino.h"
 #include <ArduinoLog.h>
@@ -44,7 +45,11 @@
 String DeviceId = getDeviceId();
 
 //our main loop delay.
-int loop_delay = 1000 / 10;   //10Hz
+#ifdef ATH_IRRECEIVER
+  int loop_delay = 50; 
+#else
+  int loop_delay = 1000 / 10;   //10Hz
+#endif 
 
 StorageValues rootConfig;
 PubSubClient root_mqtt_client;
@@ -52,6 +57,9 @@ void setup()
 {
   //while (!Serial);
   Serial.begin(115200);
+  while (!Serial){  // Wait for the serial connection to be establised.
+    delay(50);
+  }
   Log.begin(LOG_LEVEL_VERBOSE, &Serial);
   //Log.setPrefix(printTimestamp); // Uncomment to get timestamps as prefix
   Log.setSuffix(printNewline); // Uncomment to get newline as suffix
@@ -203,6 +211,12 @@ void setup()
   Log.trace("NeoPixel Done");
 #endif
 
+#ifdef ATH_IRRECEIVER
+  Log.trace("IRRECEIVER Start");
+  IRRECEIVER_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
+  Log.trace("IRRECEIVER Done");
+#endif
+
   Log.trace("~~~~~~~~~~SETUP COMPLETED ~~~~~~~~~~Version:%s Build:%s", getVersion().c_str(), getBuild().c_str());
 }
 
@@ -287,6 +301,10 @@ void loop()
 
 #ifdef ATH_NEOPIXEL
   NeoPixel_Loop();
+#endif
+
+#ifdef ATH_IRRECEIVER
+  IRRECEIVER_Loop();
 #endif
 
 

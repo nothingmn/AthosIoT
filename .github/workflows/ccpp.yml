@@ -51,6 +51,11 @@ jobs:
           mv .pio/build/BUTTON/firmware.bin out/AthosIoT.BUTTON_firmware.bin  
           mv .pio/build/NEOPIXEL/firmware.bin out/AthosIoT.NEOPIXEL_firmware.bin  
           mv .pio/build/IRRECEIVER/firmware.bin out/AthosIoT.IRRECEIVER_firmware.bin  
+          mv .pio/build/IRRECEIVER_NEOPIXEL/firmware.bin out/AthosIoT.IRRECEIVER_NEOPIXEL_firmware.bin  
+      - uses: actions/upload-artifact@v1
+        with:
+          name: AthosIoT.IRRECEIVER_NEOPIXEL_firmware
+          path: out/AthosIoT.IRRECEIVER_NEOPIXEL_firmware.bin  
       - uses: actions/upload-artifact@v1
         with:
           name: AthosIoT.IRRECEIVER_firmware

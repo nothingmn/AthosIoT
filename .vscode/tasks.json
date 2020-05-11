@@ -449,6 +449,22 @@
                 "$platformio"
             ],
             "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Build (IRRECEIVER_NEOPIXEL)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "PlatformIO",
+            "task": "Upload (IRRECEIVER_NEOPIXEL)",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build"
         }
         
         

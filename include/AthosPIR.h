@@ -59,6 +59,15 @@ void PIR_Loop()
       MotionDetected_LED();
       PIR_state = HIGH;
       sendMovementToMQTT(PIR_val);
+
+      #ifdef ATH_RELAY
+        Relay_PIR_Received(PIR_val);
+      #endif
+
+      #ifdef ATH_NEOPIXEL
+        NeoPixel_PIR_Received(hePIR_valx);
+      #endif
+            
     }
   }
   else
@@ -69,6 +78,15 @@ void PIR_Loop()
       NoMotionDetected_LED();
       PIR_state = LOW;
       sendMovementToMQTT(PIR_val);
+      
+      #ifdef ATH_RELAY
+        Relay_PIR_Received(PIR_val);
+      #endif
+
+      #ifdef ATH_NEOPIXEL
+        NeoPixel_PIR_Received(hePIR_valx);
+      #endif
+            
     }
   }
 }

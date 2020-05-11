@@ -21,7 +21,7 @@ StorageValues _devicedata_config;
 
 AnalogSmooth RSSI_AnalogSmooth = AnalogSmooth(100);
 float RSSI_LAST = 0;
-float RSSI_TOLERANCE = 2;
+float RSSI_TOLERANCE = 5;
 
 bool DD_FirstBoot = true;
 
@@ -116,9 +116,8 @@ void sendDeviceDataToMQTT(float rssi)
     }
     MQTTTransmitLed();
     delay(500);
-
-
 }
+
 void DeviceData_Loop()
 {
     float rssi = RSSI_AnalogSmooth.smooth(WiFi.RSSI());

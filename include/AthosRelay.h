@@ -55,6 +55,15 @@ void Relay_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootCo
   }
 }
 
+void Relay_IR_Received(String hex) {
+
+}
+
+void Relay_PIR_Received(int movement) {
+
+}
+
+
 bool Relay_MQTT_Received(String topic, String json) {
   
   if(topic.endsWith("/" + _Relay_deviceId)) {

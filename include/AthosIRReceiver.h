@@ -20,7 +20,7 @@ const uint16_t IRRECEIVER_inputPin = D5; // choose the input pin (for IRRECEIVER
 int IRRECEIVER_val = 0;      // variable for reading the pin status
 IRrecv IRRECEIVER_irrecv(IRRECEIVER_inputPin);
 decode_results IRRECEIVER_results;
-
+const char* IRRECEIVER_IgnoreHex = "FFFFFF";
 void IRRECEIVER_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
 {
   _IRRECEIVER_mqtt_client = mqtt_client;
@@ -33,11 +33,11 @@ void IRRECEIVER_Setup(PubSubClient mqtt_client, String deviceId, StorageValues r
 }
 
 
-void sendIRMQTT(decode_results results)
+void sendIRMQTT(String hex)
 {
   long ts = NTP_getEpochTime();
-
-  String csv = String("IR," + getVersion() + "," + ts + "," + results.value + "," + _IRRECEIVER_deviceId);
+  
+  String csv = String("IR," + getVersion() + "," + ts + "," + hex + "," + _IRRECEIVER_deviceId);
   const char* payload = csv.c_str();
   const char* topic = _IRRECEIVER_config.mqttSensorTopic.c_str();
   Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());
@@ -49,14 +49,26 @@ void sendIRMQTT(decode_results results)
   MQTTTransmitLed();
 }
 
-
 void IRRECEIVER_Loop()
 {
   
   if (IRRECEIVER_irrecv.decode(&IRRECEIVER_results)) {
-    // print() & println() can't handle printing long longs. (uint64_t)
-    serialPrintUint64(IRRECEIVER_results.value, HEX);
-    irrecv.resume();  // Receive the next value
+    String hex = uint64ToString(IRRECEIVER_results.value, HEX);
+    int compare = strncmp(hex.c_str(), IRRECEIVER_IgnoreHex, strlen(IRRECEIVER_IgnoreHex));
+    if(compare != 0) {
+      Serial.println("IR received data..." + hex);
+      
+      #ifdef ATH_RELAY
+        Relay_IR_Received(hex);
+      #endif
+
+      #ifdef ATH_NEOPIXEL
+        NeoPixel_IR_Received(hex);
+      #endif
+      
+      sendIRMQTT(hex);
+    }
+    IRRECEIVER_irrecv.resume();  // Receive the next value
 
   }
   
