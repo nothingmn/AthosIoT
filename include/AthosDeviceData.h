@@ -9,6 +9,8 @@
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <ESP8266WiFi.h>
+#include <Thread.h>
+#include <ThreadController.h>
 
 #ifndef AnalogSmooth_h
 #include "AnalogSmooth.h"
@@ -25,12 +27,6 @@ float RSSI_TOLERANCE = 5;
 
 bool DD_FirstBoot = true;
 
-void DeviceData_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
-{
-    _devicedata_mqtt_client = mqtt_client;
-    _devicedata_deviceId = deviceId;
-    _devicedata_config = rootConfig;
-}
 void sendDeviceDataToMQTT(float rssi)
 {
     if(DD_FirstBoot) {
@@ -117,9 +113,13 @@ void sendDeviceDataToMQTT(float rssi)
     MQTTTransmitLed();
     delay(500);
 }
+void DeviceData_Loop() {
+    //nothing to see here
+}
 
-void DeviceData_Loop()
+void DeviceData_CallBack()
 {
+    Log.trace("DeviceData_CallBack");
     float rssi = RSSI_AnalogSmooth.smooth(WiFi.RSSI());
 
     float diff = abs(rssi - RSSI_LAST);
@@ -128,6 +128,21 @@ void DeviceData_Loop()
         sendDeviceDataToMQTT(rssi);
         RSSI_LAST = rssi;
     }
+}
+
+Thread deviceData_thread = Thread();
+void DeviceData_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay, ThreadController threadController)
+{
+    _devicedata_mqtt_client = mqtt_client;
+    _devicedata_deviceId = deviceId;
+    _devicedata_config = rootConfig;
+
+    
+    // Configure myThread
+	deviceData_thread.onRun(DeviceData_CallBack);
+	deviceData_thread.setInterval(1000 * 10); //every 10 seconds
+
+    threadController.add(&deviceData_thread);
 }
 
 #endif
