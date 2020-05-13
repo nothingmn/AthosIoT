@@ -10,12 +10,14 @@
 #include <PubSubClient.h>
 #include <ESP8266WiFi.h>
 #include <Thread.h>
-#include <ThreadController.h>
 
 #ifndef AnalogSmooth_h
 #include "AnalogSmooth.h"
 #include "AnalogSmooth.cpp"
 #endif
+
+Thread deviceData_thread = Thread();
+
 
 PubSubClient _devicedata_mqtt_client;
 String _devicedata_deviceId;
@@ -23,7 +25,7 @@ StorageValues _devicedata_config;
 
 AnalogSmooth RSSI_AnalogSmooth = AnalogSmooth(100);
 float RSSI_LAST = 0;
-float RSSI_TOLERANCE = 5;
+float RSSI_TOLERANCE = 1;
 
 bool DD_FirstBoot = true;
 
@@ -115,34 +117,56 @@ void sendDeviceDataToMQTT(float rssi)
 }
 void DeviceData_Loop() {
     //nothing to see here
+    if(deviceData_thread.shouldRun()) {
+		deviceData_thread.run();
+    }
 }
+const int DD_max_diff = 1 * 60 * 60;
+int DD_last = 0;
 
 void DeviceData_CallBack()
 {
-    Log.trace("DeviceData_CallBack");
+    bool sendUpdate = false;
+    int current = NTP_getEpochTime();
+    int timeDiff = abs(current - DD_last);
+
+    Log.trace("DeviceData_CallBack %i", timeDiff);
+
+    if(timeDiff > DD_max_diff) {
+        Log.trace("will update DD data based on NTP duration");
+        DD_last = current;
+        sendUpdate = true;
+    }
+
     float rssi = RSSI_AnalogSmooth.smooth(WiFi.RSSI());
 
     float diff = abs(rssi - RSSI_LAST);
+    
+
     if (abs(diff) > RSSI_TOLERANCE)
     {
-        sendDeviceDataToMQTT(rssi);
+        Log.trace("will update DD data based on RSSI Tolerance");
+        sendUpdate = true;
         RSSI_LAST = rssi;
+    }
+    if(sendUpdate) {
+        sendDeviceDataToMQTT(rssi);
     }
 }
 
-Thread deviceData_thread = Thread();
-void DeviceData_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay, ThreadController threadController)
+
+void DeviceData_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
 {
     _devicedata_mqtt_client = mqtt_client;
     _devicedata_deviceId = deviceId;
     _devicedata_config = rootConfig;
 
+    Serial.println("Starting up deviceData_thread...");
     
     // Configure myThread
 	deviceData_thread.onRun(DeviceData_CallBack);
-	deviceData_thread.setInterval(1000 * 10); //every 10 seconds
+	deviceData_thread.setInterval(5000); //every 10 seconds
 
-    threadController.add(&deviceData_thread);
 }
 
 #endif

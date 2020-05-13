@@ -41,12 +41,8 @@
 #include "Arduino.h"
 #include <ArduinoLog.h>
 #include <ESP8266WiFi.h>
-#include <Thread.h>
-#include <ThreadController.h>
-
 
 String DeviceId = getDeviceId();
-ThreadController threadController = ThreadController();
 
 //our main loop delay.
 #ifdef ATH_IRRECEIVER
@@ -101,7 +97,7 @@ void setup()
   Log.trace("MQTT Done");
 
   Log.trace("DeviceData Start");
-  DeviceData_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay, threadController);
+  DeviceData_Setup(root_mqtt_client, DeviceId, rootConfig, loop_delay);
   Log.trace("DeviceData Done");
 
 #ifdef ATH_TMP36
@@ -226,7 +222,6 @@ void setup()
 
 void loop()
 {
-  threadController.run();
   LED_Loop();
   WifiManager_Loop();
   NTP_Loop();
@@ -310,7 +305,6 @@ void loop()
 #ifdef ATH_IRRECEIVER
   IRRECEIVER_Loop();
 #endif
-
 
   delay(loop_delay);
 }
