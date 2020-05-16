@@ -12,26 +12,28 @@
 #ifdef ATH_MQTT
   #include "AthosMQTT.h"
 #endif 
+bool RELAY_first_boot = true;
+
 
 //keep in mind that GPIO4 or GPIO5 do not produce a high on reset or startup
 // GPIO4 == D2, GPIO5 == D1
 
-#ifdef ATH_RELAY_MD0
-  uint RELAY_PINS[] {D1,D2};
-  String RELAY_Report_PINS = "MD1,MD2";
-  long duration = 1000;  //if > 0 it will trigger back given the duraiton; emulates a momentary switch
-#else
-  //add or remove and sort items from the array to control the pins as you like.
-  uint RELAY_PINS[] {D2};
-  //uint RELAY_PINS[] {D0,D1};
-  //change this so we can report up to to the server
-  String RELAY_Report_PINS = "D2";
-  //String RELAY_Report_PINS = "MD0,MD1";
-  long duration = 0;  //if > 0 it will trigger back given the duraiton; emulates a momentary switch
+//add or remove and sort items from the array to control the pins as you like.
+//uint RELAY_PINS[] {D0,D1};
+uint RELAY_PINS[] {D2};
+
+//change this so we can report up to to the server
+String RELAY_Report_PINS = "D2";
+long duration = 0;  //if > 0 it will trigger back given the duraiton; emulates a momentary switch
+
+#ifdef ATH_RELAY_MD0  
+  RELAY_PINS[] {D1,D2};
+  RELAY_Report_PINS = "MD1,MD2";
+  duration = 1000;  //if > 0 it will trigger back given the duraiton; emulates a momentary switch
 #endif
 
-int RELAY_COUNT = sizeof( RELAY_PINS ) / sizeof( RELAY_PINS[0] );
 
+int RELAY_COUNT = sizeof( RELAY_PINS ) / sizeof( RELAY_PINS[0] );
 
 #define turn_On 1
 #define turn_Off 0
@@ -149,6 +151,8 @@ void RELAY_CheckIn()
 
 long relay_last = 0;
 long relay_max_diff = 60;
+
+
 void Relay_Loop()
 {
   long now = NTP_getEpochTime();
@@ -157,6 +161,12 @@ void Relay_Loop()
     relay_last = now;
     RELAY_CheckIn();
   }
+
+  if(RELAY_first_boot) {
+    RELAY_CheckIn();
+    RELAY_first_boot = false;
+  }
+
 }
 
 #endif

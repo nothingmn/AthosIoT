@@ -29,10 +29,10 @@ float RSSI_TOLERANCE = 1;
 
 bool DD_FirstBoot = true;
 
+
 void sendDeviceDataToMQTT(float rssi)
 {
     if(DD_FirstBoot) {
-        DD_FirstBoot = false;
         long ts = NTP_getEpochTime();
         String csv = String(
             "UP," +
@@ -126,11 +126,17 @@ int DD_last = 0;
 
 void DeviceData_CallBack()
 {
+
+    //we wont send a packet unless we havnt sent one recently
+    //or if RSSI has changed significantly
+
+    
     bool sendUpdate = false;
     int current = NTP_getEpochTime();
     int timeDiff = abs(current - DD_last);
 
     Log.trace("DeviceData_CallBack %i", timeDiff);
+
 
     if(timeDiff > DD_max_diff) {
         Log.trace("will update DD data based on NTP duration");
@@ -149,11 +155,11 @@ void DeviceData_CallBack()
         sendUpdate = true;
         RSSI_LAST = rssi;
     }
-    if(sendUpdate) {
+    
+    if(sendUpdate || DD_FirstBoot) {
         sendDeviceDataToMQTT(rssi);
     }
 }
-
 
 void DeviceData_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
 {
@@ -165,8 +171,12 @@ void DeviceData_Setup(PubSubClient mqtt_client, String deviceId, StorageValues r
     
     // Configure myThread
 	deviceData_thread.onRun(DeviceData_CallBack);
-	deviceData_thread.setInterval(5000); //every 10 seconds
+	deviceData_thread.setInterval(5000); //every 5 seconds
 
+    if(DD_FirstBoot) {
+        DeviceData_CallBack();
+        DD_FirstBoot = false;
+    }
 }
 
 #endif
