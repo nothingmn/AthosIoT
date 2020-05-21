@@ -64,6 +64,12 @@ void HTTP_ScrapeConfig(void)
     _http_config.mqttUsername = doc["mqtt"]["username"].as<String>();
     _http_config.mqttPassword = doc["mqtt"]["password"].as<String>();
     _http_config.mqttPort = doc["mqtt"]["port"].as<String>();
+
+      String http_ssid = doc["wifi"]["ssid"].as<String>();
+      String http_password = doc["wifi"]["password"].as<String>();
+      if(http_ssid != "null" && http_ssid != "") _http_config.ssid = http_ssid;
+      if(http_password != "null" && http_password != "") _http_config.password = http_password;
+
     _http_config.ssid = doc["wifi"]["ssid"].as<String>();
     _http_config.password = doc["wifi"]["password"].as<String>();
 
@@ -74,7 +80,7 @@ void HTTP_ScrapeConfig(void)
     writeEEPROMData(_http_config);
     delay(100);
     Log.trace("HTTP is causing a reset...");
-    ESP.reset();
+    ESP.restart();
     delay(100);
 }
 StorageValues HTTP_Setup(String DeviceId, StorageValues rootConfig)

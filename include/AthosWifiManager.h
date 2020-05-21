@@ -22,15 +22,15 @@ bool testWifi(void)
 {
   int c = 0;
   Log.trace("Waiting for Wifi to connect");
-  while (c < 20)
+  while (c < 30) //wait for 30 loops, about 30 seconds
   {
     if (WiFi.status() == WL_CONNECTED)
     {
-            
+
       Log.trace("Local IP: %s, RSSI:%i", WiFi.localIP().toString().c_str(), WiFi.RSSI());
       return true;
     }
-    delay(500);
+    delay(1000); //pause 1 second
     Log.trace("*");
     c++;
   }
@@ -141,56 +141,66 @@ void setupAP(void)
 StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
 {
   WifiSetupStartLed();
-  _deviceId = deviceId;
   _wifi_config = rootConfig;
+  _deviceId = deviceId;
   _wifiAPName = "ATH_" + _deviceId;
 
-  WiFi.disconnect();
 
+  if (_wifi_config.ssid != "" && _wifi_config.ssid != "null")
+  {
+    //connect to pre-configured AP
+    WiFi.disconnect();
+    WiFi.mode(WIFI_STA);
+    Log.trace("Attempting to connect to:%s...\n", _wifi_config.ssid.c_str());
+    WiFi.begin(_wifi_config.ssid, _wifi_config.password);
+    WiFi.setAutoReconnect(true);
+    if (testWifi())
+    {
+      Log.trace("Succesfully Connected to AP--> %s by device: %s\n", _wifi_config.ssid.c_str(), _wifiAPName.c_str());
+      return _wifi_config;
+    }
+  }
+  //could not connect to pre-configured AP
+  //lets first try the Hub...
+  WiFi.disconnect();
   WiFi.mode(WIFI_STA);
-  WiFi.begin(_wifi_config.ssid.c_str(), _wifi_config.password.c_str());
+  Log.trace("Attempting to connect to:%s...\n", WIFI_HubSSID.c_str());
+  WiFi.begin(WIFI_HubSSID, WIFI_HubPassword);
   WiFi.setAutoReconnect(true);
   if (testWifi())
   {
     Log.trace("Succesfully Connected to AP--> %s by device: %s\n", _wifi_config.ssid.c_str(), _wifiAPName.c_str());
     return _wifi_config;
   }
-  else
-  {
-    //no configured wifi, or the configured wifi connection failed
-    //can we connect to the Athos Hub hidden wifi?
-    Log.trace("Attempting to connect to the AthosIoT Hub...");
-    WiFi.begin(WIFI_HubSSID, WIFI_HubPassword);
 
-    if (testWifi())
-    {
-      Log.trace("Succesfully Connected to AP--> AthosIoT by device: %s, Gateway:%s",  _wifiAPName.c_str(), WiFi.gatewayIP().toString().c_str());
-      
-      return _wifi_config;
-    }
-    else
-    {
-      //still couldnt connect to the Hub Wifi....
-      Log.trace("Could not connect to the AthosIoT Hub, Turning the HotSpot On");
-      launchWeb();
-      setupAP(); // Setup HotSpot
-    }
-  }
+  //if we made it this far, neither the preconfigured nor Hub APs are available
+  //spin up our own AP...
+  Log.trace("Could not connect to the AthosIoT Hub, Turning the HotSpot On");
+  launchWeb();
+  setupAP(); // Setup HotSpot
 
+  
   Log.trace("Waiting for devices on AP--> %s", _wifiAPName.c_str());
-  long WIFI_Max_Duration = 300000;  //5 minutes
-  long WIFI_Start = 0;
+  long WIFI_Max_Duration = 5000; //about 5 minutes
+  
   while ((WiFi.status() != WL_CONNECTED))
   {
     delay(100);
-    
+
     //only wait WIFI_Max_Duration if if we dont have a connection yet, reboot the device and try again
-    long current = millis();
-    if(WIFI_Start == 0) WIFI_Start = current;
-    if(current > WIFI_Max_Duration) ESP.restart();
+    WIFI_Max_Duration = WIFI_Max_Duration - 1;
+    float mod = (WIFI_Max_Duration % 1000);
+    
+    if(mod == 0) {
+      //just do periodic reporting
+      Log.trace("Still waiting for a WiFi Client to configure me. [%F],[%d]", mod, WIFI_Max_Duration);
+    }
 
+    if (WIFI_Max_Duration <= 0)
+    {
+      ESP.restart();
+    }
     WIFI_server.handleClient();
-
   }
 
   WifiSetupCompleteLed();
@@ -214,7 +224,6 @@ void EnsureWifiConnected()
     Log.trace("Connected to the WiFi network");
   }
 }
-
 
 void WifiManager_Loop()
 {

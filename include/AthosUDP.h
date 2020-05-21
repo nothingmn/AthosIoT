@@ -51,8 +51,11 @@ void listenForUDPMessages()
       _udp_config.mqttUsername = doc["mqtt"]["username"].as<String>();
       _udp_config.mqttPassword = doc["mqtt"]["password"].as<String>();
       _udp_config.mqttPort = doc["mqtt"]["port"].as<String>();
-      _udp_config.ssid = doc["wifi"]["ssid"].as<String>();
-      _udp_config.password = doc["wifi"]["password"].as<String>();
+
+      String udp_ssid = doc["wifi"]["ssid"].as<String>();
+      String udp_password = doc["wifi"]["password"].as<String>();
+      if(udp_ssid != "null" && udp_ssid != "") _udp_config.ssid = udp_ssid;
+      if(udp_password != "null" && udp_password != "") _udp_config.password = udp_password;
       
       Log.trace("Received MQTT Payload:");
       Log.trace(_udp_config.mqttServer.c_str());
@@ -61,7 +64,7 @@ void listenForUDPMessages()
       delay(100);
       UDP_configComplete = true;
       Log.trace("UDP is causing a reset...");
-      ESP.reset();
+      ESP.restart();
       delay(100);
     } 
   }

@@ -54,7 +54,7 @@ void BMP280_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootC
   while (!bme.begin(i2cAddress))
   {
     wait++;
-    if(wait > max_wait) ESP.reset();
+    if(wait > max_wait) ESP.restart();
     if(!errorShown) {
       Log.trace("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
       Log.trace("SensorID was: %i %i", bme.sensorID());

@@ -135,9 +135,6 @@ void DeviceData_CallBack()
     int current = NTP_getEpochTime();
     int timeDiff = abs(current - DD_last);
 
-    Log.trace("DeviceData_CallBack %i", timeDiff);
-
-
     if(timeDiff > DD_max_diff) {
         Log.trace("will update DD data based on NTP duration");
         DD_last = current;

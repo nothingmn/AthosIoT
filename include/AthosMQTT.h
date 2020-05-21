@@ -55,7 +55,7 @@ bool ConnectToMqtt()
 
         if(count > 5) {
           wipeEEPROM();
-          ESP.reset();
+          ESP.restart();
         }
       }
     }
@@ -150,7 +150,7 @@ void MQTT_Callback(char *topic, byte *payload, unsigned int length)
     {
       Log.trace("Wipe command received");
       wipeEEPROM();
-      ESP.reset();
+      ESP.restart();
       Log.trace("EEPROM KILLED!");
     }
     else if(command == "ping") {

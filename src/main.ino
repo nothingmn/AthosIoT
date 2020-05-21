@@ -5,6 +5,9 @@
 //
 //
 
+String DEFAULT_WIFI_SSID = "IoT";
+String  DEFAULT_WIFI_PASSWORD = "88888888";
+
 //disable logging
 //#define DISABLE_LOGGING 
 
@@ -58,15 +61,21 @@ void setup()
   //while (!Serial);
   Serial.begin(115200);
   while (!Serial){  // Wait for the serial connection to be establised.
-    delay(50);
+    delay(100);
   }
   Log.begin(LOG_LEVEL_VERBOSE, &Serial);
+  delay(5000);
   //Log.setPrefix(printTimestamp); // Uncomment to get timestamps as prefix
   Log.setSuffix(printNewline); // Uncomment to get newline as suffix
 
   Log.trace("~~~~~~~~~~SETUP STARTING~~~~~~~~~~Version:%s Build:%s", getVersion().c_str(), getBuild().c_str());
 
   rootConfig = EEPROM_setup();
+
+  if(rootConfig.ssid == "" || rootConfig.ssid == "null") {
+    rootConfig.ssid = DEFAULT_WIFI_SSID;
+    rootConfig.password = DEFAULT_WIFI_PASSWORD;
+  }
 
 
   Log.trace("LED Start");
