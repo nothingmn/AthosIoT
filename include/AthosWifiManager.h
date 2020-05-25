@@ -22,7 +22,7 @@ bool testWifi(void)
 {
   int c = 0;
   Log.trace("Waiting for Wifi to connect");
-  while (c < 30) //wait for 30 loops, about 30 seconds
+  while (c < 60) //wait for 30 loops, about 30 seconds
   {
     if (WiFi.status() == WL_CONNECTED)
     {
@@ -30,7 +30,7 @@ bool testWifi(void)
       Log.trace("Local IP: %s, RSSI:%i", WiFi.localIP().toString().c_str(), WiFi.RSSI());
       return true;
     }
-    delay(1000); //pause 1 second
+    delay(500); //pause 1 second
     Log.trace("*");
     c++;
   }
@@ -145,6 +145,7 @@ StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
   _deviceId = deviceId;
   _wifiAPName = "ATH_" + _deviceId;
 
+    Log.trace("Succesfully Connected to AP--> %s by device: %s\n", _wifi_config.ssid.c_str(), _wifiAPName.c_str());
 
   if (_wifi_config.ssid != "" && _wifi_config.ssid != "null")
   {
@@ -198,6 +199,7 @@ StorageValues WifiManager_Setup(String deviceId, StorageValues rootConfig)
 
     if (WIFI_Max_Duration <= 0)
     {
+      Log.trace("restarting due to waiting too long for Wifi client to connect");
       ESP.restart();
     }
     WIFI_server.handleClient();

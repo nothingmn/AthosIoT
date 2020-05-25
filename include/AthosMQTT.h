@@ -54,7 +54,7 @@ bool ConnectToMqtt()
         count++;
 
         if(count > 5) {
-          wipeEEPROM();
+          Log.trace("restarting due to too many MQTT retries");
           ESP.restart();
         }
       }
@@ -177,6 +177,7 @@ void MQTT_Callback(char *topic, byte *payload, unsigned int length)
       _mqtt_config.mqttPort = GetValueOrDefault(readDoc, "mqtt", "port", config.mqttPort);
 
       writeEEPROMData(_mqtt_config);
+      Log.trace("restarting due to too many MQTT reconfigure");
       ESP.restart();
     }
     readDoc.clear();

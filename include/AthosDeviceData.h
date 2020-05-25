@@ -18,7 +18,6 @@
 
 Thread deviceData_thread = Thread();
 
-
 PubSubClient _devicedata_mqtt_client;
 String _devicedata_deviceId;
 StorageValues _devicedata_config;
@@ -29,10 +28,10 @@ float RSSI_TOLERANCE = 1;
 
 bool DD_FirstBoot = true;
 
-
 void sendDeviceDataToMQTT(float rssi)
 {
-    if(DD_FirstBoot) {
+    if (DD_FirstBoot)
+    {
         long ts = NTP_getEpochTime();
         String csv = String(
             "UP," +
@@ -41,12 +40,13 @@ void sendDeviceDataToMQTT(float rssi)
 
         const char *payload = csv.c_str();
         const char *topic = _devicedata_config.mqttSensorTopic.c_str();
-        Log.trace("UP: Topic:%s\nPayload:%s\nLength:%i\n", topic, payload, csv.length());
+        Log.trace("UP: Topic:%s\nPayload:%s\nLength:%i\nHost:%s:%s", topic, payload, csv.length(), _devicedata_config.mqttServer.c_str(), _devicedata_config.mqttPort.c_str());
 
         if (!_devicedata_mqtt_client.publish(topic, payload))
         {
             Log.trace("UP Data to MQTT Failed. Packet > 128?");
         }
+        Log.trace("UP Data to MQTT Good");
         MQTTTransmitLed();
         delay(500);
     }
@@ -74,7 +74,7 @@ void sendDeviceDataToMQTT(float rssi)
     MQTTTransmitLed();
     delay(500);
 
-   String csv2 = String(
+    String csv2 = String(
         "DDN," +
         getVersion() + "," +
         ts + "," +
@@ -83,7 +83,6 @@ void sendDeviceDataToMQTT(float rssi)
         WiFi.macAddress() + "," +
         WiFi.gatewayIP().toString() + "," +
         WiFi.SSID());
-
 
     const char *payload2 = csv2.c_str();
     const char *topic2 = _devicedata_config.mqttSensorTopic.c_str();
@@ -96,8 +95,7 @@ void sendDeviceDataToMQTT(float rssi)
     MQTTTransmitLed();
     delay(500);
 
-
-   String csv3 = String(
+    String csv3 = String(
         "DDV," +
         getVersion() + "," +
         ts + "," +
@@ -115,10 +113,11 @@ void sendDeviceDataToMQTT(float rssi)
     MQTTTransmitLed();
     delay(500);
 }
-void DeviceData_Loop() {
-    //nothing to see here
-    if(deviceData_thread.shouldRun()) {
-		deviceData_thread.run();
+void DeviceData_Loop()
+{
+    if (deviceData_thread.shouldRun())
+    {
+        deviceData_thread.run();
     }
 }
 const int DD_max_diff = 1 * 60 * 60;
@@ -130,12 +129,12 @@ void DeviceData_CallBack()
     //we wont send a packet unless we havnt sent one recently
     //or if RSSI has changed significantly
 
-    
     bool sendUpdate = false;
     int current = NTP_getEpochTime();
     int timeDiff = abs(current - DD_last);
 
-    if(timeDiff > DD_max_diff) {
+    if (timeDiff > DD_max_diff)
+    {
         Log.trace("will update DD data based on NTP duration");
         DD_last = current;
         sendUpdate = true;
@@ -144,7 +143,6 @@ void DeviceData_CallBack()
     float rssi = RSSI_AnalogSmooth.smooth(WiFi.RSSI());
 
     float diff = abs(rssi - RSSI_LAST);
-    
 
     if (abs(diff) > RSSI_TOLERANCE)
     {
@@ -152,8 +150,10 @@ void DeviceData_CallBack()
         sendUpdate = true;
         RSSI_LAST = rssi;
     }
-    
-    if(sendUpdate || DD_FirstBoot) {
+
+    if (sendUpdate || DD_FirstBoot)
+    {
+        Log.trace("DD Sending update");
         sendDeviceDataToMQTT(rssi);
     }
 }
@@ -165,15 +165,16 @@ void DeviceData_Setup(PubSubClient mqtt_client, String deviceId, StorageValues r
     _devicedata_config = rootConfig;
 
     Serial.println("Starting up deviceData_thread...");
-    
-    // Configure myThread
-	deviceData_thread.onRun(DeviceData_CallBack);
-	deviceData_thread.setInterval(5000); //every 5 seconds
 
-    if(DD_FirstBoot) {
-        DeviceData_CallBack();
+    if (DD_FirstBoot)
+    {
+        Log.trace("FIRST Boot DeviceData_CallBack");
+        //DeviceData_CallBack();
         DD_FirstBoot = false;
     }
+
+    //deviceData_thread.onRun(DeviceData_CallBack);
+    //deviceData_thread.setInterval(1000 * 60); //every 60 seconds
 }
 
 #endif

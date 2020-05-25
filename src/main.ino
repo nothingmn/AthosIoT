@@ -45,6 +45,9 @@ String  DEFAULT_WIFI_PASSWORD = "88888888";
 #include <ArduinoLog.h>
 #include <ESP8266WiFi.h>
 
+
+
+
 String DeviceId = getDeviceId();
 
 //our main loop delay.
@@ -53,6 +56,33 @@ String DeviceId = getDeviceId();
 #else
   int loop_delay = 1000 / 10;   //10Hz
 #endif 
+
+void dumpResetReason() {
+
+  Serial.println("------Dumping last reset reason------");
+
+  struct rst_info *rtc_info = system_get_rst_info();
+
+  Serial.printf("reset reason: %x\n", rtc_info->reason);
+
+  if (rtc_info->reason == REASON_WDT_RST || rtc_info->reason == REASON_EXCEPTION_RST || rtc_info->reason == REASON_SOFT_WDT_RST)
+  {
+      if (rtc_info->reason == REASON_EXCEPTION_RST)
+      {
+          Serial.printf("Fatal exception (%d):\n", rtc_info->exccause);
+      }
+      //The address of the last crash is printed, which is used to debug garbled output.
+      Serial.printf("epc1=0x%08x, epc2=0x%08x, epc3=0x%08x, excvaddr=0x%08x, depc=0x%08x\n", rtc_info->epc1, rtc_info->epc2, rtc_info->epc3, rtc_info->excvaddr, rtc_info->depc);
+  }
+  if(rtc_info->reason == 0) Serial.println("0 = Power reboot");
+  if(rtc_info->reason == 1) Serial.println("1 = Hardware WDT reset");
+  if(rtc_info->reason == 2) Serial.println("2 = Fatal exception");
+  if(rtc_info->reason == 3) Serial.println("3 = Software watchdog reset");
+  if(rtc_info->reason == 4) Serial.println("4 = Software reset");
+  if(rtc_info->reason == 5) Serial.println("5 = Deep-sleep");
+  if(rtc_info->reason == 6) Serial.println("6 = Hardware reset");
+  Serial.println("------END Dumping last reset reason------");
+}
 
 StorageValues rootConfig;
 PubSubClient root_mqtt_client;
@@ -70,11 +100,14 @@ void setup()
 
   Log.trace("~~~~~~~~~~SETUP STARTING~~~~~~~~~~Version:%s Build:%s", getVersion().c_str(), getBuild().c_str());
 
+  dumpResetReason();
+
   rootConfig = EEPROM_setup();
 
   if(rootConfig.ssid == "" || rootConfig.ssid == "null") {
     rootConfig.ssid = DEFAULT_WIFI_SSID;
     rootConfig.password = DEFAULT_WIFI_PASSWORD;
+    Log.trace("using default SSID and password for wifi: %s", DEFAULT_WIFI_SSID.c_str());
   }
 
 
