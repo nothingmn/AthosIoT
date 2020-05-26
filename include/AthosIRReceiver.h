@@ -14,11 +14,11 @@ PubSubClient _IRRECEIVER_mqtt_client;
 String _IRRECEIVER_deviceId;
 StorageValues _IRRECEIVER_config;
 int _IRRECEIVER_loop_delay;
+const uint16_t kCaptureBufferSize = 512;
+const uint8_t kTimeout = 50;  // Milli-Seconds
 
-
-const uint16_t IRRECEIVER_inputPin = D5; // choose the input pin (for IRRECEIVER sensor)
 int IRRECEIVER_val = 0;      // variable for reading the pin status
-IRrecv IRRECEIVER_irrecv(IRRECEIVER_inputPin);
+IRrecv IRRECEIVER_irrecv(IRRECEIVER_inputPin, kCaptureBufferSize, kTimeout, false);
 decode_results IRRECEIVER_results;
 const char* IRRECEIVER_IgnoreHex = "FFFFFF";
 void IRRECEIVER_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)

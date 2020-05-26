@@ -30,6 +30,9 @@ bool DD_FirstBoot = true;
 
 void sendDeviceDataToMQTT(float rssi)
 {
+
+    const char *topic = _devicedata_config.mqttSensorTopic.c_str();
+
     if (DD_FirstBoot)
     {
         long ts = NTP_getEpochTime();
@@ -38,11 +41,9 @@ void sendDeviceDataToMQTT(float rssi)
             getVersion() + "," +
             ts);
 
-        const char *payload = csv.c_str();
-        const char *topic = _devicedata_config.mqttSensorTopic.c_str();
-        Log.trace("UP: Topic:%s\nPayload:%s\nLength:%i\nHost:%s:%s", topic, payload, csv.length(), _devicedata_config.mqttServer.c_str(), _devicedata_config.mqttPort.c_str());
+        Log.trace("UP: Topic:%s\nPayload:%s\nLength:%i\nHost:%s:%s", topic, csv.c_str(), csv.length(), _devicedata_config.mqttServer.c_str(), _devicedata_config.mqttPort.c_str());
 
-        if (!_devicedata_mqtt_client.publish(topic, payload))
+        if (!_devicedata_mqtt_client.publish(topic, csv.c_str()))
         {
             Log.trace("UP Data to MQTT Failed. Packet > 128?");
         }
@@ -51,6 +52,7 @@ void sendDeviceDataToMQTT(float rssi)
         delay(500);
     }
 
+return;
     long ts = NTP_getEpochTime();
     String csv = String(
         "DDD," +
@@ -63,11 +65,9 @@ void sendDeviceDataToMQTT(float rssi)
         ESP.getSketchMD5() + "," +
         ESP.getVcc());
 
-    const char *payload = csv.c_str();
-    const char *topic = _devicedata_config.mqttSensorTopic.c_str();
-    Log.trace("DDD: Topic:%s\nPayload:%s\nLength:%i\n", topic, payload, csv.length());
+    Log.trace("DDD: Topic:%s\nPayload:%s\nLength:%i\n",  topic, csv.c_str(), csv.length());
 
-    if (!_devicedata_mqtt_client.publish(topic, payload))
+    if (!_devicedata_mqtt_client.publish(topic, csv.c_str()))
     {
         Log.trace("DDD Data to MQTT Failed. Packet > 128?");
     }
@@ -84,11 +84,9 @@ void sendDeviceDataToMQTT(float rssi)
         WiFi.gatewayIP().toString() + "," +
         WiFi.SSID());
 
-    const char *payload2 = csv2.c_str();
-    const char *topic2 = _devicedata_config.mqttSensorTopic.c_str();
-    Log.trace("DDN: Topic:%s\nPayload:%s\nLength:%i\n", topic2, payload2, csv2.length());
+    Log.trace("DDN: Topic:%s\nPayload:%s\nLength:%i\n",topic, csv2.c_str(), csv2.length());
 
-    if (!_devicedata_mqtt_client.publish(topic2, payload2))
+    if (!_devicedata_mqtt_client.publish(topic, csv2.c_str()))
     {
         Log.trace("DDN Data to MQTT Failed. Packet > 128?");
     }
@@ -102,11 +100,9 @@ void sendDeviceDataToMQTT(float rssi)
         ESP.getCoreVersion() + "," +
         ESP.getSdkVersion());
 
-    const char *payload3 = csv3.c_str();
-    const char *topic3 = _devicedata_config.mqttSensorTopic.c_str();
-    Log.trace("DDV: Topic:%s\nPayload:%s\nLength:%i\n", topic3, payload3, csv3.length());
+    Log.trace("DDV: Topic:%s\nPayload:%s\nLength:%i\n", topic, csv3.c_str(), csv3.length());
 
-    if (!_devicedata_mqtt_client.publish(topic3, payload3))
+    if (!_devicedata_mqtt_client.publish(topic, csv3.c_str()))
     {
         Log.trace("DDV Data to MQTT Failed. Packet > 128?");
     }
