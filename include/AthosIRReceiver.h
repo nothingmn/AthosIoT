@@ -3,7 +3,7 @@
 #define ATH_IRRECEIVER_
 
 ///Make sure you have a 3V or 5V IRRECEIVER Sensor
-///In this sketch, we are using a D1 for the data pin
+///In this sketch, we are using a D5 (Pin 14) for the data pin
 #include <IRremoteESP8266.h>
 #include <IRrecv.h>
 #include <IRutils.h>
@@ -13,6 +13,8 @@
 PubSubClient _IRRECEIVER_mqtt_client;
 String _IRRECEIVER_deviceId;
 StorageValues _IRRECEIVER_config;
+int IRRECEIVER_inputPin = D5;
+
 int _IRRECEIVER_loop_delay;
 const uint16_t kCaptureBufferSize = 512;
 const uint8_t kTimeout = 50;  // Milli-Seconds

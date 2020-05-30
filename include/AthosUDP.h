@@ -57,14 +57,14 @@ void listenForUDPMessages()
       if(udp_ssid != "null" && udp_ssid != "") _udp_config.ssid = udp_ssid;
       if(udp_password != "null" && udp_password != "") _udp_config.password = udp_password;
       
-      Log.trace("Received MQTT Payload:");
+      Log.trace("Received MQTT Payload via UDP:");
       Log.trace(_udp_config.mqttServer.c_str());
       Log.trace(_udp_config.mqttSensorTopic.c_str());
       writeEEPROMData(_udp_config);
       delay(100);
       UDP_configComplete = true;
       Log.trace("UDP is causing a reset...");
-      ESP.restart();
+      ESP.reset();
       delay(100);
     } 
   }
