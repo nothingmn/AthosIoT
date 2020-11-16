@@ -13,16 +13,16 @@
 PubSubClient _IRRECEIVER_mqtt_client;
 String _IRRECEIVER_deviceId;
 StorageValues _IRRECEIVER_config;
-int IRRECEIVER_inputPin = D5;
-
 int _IRRECEIVER_loop_delay;
-const uint16_t kCaptureBufferSize = 512;
-const uint8_t kTimeout = 50;  // Milli-Seconds
 
+int IRRECEIVER_inputPin = D5;
+const uint16_t kCaptureBufferSize = 1024;
+const uint8_t kTimeout = 50; // Milli-Seconds
 int IRRECEIVER_val = 0;      // variable for reading the pin status
-IRrecv IRRECEIVER_irrecv(IRRECEIVER_inputPin, kCaptureBufferSize, kTimeout, false);
+IRrecv IRRECEIVER_irrecv(IRRECEIVER_inputPin, kCaptureBufferSize, kTimeout, true);
 decode_results IRRECEIVER_results;
-const char* IRRECEIVER_IgnoreHex = "FFFFFF";
+const char *IRRECEIVER_IgnoreHex = "FFFFFF";
+
 void IRRECEIVER_Setup(PubSubClient mqtt_client, String deviceId, StorageValues rootConfig, int loop_delay)
 {
   _IRRECEIVER_mqtt_client = mqtt_client;
@@ -30,21 +30,25 @@ void IRRECEIVER_Setup(PubSubClient mqtt_client, String deviceId, StorageValues r
   _IRRECEIVER_config = rootConfig;
   _IRRECEIVER_loop_delay = loop_delay;
 
-  IRRECEIVER_irrecv.enableIRIn();  // Start the receiver
-
+  // Ignore messages with less than minimum on or off pulses.
+  const uint16_t kMinUnknownSize = 12;
+  const uint8_t kTolerancePercentage = kTolerance; // kTolerance is normally 25%
+  //IRRECEIVER_irrecv.setUnknownThreshold(kMinUnknownSize);
+  IRRECEIVER_irrecv.setTolerance(kTolerancePercentage); // Override the default tolerance.
+  IRRECEIVER_irrecv.enableIRIn();                       // Start the receiver
 }
-
 
 void sendIRMQTT(String hex)
 {
   long ts = NTP_getEpochTime();
-  
-  String csv = String("IR," + getVersion() + "," + ts + "," + hex + "," + _IRRECEIVER_deviceId);
-  const char* payload = csv.c_str();
-  const char* topic = _IRRECEIVER_config.mqttSensorTopic.c_str();
-  Log.trace("Topic:%s\nPayload:%s\nLength:%i\n",topic, payload, csv.length());
 
-  if (!_IRRECEIVER_mqtt_client.publish(topic, payload)) {
+  String csv = String("IR," + getVersion() + "," + ts + "," + hex + "," + _IRRECEIVER_deviceId);
+  const char *payload = csv.c_str();
+  const char *topic = _IRRECEIVER_config.mqttSensorTopic.c_str();
+  Log.trace("Topic:%s\nPayload:%s\nLength:%i\n", topic, payload, csv.length());
+
+  if (!_IRRECEIVER_mqtt_client.publish(topic, payload))
+  {
     Log.trace("IRRECEIVER Data to MQTT Failed. Packet > 128?");
   }
 
@@ -53,25 +57,24 @@ void sendIRMQTT(String hex)
 
 void IRRECEIVER_Loop()
 {
-  
-  if (IRRECEIVER_irrecv.decode(&IRRECEIVER_results)) {
+
+  if (IRRECEIVER_irrecv.decode(&IRRECEIVER_results))
+  {
     String hex = uint64ToString(IRRECEIVER_results.value, HEX);
-    int compare = strncmp(hex.c_str(), IRRECEIVER_IgnoreHex, strlen(IRRECEIVER_IgnoreHex));
-    if(compare != 0) {
-      #ifdef ATH_RELAY
-        Relay_IR_Received(hex);
-      #endif
+    String human = resultToHumanReadableBasic(&IRRECEIVER_results);
+    // Check if we got an IR message that was to big for our capture buffer.
+    Log.trace("human:%s", human.c_str());
+#ifdef ATH_RELAY
+      Relay_IR_Received(hex);
+#endif
 
-      #ifdef ATH_NEOPIXEL
-        NeoPixel_IR_Received(hex);
-      #endif
-      
+#ifdef ATH_NEOPIXEL
+      NeoPixel_IR_Received(hex);
+#endif
+
       sendIRMQTT(hex);
-    }
-    IRRECEIVER_irrecv.resume();  // Receive the next value
-
+    //IRRECEIVER_irrecv.resume();  // Receive the next value
   }
-  
 }
 
 #endif

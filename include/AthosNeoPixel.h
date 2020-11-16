@@ -15,8 +15,8 @@
 #include <WS2812FX.h>
 #include <HashMap.h>
 CreateHashMap(fxMappings, String, int, 55);
-int PixelPin = D2;
-int PixelCount = 24;
+int PixelPin = D4;
+int PixelCount = 64;
 int NeoPixel_Last_Brightness = 255;
 
 // Declare our NeoPixel strip object:
@@ -97,7 +97,6 @@ void NeoPixel_Setup(PubSubClient mqtt_client, String deviceId, StorageValues roo
   fxMappings["FX_MODE_CIRCUS_COMBUSTUS"] = FX_MODE_CIRCUS_COMBUSTUS;
   fxMappings["FX_MODE_BICOLOR_CHASE"] = FX_MODE_BICOLOR_CHASE;
   fxMappings["FX_MODE_TRICOLOR_CHASE"] = FX_MODE_TRICOLOR_CHASE;
-  fxMappings["FX_MODE_ICU"] = FX_MODE_ICU;
 
   ws2812fx.init();
   ws2812fx.setBrightness(255);
@@ -161,6 +160,8 @@ void NeoPixel_IR_Received(String _hex)
   int command = IR24_Parse(_hex);
   int level = ws2812fx.getBrightness();
   int mode = ws2812fx.getMode();
+
+  Log.trace("NeoPixel_IR_Received:%s", _hex.c_str());
 
   switch (command)
   {

@@ -91,7 +91,7 @@ void setup()
   //while (!Serial);
   Serial.begin(115200);
   while (!Serial){  // Wait for the serial connection to be establised.
-    delay(100);
+    delay(50);
   }
   Log.begin(LOG_LEVEL_VERBOSE, &Serial);
   delay(5000);
